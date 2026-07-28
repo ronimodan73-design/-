@@ -19,7 +19,7 @@
 
 1. התקנת תלויות:
    `npm install`
-2. הגדרת `GEMINI_API_KEY` בקובץ [.env.local](.env.local) עם מפתח ה-API של Gemini שלכם
+2. הגדרת `GEMINIAPIKEY` בקובץ [.env.local](.env.local) עם מפתח ה-API של Gemini שלכם
 3. הרצת האפליקציה:
    `npm run dev`
 
