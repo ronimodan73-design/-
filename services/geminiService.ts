@@ -1,39 +1,120 @@
+import { GoogleGenAI } from '@google/genai';
+import type { ComparisonResult, Platform, Source } from '../types';
+import { PLATFORM_INFO } from '../constants';
 
-import { GoogleGenAI } from "@google/genai";
-import type { Question, Fraction } from '../types';
-
-if (!process.env.API_KEY) {
-  throw new Error("API_KEY environment variable is not set.");
+export class MissingApiKeyError extends Error {
+  constructor() {
+    super('GEMINI_API_KEY is not set');
+    this.name = 'MissingApiKeyError';
+  }
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+let client: GoogleGenAI | null = null;
 
-const formatFraction = (f: Fraction): string => {
-    if (f.denominator === 1) {
-        return `${f.numerator}`;
-    }
-    return `${f.numerator}/${f.denominator}`;
+const getClient = (): GoogleGenAI => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new MissingApiKeyError();
+  }
+  if (!client) {
+    client = new GoogleGenAI({ apiKey });
+  }
+  return client;
 };
 
-export const getHint = async (question: Question): Promise<string> => {
-  const questionString = `${formatFraction(question.f1)} * ${formatFraction(question.f2)}`;
-  
-  const prompt = `
-    Provide a short, simple, and encouraging hint in Hebrew for solving the fraction multiplication problem: ${questionString}.
-    The hint should guide the user on the process, but MUST NOT give the final answer or the direct result of the multiplication.
-    For example, if the problem is 2/3 * 4/5, a good hint would be: 'כדי לפתור, הכפילו את המונים (המספרים למעלה) זה בזה, ואז הכפילו את המכנים (המספרים למטה) זה בזה.'.
-    If the problem involves a whole number, like 5 * 1/3, a good hint would be: 'אפשר לחשוב על המספר השלם 5 כמו על השבר 5/1. עכשיו, פתרו כמו תרגיל כפל רגיל בין שני שברים.'.
-    Keep the language simple and suitable for a student.
-  `;
+export const hasApiKey = (): boolean => Boolean(process.env.API_KEY);
 
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-    });
-    return response.text;
-  } catch (error) {
-    console.error("Gemini API error:", error);
-    throw new Error("Failed to get hint from Gemini API.");
+const buildPrompt = (query: string): string => `
+את/ה עוזר קניות חכם ואמין, מומחה בקניות אונליין מפלטפורמות סיניות (AliExpress, Shein, Temu).
+המשתמש/ת רוצה לקנות: "${query}".
+
+חפש/י מידע עדכני באינטרנט (מחירים, דירוגים, ביקורות, תלונות נפוצות, מבצעים) על המוצר הזה בשלוש הפלטפורמות: AliExpress, Shein, Temu.
+בהתבסס על החיפוש, נתח/י עבור כל פלטפורמה: טווח מחירים משוער בשקלים חדשים (₪), דירוג ממוצע משוער (0-5), הערכת מספר ביקורות, איכות המוצר (מבד/חומר, עמידות, התאמה למידה), יתרונות וחסרונות.
+קבע/י איזו פלטפורמה הכי משתלמת עבור המוצר הספציפי הזה, ותן/י המלצה מתי כדאי לקנות (עכשיו, או לחכות למבצע קרוב כמו 11.11, בלאק פריידי, וכו').
+אם המוצר הוא פריט לבוש, נעליים או אביזר עם מידות - הוסף/הוסיפי המלצה קצרה לגבי המרת מידות (מידות סיניות נוטות להיות קטנות).
+
+השב/י אך ורק באובייקט JSON יחיד, בעברית, בפורמט הבא בדיוק (ללא טקסט נוסף, ללא markdown fences):
+{
+  "productQuery": "string",
+  "summary": "string - סיכום כללי והמלצה בשפה ידידותית, 2-3 משפטים",
+  "bestPlatform": "aliexpress" | "shein" | "temu",
+  "bestTimeToBuy": "string - מתי כדאי לקנות ולמה",
+  "buyingTips": ["string", "string", "string"],
+  "sizeAdviceNote": "string - עצה לגבי מידות, או מחרוזת ריקה אם לא רלוונטי",
+  "platforms": [
+    {
+      "platform": "aliexpress" | "shein" | "temu",
+      "priceRangeILS": "string, לדוגמה '45-70 ₪'",
+      "rating": number,
+      "reviewCount": "string, לדוגמה '3,000+'",
+      "qualityNotes": "string",
+      "pros": ["string", "string"],
+      "cons": ["string", "string"],
+      "recommended": boolean
+    }
+  ]
+}
+חשוב: יש לכלול בדיוק שלושה אובייקטים במערך platforms, אחד לכל פלטפורמה (aliexpress, shein, temu).
+`;
+
+const extractJson = (text: string): unknown => {
+  const cleaned = text.trim()
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/```\s*$/i, '');
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start === -1 || end === -1) {
+    throw new Error('לא נמצא JSON בתשובת המודל');
   }
+  return JSON.parse(cleaned.slice(start, end + 1));
+};
+
+const extractSources = (response: any): Source[] => {
+  const chunks = response?.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [];
+  const seen = new Set<string>();
+  const sources: Source[] = [];
+  for (const chunk of chunks) {
+    const uri = chunk?.web?.uri;
+    const title = chunk?.web?.title ?? uri;
+    if (uri && !seen.has(uri)) {
+      seen.add(uri);
+      sources.push({ title, uri });
+    }
+  }
+  return sources;
+};
+
+export const compareProduct = async (query: string): Promise<ComparisonResult> => {
+  const ai = getClient();
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: buildPrompt(query),
+    config: {
+      tools: [{ googleSearch: {} }],
+    },
+  });
+
+  const text = response.text;
+  if (!text) {
+    throw new Error('לא התקבלה תשובה מהמודל');
+  }
+
+  const parsed = extractJson(text) as ComparisonResult;
+
+  const platformsByKey = new Map(parsed.platforms.map((p) => [p.platform, p]));
+  const orderedPlatforms: Platform[] = ['aliexpress', 'shein', 'temu'];
+  parsed.platforms = orderedPlatforms
+    .map((key) => platformsByKey.get(key))
+    .filter((p): p is ComparisonResult['platforms'][number] => Boolean(p))
+    .map((p) => ({
+      ...p,
+      searchUrl: PLATFORM_INFO[p.platform].searchUrlTemplate(query),
+    }));
+
+  parsed.sources = extractSources(response);
+  parsed.productQuery = query;
+
+  return parsed;
 };

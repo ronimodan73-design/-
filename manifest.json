@@ -1,11 +1,11 @@
 {
-  "name": "כפל שברים - תרגול אינטראקטיבי",
-  "short_name": "כפל שברים",
+  "name": "קניה חכמה - השוואת מחירים",
+  "short_name": "קניה חכמה",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f9f9ff",
-  "theme_color": "#244fa8",
-  "description": "אפליקציה לתרגול כפל שברים גם בלי אינטרנט",
+  "background_color": "#f1f5f9",
+  "theme_color": "#1d4ed8",
+  "description": "השוואת מחירים, איכות ודירוגים בין AliExpress, Shein ו-Temu, עם המרת מידות והמלצות מתי כדאי לקנות.",
   "icons": [
     {
       "src": "icon-192.png",
@@ -13,8 +13,8 @@
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
-      "sizes": "512x512",
+      "src": "icon-152.png",
+      "sizes": "152x152",
       "type": "image/png"
     }
   ],

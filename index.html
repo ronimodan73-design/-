@@ -1,61 +1,25 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>כפל שברים - תרגול אינטראקטיבי</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>קניה חכמה - השוואת מחירים באליאקספרס, שיין וטמו</title>
+  <meta name="description" content="אפליקציה להשוואת מחירים, איכות ודירוגים בין AliExpress, Shein ו-Temu, עם המרת מידות והמלצות מתי כדאי לקנות.">
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-152.png">
+  <meta name="theme-color" content="#1d4ed8">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="score-bar">
-      <span>הציון שלך: <span id="score">0</span> ⭐</span>
-      <button id="reset" onclick="resetScore()" title="אפס נקודות">🔄</button>
-    </div>
-    <h1>כפל שברים - תרגול אינטראקטיבי לכיתה ו'</h1>
-    <section id="intro">
-      <h2>הרעיון המתמטי</h2>
-      <p>
-        כפל שבר בשבר, שבר במספר שלם או שבר מעורב, עוזר לנו להבין חלקים מתוך חלקים.
-        לדוג' <b>1/2 × 1/3</b> זה חצי של שליש.<br>
-        <b>איך כופלים?</b> כופלים מונה במונה ומכנה במכנה.
-      </p>
-    </section>
-    <section id="example">
-      <h2>דוגמה מודרכת</h2>
-      <p>
-        נחשב <b>2/3 × 1/4</b>:<br>
-        <b>2×1 = 2</b> (מונה), <b>3×4 = 12</b> (מכנה),<br>
-        התוצאה: <b>2/12 = 1/6</b>
-      </p>
-    </section>
-    <section id="practice">
-      <h2>תרגול</h2>
-      <div id="question"></div>
-      <input type="text" id="answer" placeholder="הקלד תשובה">
-      <button onclick="checkAnswer()">בדוק</button>
-      <button onclick="showHint()">רמז (מתמטקיש)</button>
-      <div id="feedback"></div>
-    </section>
-    <section id="summary">
-      <h2>סיכום</h2>
-      <p>
-        כשכופלים שברים – כופלים מונה במונה ומכנה במכנה.<br>
-        אם התוצאה היא שבר מדומה (מונה גדול ממכנה) – מומלץ לצמצם או להפוך לשבר מעורב.
-      </p>
-    </section>
-  </div>
-  <script src="main.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
   <script>
-    // הרשמת Service Worker עבור עבודה אופליין
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(function(reg) {
-          console.log("Service Worker registered!", reg);
-        })
-        .catch(function(err) {
-          console.log("Service Worker registration failed: ", err);
-        });
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
   </script>
 </body>

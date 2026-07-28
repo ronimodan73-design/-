@@ -2,19 +2,24 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# קניה חכמה - השוואת מחירים
 
-This contains everything you need to run your app locally.
+אפליקציית ווב (PWA) בעברית שעוזרת לקנות בחוכמה מ-AliExpress, Shein ו-Temu:
 
-View your app in AI Studio: https://ai.studio/apps/drive/1KdoWiqVXW_HrMZhkwxriu8K-mqSL9Tos
+- **השוואת מחירים, איכות ודירוגים** - הקלידו שם מוצר, והאפליקציה מחפשת מידע עדכני ברשת ומשווה בין שלוש הפלטפורמות (מחיר, דירוג, ביקורות, יתרונות/חסרונות).
+- **המלצה חכמה** - איזו פלטפורמה הכי משתלמת עבור המוצר, ומתי כדאי לקנות (עכשיו או לחכות למבצע).
+- **המרת מידות** - טבלאות המרה בין מידות ישראל/אירופה, ארה"ב, בריטניה ואסיה, לביגוד נשים/גברים/ילדים ולנעליים.
+- **לוח מבצעים** - תאריכי המבצעים הגדולים בפלטפורמות הסיניות.
+- **שמירת השוואות** - שמירת חיפושים קודמים באחסון מקומי בדפדפן, לצפייה חוזרת ללא חיפוש נוסף.
 
-## Run Locally
+## הרצה מקומית
 
-**Prerequisites:**  Node.js
+**דרישות מקדימות:** Node.js
 
-
-1. Install dependencies:
+1. התקנת תלויות:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. הגדרת `GEMINI_API_KEY` בקובץ [.env.local](.env.local) עם מפתח ה-API של Gemini שלכם
+3. הרצת האפליקציה:
    `npm run dev`
+
+האפליקציה משתמשת ב-Gemini עם חיפוש גוגל (Grounding) כדי להביא מידע עדכני על מוצרים, מחירים וביקורות.
