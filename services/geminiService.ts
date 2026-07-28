@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
-import type { ComparisonResult, Platform, Source } from '../types';
+import type { ComparisonResult, Platform, Source, AdvisorAnswer } from '../types';
 import { PLATFORM_INFO } from '../constants';
+import { extractJson } from '../utils/json';
 
 export class MissingApiKeyError extends Error {
   constructor() {
@@ -57,19 +58,6 @@ const buildPrompt = (query: string): string => `
 חשוב: יש לכלול בדיוק שלושה אובייקטים במערך platforms, אחד לכל פלטפורמה (aliexpress, shein, temu).
 `;
 
-const extractJson = (text: string): unknown => {
-  const cleaned = text.trim()
-    .replace(/^```json\s*/i, '')
-    .replace(/^```\s*/i, '')
-    .replace(/```\s*$/i, '');
-  const start = cleaned.indexOf('{');
-  const end = cleaned.lastIndexOf('}');
-  if (start === -1 || end === -1) {
-    throw new Error('לא נמצא JSON בתשובת המודל');
-  }
-  return JSON.parse(cleaned.slice(start, end + 1));
-};
-
 const extractSources = (response: any): Source[] => {
   const chunks = response?.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [];
   const seen = new Set<string>();
@@ -117,4 +105,43 @@ export const compareProduct = async (query: string): Promise<ComparisonResult> =
   parsed.productQuery = query;
 
   return parsed;
+};
+
+const buildAdvisorPrompt = (question: string, financeContext: string): string => `
+את יועצת כלכלית אישית, סבלנית וידידותית, שמסבירה כל דבר בשפה כל כך פשוטה שילדה בת 12 בלי שום רקע בכלכלה תבין הכל.
+אסור להשתמש במונחים כלכליים בלי להסביר אותם. אסור לכתוב תשובות ארוכות או מסובכות. משפטים קצרים וברורים בלבד.
+
+הנתונים הכספיים הידועים על המשתמשת (מוזנים ידנית על ידה, אין חיבור לבנק):
+${financeContext}
+
+השאלה של המשתמשת: "${question}"
+
+תני תשובה שמסבירה בבירור: האם זה כדאי או לא, למה (מה הרווח ומה ההפסד/הסיכון), ועצה מעשית קצרה אחת.
+חשוב: אם אין מספיק מידע כדי לחשב במדויק (למשל אין נתונים על הכנסה), תני הערכה כללית סבירה ותציין שזו הערכה.
+
+השב/י אך ורק באובייקט JSON יחיד, בעברית, בפורמט הבא בדיוק (ללא טקסט נוסף, ללא markdown fences):
+{
+  "verdict": "worth_it" | "not_worth_it" | "depends",
+  "verdictLabel": "string קצר, לדוגמה 'כדאי!' או 'לא כדאי' או 'תלוי'",
+  "simpleExplanation": "string - הסבר פשוט מאוד, 2-3 משפטים קצרים, כמו לילדה בת 12",
+  "gain": "string - מה תרוויחי, משפט אחד פשוט",
+  "loss": "string - מה תפסידי או הסיכון, משפט אחד פשוט",
+  "tip": "string - עצה מעשית קצרה אחת"
+}
+`;
+
+export const askAdvisor = async (question: string, financeContext: string): Promise<AdvisorAnswer> => {
+  const ai = getClient();
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: buildAdvisorPrompt(question, financeContext),
+  });
+
+  const text = response.text;
+  if (!text) {
+    throw new Error('לא התקבלה תשובה מהמודל');
+  }
+
+  return extractJson(text) as AdvisorAnswer;
 };

@@ -1,4 +1,4 @@
-import { Platform } from './types';
+import { Platform, ExpenseCategory } from './types';
 
 export const PLATFORM_INFO: Record<Platform, { name: string; color: string; emoji: string; searchUrlTemplate: (q: string) => string }> = {
   aliexpress: {
@@ -31,3 +31,29 @@ export const SALE_CALENDAR: { title: string; dateHint: string; note: string }[] 
 
 export const HISTORY_STORAGE_KEY = 'smart-shopping-history-v1';
 export const MAX_HISTORY_ITEMS = 30;
+
+export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
+  'מזון',
+  'קניות אונליין',
+  'חשבונות ובית',
+  'תחבורה',
+  'בידור ופנאי',
+  'בריאות',
+  'אחר',
+];
+
+export const CATEGORY_EMOJI: Record<ExpenseCategory, string> = {
+  'מזון': '🍎',
+  'קניות אונליין': '🛍️',
+  'חשבונות ובית': '🏠',
+  'תחבורה': '🚌',
+  'בידור ופנאי': '🎮',
+  'בריאות': '💊',
+  'אחר': '📎',
+};
+
+export const FINANCE_ENTRIES_KEY = 'smart-finance-entries-v1';
+export const SHOPPING_LIST_KEY = 'smart-finance-shopping-list-v1';
+export const REMINDERS_KEY = 'smart-finance-reminders-v1';
+export const ADVISOR_HISTORY_KEY = 'smart-finance-advisor-history-v1';
+export const MAX_ADVISOR_HISTORY = 20;

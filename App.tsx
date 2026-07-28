@@ -1,7 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { ComparisonResult, HistoryItem } from './types';
-import { compareProduct, hasApiKey, MissingApiKeyError } from './services/geminiService';
+import { ComparisonResult, HistoryItem, FinanceEntry, ShoppingListItem, ReminderItem, AdvisorQA } from './types';
+import { compareProduct, hasApiKey, MissingApiKeyError, askAdvisor } from './services/geminiService';
 import { loadHistory, saveToHistory, removeFromHistory } from './utils/storage';
+import {
+  loadFinanceEntries,
+  addFinanceEntry,
+  removeFinanceEntry,
+  loadShoppingList,
+  addShoppingItem,
+  toggleShoppingItem,
+  removeShoppingItem,
+  loadReminders,
+  addReminder,
+  toggleReminder,
+  removeReminder,
+  loadAdvisorHistory,
+  addAdvisorHistory,
+} from './utils/financeStorage';
+import { summarizeMonth, buildFinanceContext } from './utils/financeCalc';
 import SearchBar from './components/SearchBar';
 import LoadingState from './components/LoadingState';
 import ComparisonSummary from './components/ComparisonSummary';
@@ -9,13 +25,20 @@ import SizeConverter from './components/SizeConverter';
 import HistoryPanel from './components/HistoryPanel';
 import SaleCalendar from './components/SaleCalendar';
 import ApiKeyNotice from './components/ApiKeyNotice';
+import FinanceSummaryCards from './components/finance/FinanceSummaryCards';
+import QuickAddEntry from './components/finance/QuickAddEntry';
+import EntriesList from './components/finance/EntriesList';
+import ShoppingListPanel from './components/finance/ShoppingListPanel';
+import RemindersPanel from './components/finance/RemindersPanel';
+import AdvisorChat from './components/finance/AdvisorChat';
 
-type Tab = 'compare' | 'sizes' | 'calendar' | 'history';
+type Tab = 'compare' | 'sizes' | 'calendar' | 'history' | 'finance';
 
 const TABS: { id: Tab; label: string; emoji: string }[] = [
   { id: 'compare', label: 'השוואת מחירים', emoji: '🔍' },
   { id: 'sizes', label: 'המרת מידות', emoji: '📏' },
   { id: 'calendar', label: 'לוח מבצעים', emoji: '🗓️' },
+  { id: 'finance', label: 'יועץ כלכלי', emoji: '💰' },
   { id: 'history', label: 'שמורים שלי', emoji: '💾' },
 ];
 
@@ -27,8 +50,19 @@ const App: React.FC = () => {
   const [saved, setSaved] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
+  const [financeEntries, setFinanceEntries] = useState<FinanceEntry[]>([]);
+  const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>([]);
+  const [reminders, setReminders] = useState<ReminderItem[]>([]);
+  const [advisorHistory, setAdvisorHistory] = useState<AdvisorQA[]>([]);
+  const [advisorLoading, setAdvisorLoading] = useState(false);
+  const [advisorError, setAdvisorError] = useState('');
+
   useEffect(() => {
     setHistory(loadHistory());
+    setFinanceEntries(loadFinanceEntries());
+    setShoppingList(loadShoppingList());
+    setReminders(loadReminders());
+    setAdvisorHistory(loadAdvisorHistory());
   }, []);
 
   const handleSearch = async (query: string) => {
@@ -67,6 +101,48 @@ const App: React.FC = () => {
 
   const handleRemoveHistory = (id: string) => {
     setHistory(removeFromHistory(id));
+  };
+
+  const handleAddFinanceEntry = (
+    type: FinanceEntry['type'],
+    amount: number,
+    note: string,
+    date: string,
+    category?: FinanceEntry['category']
+  ) => {
+    setFinanceEntries(addFinanceEntry(type, amount, note, date, category));
+  };
+
+  const handleRemoveFinanceEntry = (id: string) => {
+    setFinanceEntries(removeFinanceEntry(id));
+  };
+
+  const handleAddShoppingItem = (text: string) => setShoppingList(addShoppingItem(text));
+  const handleToggleShoppingItem = (id: string) => setShoppingList(toggleShoppingItem(id));
+  const handleRemoveShoppingItem = (id: string) => setShoppingList(removeShoppingItem(id));
+
+  const handleAddReminder = (text: string, dueDate?: string) => setReminders(addReminder(text, dueDate));
+  const handleToggleReminder = (id: string) => setReminders(toggleReminder(id));
+  const handleRemoveReminder = (id: string) => setReminders(removeReminder(id));
+
+  const handleAskAdvisor = async (question: string) => {
+    setAdvisorLoading(true);
+    setAdvisorError('');
+    try {
+      const context = buildFinanceContext(financeEntries);
+      const answer = await askAdvisor(question, context);
+      const qa: AdvisorQA = { id: `${Date.now()}`, question, answer, timestamp: Date.now() };
+      setAdvisorHistory(addAdvisorHistory(qa));
+    } catch (err) {
+      if (err instanceof MissingApiKeyError) {
+        setAdvisorError('missing-key');
+      } else {
+        console.error(err);
+        setAdvisorError('אירעה שגיאה בזמן קבלת התשובה. נסה/י שוב בעוד רגע.');
+      }
+    } finally {
+      setAdvisorLoading(false);
+    }
   };
 
   return (
@@ -128,6 +204,49 @@ const App: React.FC = () => {
           <div>
             <h2 className="text-xl font-bold mb-4">🗓️ מתי הכי כדאי לקנות</h2>
             <SaleCalendar />
+          </div>
+        )}
+
+        {tab === 'finance' && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold mb-1">💰 יועץ כלכלי אישי</h2>
+              <p className="text-sm text-slate-500 mb-4">
+                עקבי אחרי ההכנסות וההוצאות שלך, ותקבלי המלצות פשוטות וברורות לכל שאלה כספית.
+              </p>
+            </div>
+
+            {!hasApiKey() && <ApiKeyNotice />}
+
+            <FinanceSummaryCards summary={summarizeMonth(financeEntries)} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <QuickAddEntry onAdd={handleAddFinanceEntry} />
+              <EntriesList entries={financeEntries} onRemove={handleRemoveFinanceEntry} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ShoppingListPanel
+                items={shoppingList}
+                onAdd={handleAddShoppingItem}
+                onToggle={handleToggleShoppingItem}
+                onRemove={handleRemoveShoppingItem}
+              />
+              <RemindersPanel
+                items={reminders}
+                onAdd={handleAddReminder}
+                onToggle={handleToggleReminder}
+                onRemove={handleRemoveReminder}
+              />
+            </div>
+
+            <AdvisorChat
+              history={advisorHistory}
+              isLoading={advisorLoading}
+              error={advisorError === 'missing-key' ? '' : advisorError}
+              onAsk={handleAskAdvisor}
+            />
+            {advisorError === 'missing-key' && <ApiKeyNotice />}
           </div>
         )}
 
