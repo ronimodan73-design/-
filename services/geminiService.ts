@@ -77,7 +77,7 @@ export const compareProduct = async (query: string): Promise<ComparisonResult> =
   const ai = getClient();
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-flash-latest',
     contents: buildPrompt(query),
     config: {
       tools: [{ googleSearch: {} }],
@@ -134,7 +134,7 @@ export const askAdvisor = async (question: string, financeContext: string): Prom
   const ai = getClient();
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-flash-latest',
     contents: buildAdvisorPrompt(question, financeContext),
   });
 
