@@ -366,7 +366,7 @@
 
     <div id="feedback"></div>
 
-    <button class="btn hidden" id="next-btn" onclick="goNextProblem()">השאלה הבאה ⬅️</button>
+    <button class="btn secondary" id="next-btn" onclick="goNextProblem()">השאלה הבאה ⬅️</button>
   </section>
 
   <!-- SCREEN 4: DONE -->
@@ -541,7 +541,6 @@ function loadProblem(i){
   document.getElementById('answer-input').value = '';
   document.getElementById('answer-input').disabled = false;
   document.getElementById('feedback').innerHTML = '';
-  document.getElementById('next-btn').classList.add('hidden');
   document.getElementById('check-btn').disabled = false;
   document.getElementById('visual-btn').disabled = false;
   document.getElementById('pr-round-wrap').classList.add('hidden');
