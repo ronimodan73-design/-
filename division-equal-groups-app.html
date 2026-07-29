@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+<title>לחלק שווה בשווה - כמה בכל קבוצה?</title>
+<style>
+  :root{
+    --pink:#ff6fa5;
+    --purple:#8b5cf6;
+    --blue:#3b82f6;
+    --green:#22c55e;
+    --orange:#f59e0b;
+    --red:#ef4444;
+    --bg1:#fef6ff;
+    --bg2:#eef2ff;
+    --card:#ffffff;
+    --ink:#3a2e4d;
+    --ink-soft:#6b6280;
+    --line:#ece3fb;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Segoe UI', Arial, sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:14px;
+  }
+  .app{
+    width:100%;
+    max-width:480px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(139,92,246,0.12);
+    padding:20px 18px 22px;
+    margin-bottom:14px;
+    position:relative;
+    overflow:hidden;
+  }
+  h1{
+    font-size:1.35rem;
+    margin:0 0 4px;
+    color:var(--purple);
+  }
+  h2{
+    font-size:1.1rem;
+    margin:0 0 10px;
+    color:var(--purple);
+  }
+  p{line-height:1.6;}
+  .subtitle{color:var(--ink-soft); font-size:0.95rem; margin-top:0;}
+  .hidden{display:none !important;}
+  .btn{
+    border:none;
+    border-radius:16px;
+    padding:14px 20px;
+    font-size:1.05rem;
+    font-weight:700;
+    cursor:pointer;
+    color:#fff;
+    background:linear-gradient(135deg,var(--purple),var(--pink));
+    box-shadow:0 6px 14px rgba(139,92,246,0.35);
+    transition:transform .12s ease, box-shadow .12s ease;
+    width:100%;
+    margin-top:8px;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn.secondary{
+    background:#fff;
+    color:var(--purple);
+    border:2px solid var(--purple);
+    box-shadow:none;
+  }
+  .btn.small{
+    width:auto;
+    padding:9px 16px;
+    font-size:0.9rem;
+    margin-top:0;
+  }
+  .btn:disabled{opacity:0.5; cursor:default; transform:none;}
+  .row{display:flex; gap:10px;}
+  .row > *{flex:1;}
+
+  /* progress bar */
+  .progress-wrap{
+    background:var(--line);
+    border-radius:999px;
+    height:14px;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:6px;
+  }
+  .progress-fill{
+    position:absolute;
+    right:0; top:0; bottom:0;
+    width:0%;
+    background:linear-gradient(90deg,var(--pink),var(--purple));
+    border-radius:999px;
+    transition:width .4s ease;
+  }
+  .progress-label{
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-bottom:14px;
+  }
+
+  /* story / hook */
+  .story-emoji{font-size:2.6rem; text-align:center; margin:6px 0 10px;}
+  .bubble{
+    background:var(--bg2);
+    border-radius:16px;
+    padding:12px 14px;
+    margin:10px 0;
+    font-size:1rem;
+  }
+  .bubble.unfair{border:2px dashed var(--red); background:#fff1f1;}
+  .bubble.fair{border:2px dashed var(--green); background:#f0fdf4;}
+
+  /* dealing visual */
+  .bank{
+    background:var(--bg2);
+    border-radius:16px;
+    padding:12px;
+    min-height:56px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:12px;
+  }
+  .dot{
+    font-size:1.4rem;
+    line-height:1;
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .dot.leaving{opacity:0; transform:scale(0.3);}
+  .dot.arriving{animation:pop .3s ease;}
+  @keyframes pop{
+    0%{transform:scale(0);}
+    60%{transform:scale(1.25);}
+    100%{transform:scale(1);}
+  }
+  .baskets{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    margin-bottom:8px;
+  }
+  .basket{
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:16px;
+    padding:8px;
+    flex:1 1 30%;
+    min-width:86px;
+    text-align:center;
+  }
+  .basket-label{font-size:0.78rem; color:var(--ink-soft); font-weight:700; margin-bottom:4px;}
+  .basket-count{
+    font-size:1.3rem;
+    font-weight:800;
+    color:var(--purple);
+    display:block;
+    margin-bottom:4px;
+  }
+  .basket-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:2px;
+    justify-content:center;
+    min-height:22px;
+  }
+  .basket-grid .dot{font-size:0.95rem;}
+  .round-counter{
+    text-align:center;
+    font-size:0.92rem;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  .round-counter b{color:var(--purple); font-size:1.1rem;}
+
+  /* concept box */
+  .equation{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+    font-size:1.5rem;
+    font-weight:800;
+    direction:ltr;
+    margin:10px 0;
+  }
+  .equation .num{padding:4px 10px; border-radius:10px;}
+  .equation .total-n{background:#e0e7ff; color:var(--blue);}
+  .equation .groups-n{background:#fce7f3; color:var(--pink);}
+  .equation .answer-n{background:#dcfce7; color:var(--green);}
+  .legend{font-size:0.85rem; color:var(--ink-soft); text-align:center; margin-top:-4px;}
+  .legend span{display:inline-block; margin:2px 6px;}
+
+  .callout{
+    border-radius:16px;
+    padding:12px 14px;
+    margin:12px 0;
+    font-size:0.92rem;
+    line-height:1.6;
+  }
+  .callout.warn{background:#fff7ed; border:2px solid #fed7aa;}
+  .callout.warn b{color:var(--orange);}
+  .callout.info{background:#eff6ff; border:2px solid #bfdbfe;}
+
+  /* practice */
+  .problem-text{font-size:1.05rem; margin-bottom:14px; line-height:1.65;}
+  .tier-tag{
+    display:inline-block;
+    background:var(--bg2);
+    color:var(--purple);
+    font-size:0.78rem;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:999px;
+    margin-bottom:10px;
+  }
+  .answer-row{margin:14px 0 2px;}
+  .answer-row input{
+    width:100%;
+    font-size:1.3rem;
+    text-align:center;
+    padding:12px;
+    border-radius:14px;
+    border:2px solid var(--line);
+    direction:ltr;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .answer-row input:focus{outline:none; border-color:var(--purple);}
+  .answer-unit-caption{
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    font-weight:700;
+    margin:4px 0 10px;
+  }
+  .feedback{
+    border-radius:16px;
+    padding:12px 14px;
+    margin:10px 0;
+    font-size:0.98rem;
+    line-height:1.55;
+  }
+  .feedback.correct{background:#f0fdf4; border:2px solid var(--green); color:#15803d;}
+  .feedback.wrong{background:#fff1f1; border:2px solid #fca5a5; color:#b91c1c;}
+  .feedback.hint{background:var(--bg2); border:2px solid var(--line); color:var(--ink-soft);}
+
+  .stars-row{display:flex; justify-content:center; gap:4px; margin-bottom:10px;}
+  .stars-row span{font-size:1.1rem; opacity:0.25;}
+  .stars-row span.on{opacity:1;}
+
+  .final-emoji{font-size:3rem; text-align:center; margin-bottom:6px;}
+  .stat-box{
+    background:var(--bg2);
+    border-radius:16px;
+    padding:14px;
+    text-align:center;
+    margin:14px 0;
+  }
+  .stat-box .big{font-size:2rem; font-weight:800; color:var(--purple);}
+
+  footer{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:0.78rem;
+    padding:6px 10px 20px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SCREEN 1: HOOK -->
+  <section id="screen-intro" class="card">
+    <h1>לחלק שווה בשווה 🎈</h1>
+    <p class="subtitle">כמה יהיה לכל אחד? בואי נגלה יחד</p>
+    <div class="story-emoji">🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈</div>
+    <p>ליום ההולדת של נועה יש <b>12 בלונים</b>. היא רוצה לתת אותם באופן הוגן ל-<b>3 חברות</b> שבאו לעזור לה לקשט.</p>
+    <div class="bubble unfair">
+      נועה ממהרת ונותנת ככה: לרותם 5 בלונים, לשירה 4, ולדנה 3.<br>
+      <b>"רגע... זה לא הוגן!"</b> אומרת דנה. 😟
+    </div>
+    <p>איך אפשר לחלק כך שלכולן יהיה <b>בדיוק אותו הדבר</b>? יש דרך פשוטה וקסומה לזה - בואי נגלה אותה ביחד!</p>
+    <button class="btn" onclick="goTo('explore')">בואי נגלה יחד ✨</button>
+  </section>
+
+  <!-- SCREEN 2: EXPLORE -->
+  <section id="screen-explore" class="card hidden">
+    <h2>נחלק את הבלונים ביחד</h2>
+    <p>לחצי על הכפתור כדי לתת <b>סיבוב אחד</b> - בלון אחד לכל חברה בכל פעם. שימי לב כמה סיבובים תצטרכי עד שהערמה תתרוקן!</p>
+
+    <div class="bank" id="ex-bank"></div>
+
+    <div class="baskets" id="ex-baskets"></div>
+
+    <div class="round-counter">מספר הסיבובים עד עכשיו: <b id="ex-round">0</b></div>
+
+    <button class="btn" id="ex-deal-btn" onclick="explorationDealRound()">תני סיבוב אחד לכולן 🙌</button>
+
+    <div id="ex-concept" class="hidden">
+      <div class="callout info">
+        <p style="margin:0 0 6px;"><b>גילית את זה! 🎉</b></p>
+        <p style="margin:0;">בכל פעם שנתת סיבוב שלם (בלון אחד לכל חברה), הערמה התרוקנה קצת יותר. כשהערמה נגמרה - <b>מספר הסיבובים שעשית הוא בדיוק מה שכל חברה קיבלה!</b></p>
+      </div>
+
+      <div class="equation">
+        <span class="num total-n">12</span>
+        <span>÷</span>
+        <span class="num groups-n">3</span>
+        <span>=</span>
+        <span class="num answer-n">4</span>
+      </div>
+      <div class="legend">
+        <span style="color:var(--blue);">🔵 כמה יש בסך הכול</span>
+        <span style="color:var(--pink);">🔴 בכמה קבוצות מחלקים</span>
+        <span style="color:var(--green);">🟢 כמה יש בכל קבוצה</span>
+      </div>
+
+      <div class="callout warn">
+        <p style="margin:0 0 6px;"><b>שימו לב - יש שני סוגי חילוק! ⚠️</b></p>
+        <p style="margin:0 0 6px;">🟢 <b>הסוג שבו נתמקד היום:</b> יודעים <u>כמה קבוצות</u> יש (למשל 3 חברות), ומחפשים <u>כמה יהיה בכל קבוצה</u>. בדיוק כמו הבלונים - זו "חלוקה לקבוצות שוות".</p>
+        <p style="margin:0;">🔵 <i>יש גם סוג אחר (לא היום): כשיודעים כמה יש בכל קבוצה, ומחפשים כמה קבוצות אפשר להכין.</i></p>
+      </div>
+
+      <button class="btn" onclick="goTo('practice'); loadProblem(0);">אני מוכנה לתרגל! 💪</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: PRACTICE -->
+  <section id="screen-practice" class="card hidden">
+    <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">שאלה 1 מתוך 30</div>
+
+    <span class="tier-tag" id="tier-tag">שלב 1</span>
+    <p class="problem-text" id="problem-text"></p>
+
+    <div class="bank" id="pr-bank"></div>
+    <div class="baskets" id="pr-baskets"></div>
+    <div class="round-counter hidden" id="pr-round-wrap">סבבי חלוקה: <b id="pr-round">0</b></div>
+
+    <div class="answer-row">
+      <input type="number" inputmode="numeric" id="answer-input" placeholder="?" />
+    </div>
+    <div class="answer-unit-caption">התשובה שלך היא ב<span id="answer-unit-label"></span></div>
+
+    <div class="row">
+      <button class="btn" id="check-btn" onclick="checkAnswer()">בדקי אותי ✔️</button>
+      <button class="btn secondary" id="visual-btn" onclick="playVisual(true)">הראי לי חזותית 👀</button>
+    </div>
+
+    <div id="feedback"></div>
+
+    <button class="btn hidden" id="next-btn" onclick="goNextProblem()">השאלה הבאה ⬅️</button>
+  </section>
+
+  <!-- SCREEN 4: DONE -->
+  <section id="screen-done" class="card hidden">
+    <div class="final-emoji">🏆</div>
+    <h1 style="text-align:center;">כל הכבוד, סיימת!</h1>
+    <p style="text-align:center;">עברת על כל 30 התרגילים של חלוקה לקבוצות שוות.</p>
+    <div class="stat-box">
+      <div class="big" id="done-score">0 / 30</div>
+      <div>נכון בניסיון הראשון</div>
+    </div>
+    <p style="text-align:center;">כל תרגול הוא עוד צעד להבנה טובה יותר. את יכולה לחזור על השאלות שהיו מאתגרות, או לשחק שוב מההתחלה.</p>
+    <button class="btn" onclick="retryMissed()" id="retry-missed-btn">לחזור על השאלות שטעיתי בהן 🔁</button>
+    <button class="btn secondary" onclick="restartAll()">להתחיל הכול מהתחלה 🔄</button>
+  </section>
+
+  <footer>נבנה באהבה לתרגול חילוק לקבוצות שוות 💜</footer>
+</div>
+
+<script>
+/* ---------- problems data ---------- */
+const problems = [
+  {text:"לנועה יש 6 מדבקות בלב. היא רוצה לחלק אותן שווה בשווה בין 2 קופסאות. כמה מדבקות יהיו בכל קופסה?", total:6, groups:2, icon:"💗", groupLabel:"קופסה", unit:"מדבקות"},
+  {text:"למאיה יש 8 סוכריות. היא מחלקת אותן שווה בשווה בין 2 צלחות. כמה סוכריות יהיו בכל צלחת?", total:8, groups:2, icon:"🍬", groupLabel:"צלחת", unit:"סוכריות"},
+  {text:"ליעל יש 9 חרוזים צבעוניים. היא רוצה לחלק אותם שווה בשווה בין 3 חברות, כדי שכל אחת תכין צמיד. כמה חרוזים תקבל כל חברה?", total:9, groups:3, icon:"🔵", groupLabel:"חברה", unit:"חרוזים"},
+  {text:"לשירה יש 10 עפרונות צבעוניים. היא מחלקת אותם שווה בשווה בין 2 קלמרים. כמה עפרונות יהיו בכל קלמר?", total:10, groups:2, icon:"✏️", groupLabel:"קלמר", unit:"עפרונות"},
+  {text:"לתמר יש 12 בלונים ליום ההולדת. היא רוצה לתלות אותם שווה בשווה על 3 קירות. כמה בלונים יהיו על כל קיר?", total:12, groups:3, icon:"🎈", groupLabel:"קיר", unit:"בלונים"},
+  {text:"לאביגיל יש 12 תותים. היא מחלקת אותם שווה בשווה בין 4 צלחות קינוח. כמה תותים יהיו בכל צלחת?", total:12, groups:4, icon:"🍓", groupLabel:"צלחת", unit:"תותים"},
+  {text:"לרוני יש 14 פרחים. היא רוצה לסדר אותם שווה בשווה ב-2 אגרטלים. כמה פרחים יהיו בכל אגרטל?", total:14, groups:2, icon:"🌸", groupLabel:"אגרטל", unit:"פרחים"},
+  {text:"להילה יש 15 קלפי משחק. היא מחלקת אותם שווה בשווה בין 3 חברות למשחק. כמה קלפים תקבל כל חברה?", total:15, groups:3, icon:"🃏", groupLabel:"חברה", unit:"קלפים"},
+  {text:"לעדן יש 16 כפתורים צבעוניים. היא רוצה לחלק אותם שווה בשווה בין 4 שקיות קטנות ליצירה. כמה כפתורים יהיו בכל שקית?", total:16, groups:4, icon:"🔘", groupLabel:"שקית", unit:"כפתורים"},
+  {text:"לליה יש 18 עוגיות שוקולד. היא מחלקת אותן שווה בשווה בין 2 קופסאות מתנה. כמה עוגיות יהיו בכל קופסה?", total:18, groups:2, icon:"🍪", groupLabel:"קופסה", unit:"עוגיות"},
+
+  {text:"לנועה יש 20 מדבקות כוכבים. היא רוצה להדביק אותן שווה בשווה על 4 דפים במחברת. כמה מדבקות יהיו בכל דף?", total:20, groups:4, icon:"⭐", groupLabel:"דף", unit:"מדבקות"},
+  {text:"למאיה יש 21 פנינים. היא מחלקת אותן שווה בשווה בין 3 חברות להכנת שרשראות. כמה פנינים תקבל כל חברה?", total:21, groups:3, icon:"⚪", groupLabel:"חברה", unit:"פנינים"},
+  {text:"ליעל יש 24 גולות. היא רוצה לחלק אותן שווה בשווה בין 4 קופסאות אחסון. כמה גולות יהיו בכל קופסה?", total:24, groups:4, icon:"🔮", groupLabel:"קופסה", unit:"גולות"},
+  {text:"לשירה יש 24 עגילים. היא מחלקת אותם שווה בשווה בין 6 תיבות תכשיטים. כמה עגילים יהיו בכל תיבה?", total:24, groups:6, icon:"💎", groupLabel:"תיבה", unit:"עגילים"},
+  {text:"לתמר יש 25 סרטים לשיער. היא רוצה לחלק אותם שווה בשווה בין 5 מגירות. כמה סרטים יהיו בכל מגירה?", total:25, groups:5, icon:"🎀", groupLabel:"מגירה", unit:"סרטים"},
+  {text:"לאביגיל יש 27 מחברות. היא מחלקת אותן שווה בשווה בין 3 מדפים בספרייה הכיתתית. כמה מחברות יהיו בכל מדף?", total:27, groups:3, icon:"📒", groupLabel:"מדף", unit:"מחברות"},
+  {text:"לרוני יש 28 טושים צבעוניים. היא רוצה לחלק אותם שווה בשווה בין 4 קלמרים לקבוצת העבודה. כמה טושים יהיו בכל קלמר?", total:28, groups:4, icon:"🖊️", groupLabel:"קלמר", unit:"טושים"},
+  {text:"להילה יש 30 קוביות לגו. היא מחלקת אותן שווה בשווה בין 5 חברות לבניית מגדלים. כמה קוביות תקבל כל חברה?", total:30, groups:5, icon:"🧱", groupLabel:"חברה", unit:"קוביות"},
+  {text:"לעדן יש 32 דגלונים קטנים לקישוט. היא רוצה לתלות אותם שווה בשווה על 4 חוטים. כמה דגלונים יהיו בכל חוט?", total:32, groups:4, icon:"🚩", groupLabel:"חוט", unit:"דגלונים"},
+  {text:"לליה יש 35 לבבות נייר. היא מחלקת אותם שווה בשווה בין 5 מעטפות ברכה. כמה לבבות יהיו בכל מעטפה?", total:35, groups:5, icon:"💌", groupLabel:"מעטפה", unit:"לבבות"},
+
+  {text:"לנועה יש 36 מדבקות פרפרים. היא רוצה לחלק אותן שווה בשווה בין 6 חברות בכיתה. כמה מדבקות תקבל כל חברה?", total:36, groups:6, icon:"🦋", groupLabel:"חברה", unit:"מדבקות"},
+  {text:"למאיה יש 40 תפוחים. היא מחלקת אותם שווה בשווה בין 5 צלחות להגשה במסיבת הכיתה. כמה תפוחים יהיו בכל צלחת?", total:40, groups:5, icon:"🍎", groupLabel:"צלחת", unit:"תפוחים"},
+  {text:"ליעל יש 42 כרטיסי ברכה. היא רוצה לחלק אותם שווה בשווה בין 6 קופסאות אריזה. כמה כרטיסים יהיו בכל קופסה?", total:42, groups:6, icon:"🎴", groupLabel:"קופסה", unit:"כרטיסים"},
+  {text:"לשירה יש 45 בלוני מסיבה. היא מחלקת אותם שווה בשווה בין 5 שולחנות באולם. כמה בלונים יהיו על כל שולחן?", total:45, groups:5, icon:"🎈", groupLabel:"שולחן", unit:"בלונים"},
+  {text:"לתמר יש 48 גולות זכוכית. היא רוצה לחלק אותן שווה בשווה בין 6 שקיות מתנה. כמה גולות יהיו בכל שקית?", total:48, groups:6, icon:"🔮", groupLabel:"שקית", unit:"גולות"},
+  {text:"לאביגיל יש 49 קלפי אוסף. היא מחלקת אותם שווה בשווה בין 7 חברות לאוסף. כמה קלפים תקבל כל חברה?", total:49, groups:7, icon:"🃏", groupLabel:"חברה", unit:"קלפים"},
+  {text:"לרוני יש 50 חרוזי זהב. היא רוצה לחלק אותם שווה בשווה בין 5 צמידים שהיא מכינה. כמה חרוזים יהיו בכל צמיד?", total:50, groups:5, icon:"🟡", groupLabel:"צמיד", unit:"חרוזים"},
+  {text:"להילה יש 54 עוגיות קטנות. היא מחלקת אותן שווה בשווה בין 6 צלחות הגשה למסיבה. כמה עוגיות יהיו בכל צלחת?", total:54, groups:6, icon:"🍪", groupLabel:"צלחת", unit:"עוגיות"},
+  {text:"לעדן יש 56 מדבקות נוצצות. היא רוצה לחלק אותן שווה בשווה בין 7 חברות בקייטנה. כמה מדבקות תקבל כל חברה?", total:56, groups:7, icon:"✨", groupLabel:"חברה", unit:"מדבקות"},
+  {text:"לליה יש 60 פרחי נייר צבעוניים. היא מחלקת אותם שווה בשווה בין 6 אגרטלים לקישוט האולם. כמה פרחים יהיו בכל אגרטל?", total:60, groups:6, icon:"🌷", groupLabel:"אגרטל", unit:"פרחים"},
+];
+
+/* ---------- state ---------- */
+const state = {
+  current: 0,
+  results: new Array(problems.length).fill(null), // 'first-try' | 'retry' | null
+  order: problems.map((_, i) => i),
+  reviewMode: false,
+};
+
+function tierOf(idx){
+  if(idx < 10) return "שלב 1 - מתחילות";
+  if(idx < 20) return "שלב 2 - מתקדמות";
+  return "שלב 3 - אלופות";
+}
+
+function goTo(name){
+  document.querySelectorAll('.card').forEach(s => s.classList.add('hidden'));
+  document.getElementById('screen-' + name).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+/* ---------- generic dealing engine ---------- */
+function buildBankAndBaskets(bankEl, basketsEl, problem){
+  bankEl.innerHTML = '';
+  basketsEl.innerHTML = '';
+  const dots = [];
+  for(let i=0;i<problem.total;i++){
+    const d = document.createElement('span');
+    d.className = 'dot';
+    d.textContent = problem.icon;
+    bankEl.appendChild(d);
+    dots.push(d);
+  }
+  const basketRefs = [];
+  for(let g=0; g<problem.groups; g++){
+    const b = document.createElement('div');
+    b.className = 'basket';
+    b.innerHTML = `<div class="basket-label">${problem.groupLabel} ${g+1}</div>
+                   <span class="basket-count">0</span>
+                   <div class="basket-grid"></div>`;
+    basketsEl.appendChild(b);
+    basketRefs.push({
+      root:b,
+      count:b.querySelector('.basket-count'),
+      grid:b.querySelector('.basket-grid'),
+    });
+  }
+  return { dots, basketRefs, nextDotIndex:0, perBasket:new Array(problem.groups).fill(0) };
+}
+
+function dealOneRound(engine, problem){
+  for(let g=0; g<problem.groups; g++){
+    if(engine.nextDotIndex >= engine.dots.length) break;
+    const dot = engine.dots[engine.nextDotIndex];
+    engine.nextDotIndex++;
+    dot.classList.add('leaving');
+    setTimeout(() => dot.remove(), 250);
+    const basket = engine.basketRefs[g];
+    engine.perBasket[g]++;
+    basket.count.textContent = engine.perBasket[g];
+    const newDot = document.createElement('span');
+    newDot.className = 'dot arriving';
+    newDot.textContent = problem.icon;
+    basket.grid.appendChild(newDot);
+  }
+}
+
+/* ---------- exploration screen ---------- */
+const exploreProblem = {total:12, groups:3, icon:"🎈", groupLabel:"חברה"};
+let exEngine = null;
+let exRounds = 0;
+
+function initExploration(){
+  exEngine = buildBankAndBaskets(document.getElementById('ex-bank'), document.getElementById('ex-baskets'), exploreProblem);
+  exRounds = 0;
+  document.getElementById('ex-round').textContent = '0';
+  document.getElementById('ex-deal-btn').disabled = false;
+  document.getElementById('ex-deal-btn').classList.remove('hidden');
+  document.getElementById('ex-concept').classList.add('hidden');
+}
+
+function explorationDealRound(){
+  if(exEngine.nextDotIndex >= exEngine.dots.length) return;
+  dealOneRound(exEngine, exploreProblem);
+  exRounds++;
+  document.getElementById('ex-round').textContent = exRounds;
+  if(exEngine.nextDotIndex >= exEngine.dots.length){
+    document.getElementById('ex-deal-btn').classList.add('hidden');
+    setTimeout(() => document.getElementById('ex-concept').classList.remove('hidden'), 400);
+  }
+}
+
+/* ---------- practice screen ---------- */
+let prEngine = null;
+let prAnimating = false;
+let dealInterval = null;
+
+function updateProgress(){
+  const doneCount = state.order.slice(0, state.current).length;
+  const pct = Math.round((doneCount / state.order.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent =
+    `שאלה ${state.current + 1} מתוך ${state.order.length}`;
+}
+
+function loadProblem(i){
+  if(dealInterval){ clearInterval(dealInterval); dealInterval = null; }
+  prAnimating = false;
+
+  state.current = i;
+  const pIdx = state.order[i];
+  const problem = problems[pIdx];
+
+  document.getElementById('tier-tag').textContent = state.reviewMode ? "חזרה על שאלות מאתגרות" : tierOf(pIdx);
+  document.getElementById('problem-text').textContent = problem.text;
+  document.getElementById('answer-unit-label').textContent = problem.unit;
+  document.getElementById('answer-input').value = '';
+  document.getElementById('answer-input').disabled = false;
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('next-btn').classList.add('hidden');
+  document.getElementById('check-btn').disabled = false;
+  document.getElementById('visual-btn').disabled = false;
+  document.getElementById('pr-round-wrap').classList.add('hidden');
+  document.getElementById('pr-round').textContent = '0';
+
+  prEngine = buildBankAndBaskets(document.getElementById('pr-bank'), document.getElementById('pr-baskets'), problem);
+  updateProgress();
+  document.getElementById('answer-input').focus();
+}
+
+function playVisual(manualClick){
+  if(prAnimating) return;
+  const pIdx = state.order[state.current];
+  const problem = problems[pIdx];
+  if(prEngine.nextDotIndex >= prEngine.dots.length){
+    // already fully dealt - rebuild to replay
+    prEngine = buildBankAndBaskets(document.getElementById('pr-bank'), document.getElementById('pr-baskets'), problem);
+  }
+  const engine = prEngine;
+  document.getElementById('pr-round-wrap').classList.remove('hidden');
+  prAnimating = true;
+  document.getElementById('visual-btn').disabled = true;
+  let round = 0;
+  const totalRounds = problem.total / problem.groups;
+  dealInterval = setInterval(() => {
+    dealOneRound(engine, problem);
+    round++;
+    document.getElementById('pr-round').textContent = round;
+    if(round >= totalRounds){
+      clearInterval(dealInterval);
+      dealInterval = null;
+      prAnimating = false;
+      document.getElementById('visual-btn').disabled = false;
+    }
+  }, 450);
+}
+
+function checkAnswer(){
+  const pIdx = state.order[state.current];
+  const problem = problems[pIdx];
+  const answer = problem.total / problem.groups;
+  const input = document.getElementById('answer-input');
+  const val = parseInt(input.value, 10);
+  const feedback = document.getElementById('feedback');
+
+  if(isNaN(val)){
+    feedback.innerHTML = `<div class="feedback hint">כתבי מספר בתיבה, ואז לחצי שוב על "בדקי אותי" 🙂</div>`;
+    return;
+  }
+
+  if(val === answer){
+    if(state.results[pIdx] === null) state.results[pIdx] = 'first-try';
+    feedback.innerHTML = `<div class="feedback correct">
+        <b>מדויק! 🎉</b><br>
+        ${problem.total} : ${problem.groups} = <span dir="ltr">${answer}</span>.
+        כל ${problem.groupLabel} מקבלת ${answer} ${problem.unit}.
+      </div>`;
+    input.disabled = true;
+    document.getElementById('check-btn').disabled = true;
+    document.getElementById('next-btn').classList.remove('hidden');
+    if(!prAnimating && prEngine.nextDotIndex < prEngine.dots.length){
+      playVisual(false);
+    }
+  } else {
+    if(state.results[pIdx] === null) state.results[pIdx] = 'needs-retry';
+    feedback.innerHTML = `<div class="feedback wrong">
+        עדיין לא מדויק, אבל זה בסדר גמור - ננסה שוב! 💜<br>
+        טיפ: לחצי על "הראי לי חזותית" ותראי איך מחלקים את כל ${problem.total} ה${problem.unit} בסיבובים שווים בין ${problem.groups} ${labelPlural(problem)}.
+      </div>`;
+  }
+}
+
+function labelPlural(problem){
+  // simple heuristic label for feedback text
+  return problem.groupLabel + "ות/ים";
+}
+
+function goNextProblem(){
+  if(state.current + 1 < state.order.length){
+    loadProblem(state.current + 1);
+    goTo('practice');
+  } else {
+    showDone();
+  }
+}
+
+function showDone(){
+  const firstTryCount = problems.filter((_, i) => state.results[i] === 'first-try').length;
+  document.getElementById('done-score').textContent = `${firstTryCount} / ${problems.length}`;
+  const missedCount = problems.filter((_, i) => state.results[i] === 'needs-retry').length;
+  document.getElementById('retry-missed-btn').classList.toggle('hidden', missedCount === 0);
+  goTo('done');
+}
+
+function retryMissed(){
+  const missedIdx = problems.map((_, i) => i).filter(i => state.results[i] === 'needs-retry');
+  if(missedIdx.length === 0){ restartAll(); return; }
+  state.order = missedIdx;
+  state.reviewMode = true;
+  goTo('practice');
+  loadProblem(0);
+}
+
+function restartAll(){
+  state.order = problems.map((_, i) => i);
+  state.results = new Array(problems.length).fill(null);
+  state.reviewMode = false;
+  goTo('practice');
+  loadProblem(0);
+}
+
+document.getElementById('answer-input').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ e.preventDefault(); checkAnswer(); }
+});
+
+/* init */
+initExploration();
+</script>
+</body>
+</html>
