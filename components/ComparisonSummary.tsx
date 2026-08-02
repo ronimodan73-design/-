@@ -22,6 +22,9 @@ const ComparisonSummary: React.FC<Props> = ({ result, onSave, saved }) => {
               המלצה עבור: <span className="text-blue-700">{result.productQuery}</span>
             </h2>
             <p className="text-slate-600 mt-2 leading-relaxed">{result.summary}</p>
+            {result.providerUsed && (
+              <p className="text-xs text-slate-400 mt-2">🤖 נענה על ידי: {result.providerUsed}</p>
+            )}
           </div>
           <button
             onClick={onSave}

@@ -1,29 +1,16 @@
-import { GoogleGenAI } from '@google/genai';
-import type { ComparisonResult, Platform, Source, AdvisorAnswer } from '../types';
+import type { ComparisonResult, Platform, AdvisorAnswer } from '../types';
 import { PLATFORM_INFO } from '../constants';
 import { extractJson } from '../utils/json';
+import { generateWithFallback, hasAnyProvider, NoProviderAvailableError } from './modelRouter';
 
 export class MissingApiKeyError extends Error {
   constructor() {
-    super('GEMINI_API_KEY is not set');
+    super('לא מוגדר אף מפתח API לספקי ה-AI (Codex / Kimi K2 / Gemini)');
     this.name = 'MissingApiKeyError';
   }
 }
 
-let client: GoogleGenAI | null = null;
-
-const getClient = (): GoogleGenAI => {
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    throw new MissingApiKeyError();
-  }
-  if (!client) {
-    client = new GoogleGenAI({ apiKey });
-  }
-  return client;
-};
-
-export const hasApiKey = (): boolean => Boolean(process.env.API_KEY);
+export const hasApiKey = (): boolean => hasAnyProvider();
 
 const buildPrompt = (query: string): string => `
 את/ה עוזר קניות חכם ואמין, מומחה בקניות אונליין מפלטפורמות סיניות (AliExpress, Shein, Temu).
@@ -59,35 +46,18 @@ const buildPrompt = (query: string): string => `
 חשוב: יש לכלול בדיוק שלושה אובייקטים במערך platforms, אחד לכל פלטפורמה (aliexpress, shein, temu).
 `;
 
-const extractSources = (response: any): Source[] => {
-  const chunks = response?.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [];
-  const seen = new Set<string>();
-  const sources: Source[] = [];
-  for (const chunk of chunks) {
-    const uri = chunk?.web?.uri;
-    const title = chunk?.web?.title ?? uri;
-    if (uri && !seen.has(uri)) {
-      seen.add(uri);
-      sources.push({ title, uri });
-    }
-  }
-  return sources;
-};
-
 export const compareProduct = async (query: string): Promise<ComparisonResult> => {
-  const ai = getClient();
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-flash-latest',
-    contents: buildPrompt(query),
-  });
-
-  const text = response.text;
-  if (!text) {
-    throw new Error('לא התקבלה תשובה מהמודל');
+  let routed;
+  try {
+    routed = await generateWithFallback(buildPrompt(query));
+  } catch (err) {
+    if (err instanceof NoProviderAvailableError) {
+      throw new MissingApiKeyError();
+    }
+    throw err;
   }
 
-  const parsed = extractJson(text) as ComparisonResult;
+  const parsed = extractJson(routed.text) as ComparisonResult;
 
   const platformsByKey = new Map(parsed.platforms.map((p) => [p.platform, p]));
   const orderedPlatforms: Platform[] = ['aliexpress', 'shein', 'temu'];
@@ -99,8 +69,9 @@ export const compareProduct = async (query: string): Promise<ComparisonResult> =
       searchUrl: PLATFORM_INFO[p.platform].searchUrlTemplate(query),
     }));
 
-  parsed.sources = extractSources(response);
+  parsed.sources = routed.sources ?? [];
   parsed.productQuery = query;
+  parsed.providerUsed = routed.providerLabel;
 
   return parsed;
 };
@@ -129,17 +100,17 @@ ${financeContext}
 `;
 
 export const askAdvisor = async (question: string, financeContext: string): Promise<AdvisorAnswer> => {
-  const ai = getClient();
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-flash-latest',
-    contents: buildAdvisorPrompt(question, financeContext),
-  });
-
-  const text = response.text;
-  if (!text) {
-    throw new Error('לא התקבלה תשובה מהמודל');
+  let routed;
+  try {
+    routed = await generateWithFallback(buildAdvisorPrompt(question, financeContext));
+  } catch (err) {
+    if (err instanceof NoProviderAvailableError) {
+      throw new MissingApiKeyError();
+    }
+    throw err;
   }
 
-  return extractJson(text) as AdvisorAnswer;
+  const parsed = extractJson(routed.text) as AdvisorAnswer;
+  parsed.providerUsed = routed.providerLabel;
+  return parsed;
 };

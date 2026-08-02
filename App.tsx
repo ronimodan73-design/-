@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ComparisonResult, HistoryItem, FinanceEntry, ShoppingListItem, ReminderItem, AdvisorQA } from './types';
-import { compareProduct, hasApiKey, MissingApiKeyError, askAdvisor } from './services/geminiService';
+import { compareProduct, hasApiKey, MissingApiKeyError, askAdvisor } from './services/aiService';
 import { loadHistory, saveToHistory, removeFromHistory } from './utils/storage';
 import {
   loadFinanceEntries,

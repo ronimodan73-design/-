@@ -26,6 +26,7 @@ export interface ComparisonResult {
   sizeAdviceNote: string;
   platforms: PlatformResult[];
   sources: Source[];
+  providerUsed?: string;
 }
 
 export interface HistoryItem {
@@ -92,6 +93,7 @@ export interface AdvisorAnswer {
   gain: string;
   loss: string;
   tip: string;
+  providerUsed?: string;
 }
 
 export interface AdvisorQA {

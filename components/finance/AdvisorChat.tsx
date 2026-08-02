@@ -83,6 +83,9 @@ const AdvisorChat: React.FC<Props> = ({ history, isLoading, error, onAsk }) => {
                 <p className="bg-red-50 rounded-lg p-2 text-red-600">📉 <b>תפסידי/סיכון:</b> {qa.answer.loss}</p>
               </div>
               <p className="text-sm bg-slate-50 rounded-lg p-2 text-slate-600">💡 <b>עצה:</b> {qa.answer.tip}</p>
+              {qa.answer.providerUsed && (
+                <p className="text-xs text-slate-400">🤖 נענה על ידי: {qa.answer.providerUsed}</p>
+              )}
             </div>
           );
         })}
