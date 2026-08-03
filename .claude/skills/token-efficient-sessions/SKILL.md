@@ -11,6 +11,25 @@ shared, shrinking budget for the whole conversation — treat reads and tool cal
 withdrawals from it, not as free actions. Being frugal early is what lets a session run
 for hours instead of hitting compaction after twenty minutes.
 
+## Match the tool to the task
+
+- Before reaching for a heavyweight workflow — a multi-step skill, a full subagent
+  pipeline, an eval/benchmark loop — check whether the task actually needs it. A skill's
+  instructions are loaded into context the moment it's invoked; if the skill carries a
+  large process (testing, grading, benchmarking, a review loop) but the actual ask is a
+  small, one-off thing, most of that payload gets paid for in tokens and then never used.
+- It's fine, often correct, to do the lightweight version of a task by hand instead of
+  invoking the tool built for its full-scale version — e.g., drafting a single file
+  directly instead of running an entire iterate-and-benchmark pipeline meant for a skill
+  that will be reused and refined many times. Save the heavy path for when the task's
+  scope actually matches it.
+- The same applies to subagents: spawning one to protect context only pays off when the
+  work it's doing (broad search, a big log, a large file survey) would otherwise dump a
+  lot of noise into the main conversation. A subagent for a task you could answer directly
+  in one or two tool calls adds overhead instead of saving it.
+- If partway into a heavier workflow it becomes clear the task doesn't need the rest of
+  it, stop there rather than finishing the remaining steps for their own sake.
+
 ## Before reading anything
 
 - Search before you read. Use Grep/Glob to find the right lines or files first; only
