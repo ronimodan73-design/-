@@ -30,6 +30,22 @@ for hours instead of hitting compaction after twenty minutes.
 - If partway into a heavier workflow it becomes clear the task doesn't need the rest of
   it, stop there rather than finishing the remaining steps for their own sake.
 
+## Multiple options for a large deliverable
+
+- When asked for several "options" or variants of something large — a worksheet, a
+  formatted document, a design — don't build the full deliverable for every option. That
+  multiplies the cost by the number of options, and most of them get discarded once the
+  user picks one.
+- Describe each option briefly first (a sentence or two on what's different, or a short
+  outline of the changed part) and let the user choose before producing the full,
+  formatted version of the one they actually want.
+- If the options only differ in one part of a large document (one section, one exercise,
+  one page), describe just that part's difference rather than re-describing or
+  regenerating the whole document for each option.
+- This matters most for outputs that are expensive to render — a styled docx/PDF, a
+  designed page — where a plain-text sketch of each option is nearly as useful for
+  deciding, at a fraction of the cost of a full render.
+
 ## Before reading anything
 
 - Search before you read. Use Grep/Glob to find the right lines or files first; only
