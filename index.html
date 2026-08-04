@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>אני מבינה פונקציות! 🧠</title>
+<title>פונקציות עם רוני מודן 🧠</title>
+<meta name="theme-color" content="#4F46E5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="רוני - פונקציות">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" id="favicon-link">
+<link rel="apple-touch-icon" id="apple-icon-link">
+<link rel="manifest" id="manifest-link">
 <style>
   :root{
     --bg:#F7F5FF;
@@ -205,8 +212,8 @@
   <div class="wrap">
     <div class="row">
       <div>
-        <h1>🧠 אני מבינה פונקציות!</h1>
-        <p>מסע לימוד אישי - מהתחלה, בקצב שלך</p>
+        <h1>🧠 הפונקציות של רוני מודן</h1>
+        <p>המסע האישי שלך להבנת פונקציות - מהתחלה, בקצב שלך</p>
       </div>
       <div class="header-actions">
         <button class="icon-btn hide-in-focus" id="btn-glossary">📖 מילון</button>
@@ -220,7 +227,17 @@
 
 <main class="wrap" id="content"></main>
 
-<footer class="appfoot">נבנה במיוחד בשבילך 💜 אין לחץ, אין שעון עצר - רק את/ה וההבנה שלך.</footer>
+<footer class="appfoot">נבנתה במיוחד בשביל רוני מודן 💜 אין לחץ, אין שעון עצר - רק את/ה וההבנה שלך.</footer>
+
+<!-- welcome overlay -->
+<div class="overlay" id="welcome-overlay">
+  <div class="modal" style="text-align:center;">
+    <h2>👋 היי רוני מודן!</h2>
+    <p>זו האפליקציה האישית שלך ללימוד פונקציות - מההתחלה המוחלטת ועד לשליטה מלאה בתרגילי הבגרות.</p>
+    <p class="muted">בלי שעון עצר, בלי לחץ. אפשר לסגור בכל רגע ולחזור בדיוק לאיפה שהפסקת.</p>
+    <button class="next-btn" id="welcome-start">בואי נתחיל 💜</button>
+  </div>
+</div>
 
 <!-- glossary drawer -->
 <div class="overlay" id="glossary-overlay">
@@ -1217,6 +1234,182 @@ MODULES.push({
   }
 });
 
+/* ---- Module 7: חקר פונקציה - רמת 4 יח"ל ---- */
+MODULES.push({
+  id:7, emoji:'🔬', title:'חקר פונקציה - רמת 4 יח"ל', short:'חקר (4 יח"ל)',
+  render(container){
+    container.innerHTML = `
+      <div class="card hook-card">
+        <span class="badge hook">🎬 מה זה בכלל "חקר פונקציה"?</span>
+        <p>בבחינת הבגרות שואלים לפעמים שאלה אחת גדולה שמורכבת מהרבה שאלות קטנות על אותה פונקציה: קודם למצוא את המשוואה שלה, ואז "לחקור" אותה - כלומר לענות בסדר קבוע על כמה שאלות עליה. את כבר יודעת לענות על כל אחת מהן בנפרד - עכשיו נלמד להרכיב אותן יחד, לפי סדר קבוע, בדיוק כמו במבחן.</p>
+      </div>
+
+      <div class="card concept-card">
+        <span class="badge concept">🏷️ רשימת הבדיקה הקבועה (שמרי אותה בראש!)</span>
+        <ul class="intro-list">
+          <li><b>תחום הגדרה</b> - לאילו x מותר להציב (בפולינום - כמעט תמיד כל x).</li>
+          <li><b>חיתוך עם ציר y</b> - מציבים x=0.</li>
+          <li><b>חיתוך עם ציר x (שורשים)</b> - משווים ל-0 ופותרים.</li>
+          <li><b>קודקוד / ציר סימטריה</b> - h הוא ממוצע שני השורשים (אם יש שניים).</li>
+          <li><b>תחומי עלייה/ירידה</b> - לפי מיקום הקודקוד וכיוון הפתיחה (a).</li>
+          <li><b>תחומי חיוב/שלילה</b> - לפי מיקום השורשים וכיוון הפתיחה.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">✍️ שלב 1: כתיבת משוואה - מקודקוד ונקודה</span>
+        <p class="muted">נתון: קודקוד <span class="ltr">(1,-4)</span>, והפונקציה עוברת גם דרך הנקודה <span class="ltr">(3,0)</span>. נציב בצורת קודקוד: <span class="ltr">f(x)=a(x-1)²-4</span>.</p>
+        <div id="m7-eq1"></div>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">✍️ שלב 2: כתיבת משוואה - משני שורשים ונקודה</span>
+        <p class="muted">נתון: הפונקציה חותכת את ציר ה-x ב-<span class="ltr">x=-2</span> וב-<span class="ltr">x=4</span>, ועוברת גם דרך <span class="ltr">(0,-16)</span>.</p>
+        <div id="m7-eq2"></div>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔬 שלב 3: חקירה מלאה, לפי הרשימה</span>
+        <p class="muted">הפעם נחקור יחד את <span class="ltr">f(x) = x² - 2x - 8</span> - סעיף אחר סעיף, בדיוק כמו במבחן.</p>
+        <div class="graph-box">
+          <canvas id="m7-canvas" width="300" height="300"></canvas>
+        </div>
+        <div id="m7-inv"></div>
+      </div>
+
+      ${thinkBox([
+        'תמיד עוברים על הרשימה לפי הסדר - זה מונע לשכוח סעיף.',
+        'כל סעיף בחקירה משתמש בכלי שכבר הכרת מהשלבים הקודמים במסע.',
+        'לבסוף כדאי לשרטט סקיצה מהירה - היא עוזרת לבדוק שהתשובות הגיוניות ביחד.'
+      ])}
+
+      <div class="card" id="m7-practice" style="display:none;">
+        <span class="badge practice">🎯 עכשיו בעצמך - <span class="ltr">g(x) = -x² + 2x + 3</span></span>
+        <p class="muted">בלי הדרכה שלב-שלב הפעם - את/ה כבר יודעת לחקור פונקציה לבד.</p>
+        <div id="m7-practice-qs"></div>
+      </div>
+      <div class="next-wrap" id="m7-next-wrap"></div>
+    `;
+
+    const gc = new Graph($('#m7-canvas'), {xMin:-6,xMax:8,yMin:-10,yMax:6});
+    gc.clear(); gc.drawGrid();
+    gc.plotFn(x=> x*x-2*x-8, '#4F46E5');
+    gc.point(-2,0,'#0F9D6C',5); gc.point(4,0,'#0F9D6C',5); gc.point(1,-9,'#EF4444',5,'קודקוד');
+
+    function simpleInput(id, accepted, right, wrong, onSolved){
+      const inp = $('#'+id+'-in'), btn = $('#'+id+'-check'), fb = $('#'+id+'-fb');
+      btn.addEventListener('click', ()=>{
+        if(checkNumeric(inp.value, accepted)){
+          fb.className='qfeedback show good'; fb.innerHTML='✅ '+right;
+          inp.disabled=true; btn.disabled=true;
+          STORE.solved[id]=true; saveState(); onSolved();
+        } else {
+          fb.className='qfeedback show bad'; fb.innerHTML='🤔 '+wrong+'<span class="again">נסה/י שוב</span>';
+          fb.querySelector('.again').addEventListener('click',()=>fb.classList.remove('show'));
+        }
+      });
+    }
+    function simpleMC(id, correctIndex, right, wrong, onSolved){
+      const card = $('#'+id); const fb = $('#'+id+'-fb');
+      $all('.opt-btn',card).forEach((b,i)=>{
+        b.addEventListener('click',()=>{
+          $all('.opt-btn',card).forEach(x=>x.disabled=true);
+          if(i===correctIndex){
+            b.classList.add('correct'); fb.className='qfeedback show good'; fb.innerHTML='✅ '+right;
+            STORE.solved[id]=true; saveState(); onSolved();
+          } else {
+            b.classList.add('wrong'); fb.className='qfeedback show bad';
+            fb.innerHTML='🤔 '+wrong+'<span class="again">נסה/י שוב</span>';
+            fb.querySelector('.again').addEventListener('click',()=>{fb.classList.remove('show'); $all('.opt-btn',card).forEach(x=>{x.disabled=false;x.classList.remove('correct','wrong');});});
+          }
+        });
+      });
+    }
+    function inputCard(id,text){
+      return `<div class="qcard" id="${id}"><div class="qtext">${text}</div>
+        <div class="qinput-row"><input type="text" id="${id}-in"><button class="check-btn" id="${id}-check">בדוק/י</button></div>
+        <div class="qfeedback" id="${id}-fb"></div></div>`;
+    }
+    function mcCard(id,text,options){
+      return `<div class="qcard" id="${id}"><div class="qtext">${text}</div>
+        <div class="qoptions">${options.map((o,i)=>`<button class="opt-btn" data-i="${i}">${o}</button>`).join('')}</div>
+        <div class="qfeedback" id="${id}-fb"></div></div>`;
+    }
+
+    /* ---- eq1: vertex + point ---- */
+    $('#m7-eq1').innerHTML =
+      inputCard('eq1-0','הציבו את הנקודה (3,0) בנוסחה a(x-1)²-4 ופתרו: מה שווה a?') +
+      mcCard('eq1-1','אם כך, מהי משוואת הפונקציה המלאה?', ['f(x)=(x-1)²-4','f(x)=2(x-1)²-4','f(x)=(x+1)²-4','f(x)=(x-1)²+4']);
+    let eq1Done = 0;
+    function eq1Solved(){ eq1Done++; if(eq1Done>=2) checkAllGuided(); }
+    simpleInput('eq1-0',[1],'0=a(3-1)²-4 &rarr; 0=4a-4 &rarr; a=1.','הציבו x=3,y=0: 0 = a·(3-1)² - 4.', eq1Solved);
+    simpleMC('eq1-1',0,'עם a=1 מקבלים בדיוק f(x)=(x-1)²-4.','חזרו לצורה a(x-1)²-4 עם a שמצאתן.', eq1Solved);
+
+    /* ---- eq2: two roots + point ---- */
+    $('#m7-eq2').innerHTML =
+      mcCard('eq2-0','לפי השורשים -2 ו-4, הצורה הכללית של הפונקציה היא:', ['f(x)=a(x+2)(x-4)','f(x)=a(x-2)(x+4)','f(x)=a(x-2)(x-4)']) +
+      inputCard('eq2-1','הציבו את הנקודה (0,-16) בצורה a(x+2)(x-4) ומצאו את a.') +
+      mcCard('eq2-2','מהי משוואת הפונקציה בצורה מורחבת?', ['f(x)=2x²-4x-16','f(x)=x²-2x-8','f(x)=2x²+4x-16','f(x)=2x²-4x+16']);
+    let eq2Done = 0;
+    function eq2Solved(){ eq2Done++; if(eq2Done>=3) checkAllGuided(); }
+    simpleMC('eq2-0',0,'שורשים -2 ו-4 נותנים גורמים (x+2) ו-(x-4).','אם השורש הוא -2, הגורם הוא (x-(-2))=(x+2). אם השורש 4, הגורם (x-4).', eq2Solved);
+    simpleInput('eq2-1',[2],'-16 = a·2·(-4) = -8a &rarr; a=2.','הציבו x=0,y=-16: -16 = a(0+2)(0-4).', eq2Solved);
+    simpleMC('eq2-2',0,'2(x+2)(x-4) = 2(x²-2x-8) = 2x²-4x-16.','פתחו סוגריים: 2·(x+2)(x-4), ואז הכפילו הכל ב-2.', eq2Solved);
+
+    /* ---- investigation ---- */
+    $('#m7-inv').innerHTML =
+      mcCard('inv-0','א. תחום ההגדרה של f(x)=x²-2x-8 הוא:', ['כל x (כל הממשיים)','x≠0','x>0 בלבד']) +
+      inputCard('inv-1','ב. חיתוך עם ציר y: מה f(0)?') +
+      inputCard('inv-2','ג. השורש הקטן של f(x)?') +
+      inputCard('inv-3','ד. השורש הגדול?') +
+      inputCard('inv-4','ה. ציר הסימטריה (ממוצע שני השורשים)?') +
+      inputCard('inv-5','ו. ערך הקודקוד (הציבו את ה-x שמצאתן חזרה ב-f)?') +
+      mcCard('inv-6','ז. תחום העלייה:', ['x>1','x<1','כל x']) +
+      mcCard('inv-7','ח. תחום החיוביות (f(x)>0):', ['x<-2 או x>4','-2<x<4','x>1 בלבד']);
+    let invDone = 0; const invTotal = 8;
+    function invSolved(){ invDone++; if(invDone>=invTotal) checkAllGuided(); }
+    simpleMC('inv-0',0,'פולינום מוגדר לכל x, ללא יוצא מן הכלל.','אין כאן שבר או שורש שמגביל - זה פולינום רגיל.', invSolved);
+    simpleInput('inv-1',[-8],'f(0)=0-0-8=-8.','הציבו x=0 בנוסחה x²-2x-8.', invSolved);
+    simpleInput('inv-2',[-2],'x²-2x-8=(x-4)(x+2)=0 &rarr; x=4 או x=-2.','פרקו לגורמים: מי שני מספרים שמכפלתם -8 וסכומם -2?', invSolved);
+    simpleInput('inv-3',[4],'השורש השני הוא 4.','אחרי -2, מה השורש הגדול?', invSolved);
+    simpleInput('inv-4',[1],'(-2+4)/2 = 1.','ציר הסימטריה תמיד באמצע, בין שני השורשים.', invSolved);
+    simpleInput('inv-5',[-9],'f(1)=1-2-8=-9.','הציבו x=1 בנוסחה x²-2x-8.', invSolved);
+    simpleMC('inv-6',0,'a=1 חיובי (פותח למעלה) - אחרי הקודקוד x=1 הפונקציה עולה.','זכרי מהשלב על הפרבולה: אחרי הקודקוד, "מחייכת" עולה.', invSolved);
+    simpleMC('inv-7',0,'a חיובי, אז מחוץ לשורשים (משני הצדדים) הפונקציה מעל הציר.','הסתכלי בגרף: מחוץ לנקודות הירוקות הגרף מעל או מתחת לציר?', invSolved);
+
+    function checkAllGuided(){
+      if(eq1Done>=2 && eq2Done>=3 && invDone>=invTotal){
+        $('#m7-practice').style.display = '';
+        if(!$('#m7-practice-qs').dataset.rendered){
+          $('#m7-practice-qs').dataset.rendered = '1';
+          const questions = [
+            { type:'input', text:'מה ערך החיתוך עם ציר y של <span class="ltr">g(x)=-x²+2x+3</span>?', accepted:[3],
+              explainRight:'g(0)=0+0+3=3.', explainWrong:'הציבו x=0 בנוסחה.' },
+            { type:'input', text:'מה השורש הקטן של <span class="ltr">g(x)</span>?', accepted:[-1],
+              explainRight:'-x²+2x+3=0 &rarr; x²-2x-3=0 &rarr; (x-3)(x+1)=0 &rarr; x=-1 או x=3.',
+              explainWrong:'הפכו סימנים כדי לפשט: -x²+2x+3=0 שקול ל-x²-2x-3=0.' },
+            { type:'input', text:'ומה השורש הגדול?', accepted:[3],
+              explainRight:'השורש השני הוא 3.', explainWrong:'אחרי -1, מהו השורש הגדול?' },
+            { type:'input', text:'מהו ציר הסימטריה של g(x)?', accepted:[1],
+              explainRight:'(-1+3)/2=1.', explainWrong:'ציר הסימטריה הוא ממוצע שני השורשים.' },
+            { type:'mc', text:'לאילו x הפונקציה g(x) חיובית?', correctIndex:0,
+              options:['-1<x<3','x<-1 או x>3','x>1 בלבד','לעולם לא'],
+              explainRight:'a שלילי (פותח למטה) - חיובית בין השורשים.',
+              explainWrong:'הפרבולה הזו "עצובה" (a<0) - היא מעל הציר בין שני השורשים.' },
+            { type:'mc', text:'תחום העלייה של g(x) הוא:', correctIndex:0,
+              options:['x<1','x>1','כל x','אין תחום עלייה'],
+              explainRight:'a שלילי - עולה עד הקודקוד ב-x=1, ואז יורדת.',
+              explainWrong:'בפרבולה "עצובה", העלייה היא לפני הקודקוד.' },
+          ];
+          renderPracticeSection(questions, 7, $('#m7-practice-qs'), ()=> completeModule(7, true));
+        }
+      }
+    }
+    checkAllGuided();
+    renderNextButton(7);
+  }
+});
+
 /* ============ navigation / completion / boot ============ */
 function renderNextButton(moduleId){
   const wrap = $(`#m${moduleId}-next-wrap`);
@@ -1259,11 +1452,42 @@ function goToModule(id){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+/* ============ app-like branding: icon + installable manifest ============ */
+(function setupAppIcon(){
+  const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" rx="22" fill="#4F46E5"/>
+    <text x="50" y="68" font-size="54" text-anchor="middle">🧠</text>
+  </svg>`;
+  const iconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(iconSvg);
+  $('#favicon-link').href = iconUrl;
+  $('#apple-icon-link').href = iconUrl;
+  const manifest = {
+    name: 'פונקציות עם רוני מודן',
+    short_name: 'רוני - פונקציות',
+    display: 'standalone',
+    background_color: '#F7F5FF',
+    theme_color: '#4F46E5',
+    icons: [
+      { src: iconUrl, sizes: '192x192', type: 'image/svg+xml' },
+      { src: iconUrl, sizes: '512x512', type: 'image/svg+xml' }
+    ]
+  };
+  try{
+    const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+    $('#manifest-link').href = URL.createObjectURL(blob);
+  }catch(e){ /* manifest is a nice-to-have; app works fine without it */ }
+})();
+
 /* boot: intro screen if first time, else resume last module */
 function boot(){
   renderTrail();
   goToModule(STORE.currentModule);
+  if(!STORE.welcomed){ openOverlay('welcome-overlay'); }
 }
+$('#welcome-start').addEventListener('click', ()=>{
+  STORE.welcomed = true; saveState();
+  closeOverlay('welcome-overlay');
+});
 boot();
 </script>
 </body>
