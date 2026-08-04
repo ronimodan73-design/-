@@ -1,26 +1,1270 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>קניה חכמה - השוואת מחירים באליאקספרס, שיין וטמו</title>
-  <meta name="description" content="אפליקציה להשוואת מחירים, איכות ודירוגים בין AliExpress, Shein ו-Temu, עם המרת מידות והמלצות מתי כדאי לקנות.">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon-192.png">
-  <link rel="apple-touch-icon" href="icon-152.png">
-  <meta name="theme-color" content="#1d4ed8">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>אני מבינה פונקציות! 🧠</title>
+<style>
+  :root{
+    --bg:#F7F5FF;
+    --card:#FFFFFF;
+    --ink:#232336;
+    --sub:#6B6B85;
+    --primary:#4F46E5;
+    --primary-dark:#3730A3;
+    --primary-light:#E0E7FF;
+    --good:#0F9D6C;
+    --good-bg:#E6F8F1;
+    --warn:#B45309;
+    --warn-bg:#FEF3E2;
+    --line:#E7E5F5;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Segoe UI', Arial, sans-serif;
+    line-height:1.55;
+    padding-bottom:60px;
+  }
+  span.num, .ltr{ direction:ltr; unicode-bidi:isolate; font-weight:600; }
+  h1,h2,h3{ margin:0 0 8px; }
+  button{ font-family:inherit; cursor:pointer; }
+  .wrap{ max-width:780px; margin:0 auto; padding:0 14px; }
+
+  /* header */
+  header.top{
+    background:linear-gradient(135deg,var(--primary),#7C6EF2);
+    color:#fff;
+    padding:18px 0 14px;
+    position:sticky; top:0; z-index:20;
+    box-shadow:0 2px 10px rgba(79,70,229,.25);
+  }
+  header.top .row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  header.top h1{ font-size:1.25rem; }
+  header.top p{ margin:2px 0 0; font-size:.82rem; opacity:.9; }
+  .icon-btn{
+    background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35);
+    color:#fff; border-radius:12px; padding:8px 10px; font-size:.8rem;
+    white-space:nowrap;
+  }
+  .icon-btn:active{ transform:scale(.96); }
+  .header-actions{ display:flex; gap:6px; }
+
+  /* trail nav */
+  nav.trail{
+    display:flex; gap:8px; overflow-x:auto; padding:12px 0 2px; margin-top:10px;
+    scrollbar-width:thin;
+  }
+  nav.trail::-webkit-scrollbar{ height:6px; }
+  nav.trail::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.4); border-radius:6px; }
+  .trail-node{
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px;
+    background:rgba(255,255,255,.12); border:2px solid rgba(255,255,255,.3);
+    border-radius:14px; padding:8px 10px; min-width:64px;
+    color:#fff; font-size:.68rem; text-align:center;
+  }
+  .trail-node.active{ background:#fff; color:var(--primary-dark); border-color:#fff; font-weight:700; }
+  .trail-node.done{ border-color:#B8F3D6; }
+  .trail-node .em{ font-size:1.3rem; }
+
+  main{ padding-top:16px; }
+
+  .card{
+    background:var(--card); border-radius:var(--radius); padding:18px;
+    box-shadow:0 1px 3px rgba(30,20,80,.06); margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+  .hook-card{ background:linear-gradient(135deg,#FFF7E8,#FFEFD6); border-color:#FBDFA6; }
+  .concept-card{ background:linear-gradient(135deg,#EEF0FF,#E4E9FF); border-color:#C9D0FA; }
+  .misconception-card{ background:var(--warn-bg); border-color:#F5D6A6; }
+  .badge{
+    display:inline-block; font-size:.7rem; font-weight:800; letter-spacing:.02em;
+    padding:3px 10px; border-radius:999px; margin-bottom:8px;
+  }
+  .badge.hook{ background:#FBDFA6; color:#7A4B00; }
+  .badge.explore{ background:#C9D0FA; color:var(--primary-dark); }
+  .badge.concept{ background:#C7EFDD; color:#0B6B4B; }
+  .badge.practice{ background:#F9D6E4; color:#9B1B57; }
+  .badge.misconception{ background:#F5D6A6; color:#7A4B00; }
+
+  p{ margin:.4em 0; }
+  .muted{ color:var(--sub); font-size:.88rem; }
+
+  /* graph */
+  .graph-box{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  canvas{ max-width:100%; touch-action:none; background:#fff; border-radius:12px; }
+  .slider-row{ width:100%; max-width:360px; margin:6px 0; }
+  .slider-row label{ font-size:.85rem; display:flex; justify-content:space-between; }
+  .slider-row input[type=range]{ width:100%; accent-color:var(--primary); }
+  .sliders{ display:flex; flex-direction:column; gap:2px; width:100%; align-items:center; }
+  .live-readout{
+    background:var(--primary-light); border-radius:10px; padding:8px 14px;
+    font-weight:700; text-align:center; font-size:1rem; color:var(--primary-dark);
+  }
+
+  /* table */
+  table.func-table{ border-collapse:collapse; margin:10px auto; }
+  table.func-table th, table.func-table td{
+    border:1px solid var(--line); padding:6px 14px; text-align:center; font-size:.95rem;
+  }
+  table.func-table th{ background:var(--primary-light); }
+
+  /* thinking box */
+  details.think{
+    background:#F4FBFF; border:1px solid #C6E7F5; border-radius:14px; padding:10px 14px; margin:12px 0;
+  }
+  details.think summary{ cursor:pointer; font-weight:700; color:#0B6B93; }
+  details.think ol{ margin:8px 0 2px; padding-inline-start:20px; font-size:.9rem; }
+
+  /* questions */
+  .qcard{ border:1px solid var(--line); border-radius:14px; padding:14px; margin:12px 0; background:#FCFCFF; }
+  .qtext{ font-weight:600; margin-bottom:10px; }
+  .qoptions{ display:flex; flex-direction:column; gap:8px; }
+  .opt-btn{
+    text-align:right; background:#fff; border:2px solid var(--line); border-radius:12px;
+    padding:10px 14px; font-size:.95rem; transition:.15s;
+  }
+  .opt-btn:hover{ border-color:var(--primary); }
+  .opt-btn.correct{ background:var(--good-bg); border-color:var(--good); }
+  .opt-btn.wrong{ background:var(--warn-bg); border-color:var(--warn); }
+  .opt-btn:disabled{ opacity:.55; }
+  .qinput-row{ display:flex; gap:8px; }
+  .qinput-row input{
+    flex:1; padding:10px 12px; border-radius:12px; border:2px solid var(--line); font-size:1rem;
+    direction:ltr; text-align:center;
+  }
+  .qinput-row input:focus{ outline:none; border-color:var(--primary); }
+  .check-btn{
+    background:var(--primary); color:#fff; border:none; border-radius:12px; padding:10px 18px; font-weight:700;
+  }
+  .check-btn:active{ transform:scale(.97); }
+  .qfeedback{ margin-top:10px; padding:10px 12px; border-radius:10px; font-size:.9rem; display:none; }
+  .qfeedback.show{ display:block; }
+  .qfeedback.good{ background:var(--good-bg); color:#0B6B4B; }
+  .qfeedback.bad{ background:var(--warn-bg); color:#7A4B00; }
+  .qfeedback .again{ display:block; margin-top:6px; font-weight:700; cursor:pointer; color:var(--primary); }
+
+  .tf-row{ display:flex; gap:10px; }
+  .tf-row .opt-btn{ flex:1; text-align:center; }
+
+  .next-wrap{ text-align:center; margin-top:18px; }
+  .next-btn{
+    background:var(--primary); color:#fff; border:none; border-radius:14px; padding:14px 26px;
+    font-size:1rem; font-weight:700; box-shadow:0 3px 10px rgba(79,70,229,.3);
+  }
+  .next-btn:disabled{ background:#C7C7DA; box-shadow:none; }
+  .locked-note{ font-size:.8rem; color:var(--sub); margin-top:8px; }
+
+  .celebrate{
+    text-align:center; background:var(--good-bg); border:2px dashed var(--good);
+    border-radius:16px; padding:16px; margin:14px 0; font-weight:700; color:#0B6B4B;
+  }
+
+  /* modal / drawer */
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,15,50,.45); display:none;
+    align-items:center; justify-content:center; z-index:100; padding:16px;
+  }
+  .overlay.show{ display:flex; }
+  .modal{
+    background:#fff; border-radius:20px; padding:22px; max-width:420px; width:100%;
+    max-height:85vh; overflow-y:auto;
+  }
+  .modal h2{ color:var(--primary-dark); }
+  .close-x{ float:left; background:none; border:none; font-size:1.3rem; color:var(--sub); }
+  .glossary-item{ border-bottom:1px solid var(--line); padding:10px 0; }
+  .glossary-item b{ color:var(--primary-dark); }
+
+  .breath-circle{
+    width:120px; height:120px; border-radius:50%; margin:16px auto;
+    background:radial-gradient(circle at 35% 30%, #A5B4FC, var(--primary));
+    animation:breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe{ 0%,100%{ transform:scale(.7);} 50%{ transform:scale(1);} }
+
+  footer.appfoot{ text-align:center; color:var(--sub); font-size:.78rem; padding:26px 14px 10px; }
+
+  body.focus header.top .header-actions .hide-in-focus{ display:none; }
+  body.focus footer.appfoot{ display:none; }
+
+  .intro-list{ padding-inline-start:20px; }
+  .intro-list li{ margin-bottom:8px; }
+
+  @media (max-width:420px){
+    header.top h1{ font-size:1.05rem; }
+    .card{ padding:14px; }
+  }
+</style>
 </head>
 <body>
-  <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+
+<header class="top">
+  <div class="wrap">
+    <div class="row">
+      <div>
+        <h1>🧠 אני מבינה פונקציות!</h1>
+        <p>מסע לימוד אישי - מהתחלה, בקצב שלך</p>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn hide-in-focus" id="btn-glossary">📖 מילון</button>
+        <button class="icon-btn hide-in-focus" id="btn-break">🌿 הפסקה</button>
+        <button class="icon-btn" id="btn-focus">🎯 ריכוז</button>
+      </div>
+    </div>
+    <nav class="trail" id="trail"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="content"></main>
+
+<footer class="appfoot">נבנה במיוחד בשבילך 💜 אין לחץ, אין שעון עצר - רק את/ה וההבנה שלך.</footer>
+
+<!-- glossary drawer -->
+<div class="overlay" id="glossary-overlay">
+  <div class="modal">
+    <button class="close-x" data-close="glossary-overlay">✕</button>
+    <h2>📖 מילון המושגים שלי</h2>
+    <p class="muted">כל מושג שפוגשים במסע נשמר כאן, כדי שלא תצטרך/י לזכור הכל בראש.</p>
+    <div id="glossary-list"></div>
+  </div>
+</div>
+
+<!-- break modal -->
+<div class="overlay" id="break-overlay">
+  <div class="modal" style="text-align:center;">
+    <button class="close-x" data-close="break-overlay">✕</button>
+    <h2>🌿 רגע לנשום</h2>
+    <p>שבו/י בנוחות. שאפו אוויר לאט כשהעיגול גדל, נשפו כשהוא מתכווץ.</p>
+    <div class="breath-circle"></div>
+    <p class="muted" id="break-timer">30 שניות של מנוחה...</p>
+    <button class="next-btn" data-close="break-overlay">אני מוכנה/ן להמשיך 💪</button>
+  </div>
+</div>
+
+<script>
+/* ============ utilities ============ */
+const $ = (s, r=document)=>r.querySelector(s);
+const $all = (s, r=document)=>[...r.querySelectorAll(s)];
+function fmt(n){
+  if (n === null || n === undefined || !isFinite(n)) return '-';
+  const r = Math.round(n*100)/100;
+  return (Math.abs(r-Math.round(r))<1e-9) ? String(Math.round(r)) : String(r);
+}
+function closeOverlay(id){ $('#'+id).classList.remove('show'); }
+function openOverlay(id){ $('#'+id).classList.add('show'); }
+$all('[data-close]').forEach(b=> b.addEventListener('click', ()=> closeOverlay(b.dataset.close)));
+
+/* ============ persistent state ============ */
+const LS_KEY = 'funcApp_v1';
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; }
+}
+const STORE = loadState();
+STORE.solved = STORE.solved || {};      // {"0-0": true, ...}
+STORE.completed = STORE.completed || {}; // {"0": true, ...}
+STORE.currentModule = STORE.currentModule ?? 0;
+STORE.glossary = STORE.glossary || [];   // ordered list of term ids unlocked
+function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(STORE)); }
+
+/* ============ glossary data ============ */
+const GLOSSARY = {
+  func: {t:'פונקציה', d:'חוק התאמה שלכל קלט (x) נותן פלט (y) אחד ויחיד ומדויק.'},
+  domain: {t:'תחום (Domain)', d:'כל ערכי ה-x שמותר להציב בפונקציה.'},
+  range: {t:'טווח (Range)', d:'כל ערכי ה-y שהפונקציה יכולה לתת בפועל.'},
+  fx: {t:'f(x)', d:'"תוצאת המכונה f כשמכניסים לה את x" - זו פשוט צורת כתיבה לערך של y.'},
+  slope: {t:'שיפוע (m)', d:'כמה הישר "מטפס" - כמה y משתנה עבור כל צעד אחד ב-x. חיובי=עולה, שלילי=יורד.'},
+  yint: {t:'נקודת חיתוך עם ציר y', d:'הנקודה שבה הגרף חוצה את ציר ה-y, כלומר כאשר x=0.'},
+  vertex: {t:'קודקוד הפרבולה', d:'הנקודה הכי גבוהה (או הכי נמוכה) בפרבולה - שם היא "מחליפה כיוון".'},
+  axis: {t:'ציר סימטריה', d:'קו אנכי דמיוני שעובר דרך הקודקוד ומחלק את הפרבולה לשני חצאים זהים כמו במראה.'},
+  roots: {t:'שורשים / אפסים', d:'ערכי ה-x שבהם הגרף חותך את ציר ה-x, כלומר f(x)=0.'},
+  incdec: {t:'עלייה / ירידה', d:'עולה = כש-x גדל, גם y גדל. יורדת = כש-x גדל, y קטן.'},
+  possign: {t:'חיוביות / שליליות', d:'חיובית = הגרף מעל ציר ה-x (y>0). שלילית = הגרף מתחת לציר ה-x (y<0).'},
+  intersect: {t:'נקודת חיתוך בין גרפים', d:'נקודה שבה לשני הגרפים יש בדיוק אותו x ואותו y - שם שתי הפונקציות "שוות".'},
+};
+function unlockTerms(ids){
+  ids.forEach(id=>{ if(!STORE.glossary.includes(id)) STORE.glossary.push(id); });
+  saveState();
+}
+function renderGlossary(){
+  const list = $('#glossary-list');
+  if(STORE.glossary.length===0){
+    list.innerHTML = '<p class="muted">עוד לא פגשת מושגים - הם יופיעו כאן ככל שתתקדם/י במסע.</p>';
+    return;
+  }
+  list.innerHTML = STORE.glossary.map(id=>{
+    const g = GLOSSARY[id];
+    return `<div class="glossary-item"><b>${g.t}</b><div class="muted">${g.d}</div></div>`;
+  }).join('');
+}
+$('#btn-glossary').addEventListener('click', ()=>{ renderGlossary(); openOverlay('glossary-overlay'); });
+
+/* break button */
+let breathInterval;
+$('#btn-break').addEventListener('click', ()=>{
+  openOverlay('break-overlay');
+  let t = 30;
+  $('#break-timer').textContent = t + ' שניות של מנוחה...';
+  clearInterval(breathInterval);
+  breathInterval = setInterval(()=>{
+    t--;
+    if(t<=0){ $('#break-timer').textContent = 'מעולה, את/ה מוכנה/ן להמשיך כשתרצה/י 🌟'; clearInterval(breathInterval); return; }
+    $('#break-timer').textContent = t + ' שניות של מנוחה...';
+  },1000);
+});
+
+/* focus mode */
+$('#btn-focus').addEventListener('click', ()=>{
+  document.body.classList.toggle('focus');
+  const on = document.body.classList.contains('focus');
+  $('#btn-focus').textContent = on ? '🎯 בטל ריכוז' : '🎯 ריכוז';
+});
+
+/* ============ Graph drawing helper ============ */
+class Graph{
+  constructor(canvas, opts={}){
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.W = canvas.width; this.H = canvas.height;
+    this.xMin = opts.xMin ?? -8; this.xMax = opts.xMax ?? 8;
+    this.yMin = opts.yMin ?? -8; this.yMax = opts.yMax ?? 8;
+  }
+  toPx(x,y){
+    const px = (x - this.xMin)/(this.xMax-this.xMin) * this.W;
+    const py = this.H - (y - this.yMin)/(this.yMax-this.yMin) * this.H;
+    return [px,py];
+  }
+  clear(){ this.ctx.clearRect(0,0,this.W,this.H); }
+  drawGrid(){
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = '#EDEBFA'; ctx.lineWidth = 1;
+    for(let x=Math.ceil(this.xMin); x<=this.xMax; x++){
+      const [px] = this.toPx(x,0);
+      ctx.beginPath(); ctx.moveTo(px,0); ctx.lineTo(px,this.H); ctx.stroke();
     }
-  </script>
+    for(let y=Math.ceil(this.yMin); y<=this.yMax; y++){
+      const [,py] = this.toPx(0,y);
+      ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(this.W,py); ctx.stroke();
+    }
+    ctx.strokeStyle = '#9C99C2'; ctx.lineWidth = 2;
+    const [ox,oy] = this.toPx(0,0);
+    ctx.beginPath(); ctx.moveTo(ox,0); ctx.lineTo(ox,this.H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,oy); ctx.lineTo(this.W,oy); ctx.stroke();
+    ctx.fillStyle = '#6B6B85'; ctx.font = '12px Arial';
+    ctx.fillText('x', this.W-14, Math.min(Math.max(oy-6,12),this.H-4));
+    ctx.fillText('y', Math.min(Math.max(ox+6,4),this.W-10), 14);
+    // integer tick labels every 2
+    ctx.fillStyle = '#B3B0D6'; ctx.font='10px Arial';
+    for(let x=Math.ceil(this.xMin); x<=this.xMax; x+=2){
+      if(x===0) continue;
+      const [px] = this.toPx(x,0);
+      ctx.fillText(String(x), px-4, Math.min(oy+12,this.H-2));
+    }
+    for(let y=Math.ceil(this.yMin); y<=this.yMax; y+=2){
+      if(y===0) continue;
+      const [,py] = this.toPx(0,y);
+      ctx.fillText(String(y), Math.max(ox+4,2), py+3);
+    }
+    ctx.restore();
+  }
+  plotFn(fn, color='#4F46E5', width=3){
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineJoin='round';
+    ctx.beginPath();
+    let started = false;
+    const steps = this.W;
+    for(let i=0;i<=steps;i++){
+      const x = this.xMin + (i/steps)*(this.xMax-this.xMin);
+      let y;
+      try{ y = fn(x); }catch(e){ y = null; }
+      if(y===null || y===undefined || !isFinite(y) || y < this.yMin-4 || y > this.yMax+4){ started=false; continue; }
+      const [px,py] = this.toPx(x,y);
+      if(!started){ ctx.moveTo(px,py); started=true; } else { ctx.lineTo(px,py); }
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+  point(x,y,color='#EF4444',r=5,label){
+    const ctx = this.ctx;
+    const [px,py] = this.toPx(x,y);
+    ctx.save();
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    if(label){
+      ctx.fillStyle = '#232336'; ctx.font = 'bold 12px Arial';
+      ctx.fillText(label, px+8, py-8);
+    }
+    ctx.restore();
+  }
+  segment(x1,y1,x2,y2,color='#0F9D6C',dash=[]){
+    const ctx = this.ctx;
+    const [px1,py1] = this.toPx(x1,y1);
+    const [px2,py2] = this.toPx(x2,y2);
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.setLineDash(dash);
+    ctx.beginPath(); ctx.moveTo(px1,py1); ctx.lineTo(px2,py2); ctx.stroke();
+    ctx.restore();
+  }
+}
+
+/* ============ generic question engine ============ */
+function normalize(str){ return String(str).trim().replace(/\s+/g,'').replace(/^\+/,''); }
+function checkNumeric(userVal, accepted, tolerance=0.001){
+  const nums = String(userVal).replace(/,/g,'.').trim();
+  const v = parseFloat(nums);
+  if(isNaN(v)) return false;
+  const list = Array.isArray(accepted) ? accepted : [accepted];
+  return list.some(a=> Math.abs(v-a) < tolerance);
+}
+
+function questionHtml(q, qid){
+  if(q.type==='mc' || q.type==='tf'){
+    const opts = q.type==='tf' ? ['נכון','שגוי'] : q.options;
+    const rowClass = q.type==='tf' ? 'tf-row' : 'qoptions';
+    return `<div class="qcard" id="${qid}">
+      <div class="qtext">${q.text}</div>
+      <div class="${rowClass}">
+        ${opts.map((o,i)=>`<button class="opt-btn" data-i="${i}">${o}</button>`).join('')}
+      </div>
+      <div class="qfeedback" id="${qid}-fb"></div>
+    </div>`;
+  }
+  return `<div class="qcard" id="${qid}">
+    <div class="qtext">${q.text}</div>
+    <div class="qinput-row">
+      <input type="text" inputmode="decimal" id="${qid}-in" placeholder="${q.placeholder||'התשובה שלך'}">
+      <button class="check-btn" id="${qid}-check">בדוק/י</button>
+    </div>
+    <div class="qfeedback" id="${qid}-fb"></div>
+  </div>`;
+}
+
+function attachQuestion(q, qid, moduleId, onSolved){
+  const card = $('#'+qid);
+  const fb = $('#'+qid+'-fb');
+  function showFeedback(ok, msg){
+    fb.className = 'qfeedback show ' + (ok?'good':'bad');
+    fb.innerHTML = msg + (ok?'':'<span class="again">נסה/י שוב - זה בסדר גמור לטעות בדרך להבנה 💪</span>');
+    if(!ok){
+      const again = fb.querySelector('.again');
+      if(again) again.addEventListener('click', ()=>{
+        fb.classList.remove('show');
+        if(q.type==='mc'||q.type==='tf'){ $all('.opt-btn',card).forEach(b=>{ b.disabled=false; b.classList.remove('correct','wrong'); }); }
+      });
+    }
+  }
+  function markSolved(){
+    STORE.solved[qid] = true; saveState();
+    if(onSolved) onSolved();
+  }
+  if(q.type==='mc' || q.type==='tf'){
+    const correctIndex = q.type==='tf' ? (q.correct ? 0 : 1) : q.correctIndex;
+    $all('.opt-btn', card).forEach((btn,i)=>{
+      btn.addEventListener('click', ()=>{
+        $all('.opt-btn',card).forEach(b=>b.disabled=true);
+        if(i===correctIndex){
+          btn.classList.add('correct');
+          showFeedback(true, '✅ ' + (q.explainRight || 'מדויק! ' + (q.explain||'')));
+          markSolved();
+        } else {
+          btn.classList.add('wrong');
+          showFeedback(false, '🤔 ' + (q.explainWrong || q.explain || 'כדאי לבדוק שוב.'));
+        }
+      });
+    });
+  } else {
+    const input = $('#'+qid+'-in');
+    const check = $('#'+qid+'-check');
+    function doCheck(){
+      const val = input.value;
+      if(val.trim()===''){ return; }
+      const ok = checkNumeric(val, q.accepted, q.tolerance ?? 0.001);
+      if(ok){
+        showFeedback(true, '✅ ' + (q.explainRight || 'נכון! ' + (q.explain||'')));
+        input.disabled = true; check.disabled = true;
+        markSolved();
+      } else {
+        showFeedback(false, '🤔 ' + (q.explainWrong || q.explain || 'לא בדיוק - נסה/י שוב.'));
+      }
+    }
+    check.addEventListener('click', doCheck);
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') doCheck(); });
+  }
+}
+
+function renderPracticeSection(questions, moduleId, container, afterAllSolved){
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `<span class="badge practice">✍️ בואי נתרגל</span>` +
+    questions.map((q,i)=> questionHtml(q, `q-${moduleId}-${i}`)).join('');
+  container.appendChild(wrap);
+  function checkAll(){
+    const allDone = questions.every((_,i)=> STORE.solved[`q-${moduleId}-${i}`]);
+    if(allDone && afterAllSolved) afterAllSolved();
+  }
+  questions.forEach((q,i)=> attachQuestion(q, `q-${moduleId}-${i}`, moduleId, checkAll));
+  checkAll();
+}
+
+function thinkBox(steps, hint){
+  return `<details class="think">
+    <summary>🧭 איך חושבים על זה בכל שלב?</summary>
+    <ol>${steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+    ${hint? `<p class="muted">💡 ${hint}</p>`:''}
+  </details>`;
+}
+
+/* ============ MODULES ============ */
+const MODULES = [];
+
+/* ---- Module 0: what is a function ---- */
+MODULES.push({
+  id:0, emoji:'🎩', title:'מה זו בכלל פונקציה?', short:'ההתחלה',
+  render(container){
+    container.innerHTML = `
+      <div class="card hook-card">
+        <span class="badge hook">🎬 נתחיל מסיפור</span>
+        <h2>מכונת הקסמים</h2>
+        <p>תדמייני מכונה קסומה: את מכניסה מספר בפתח אחד, ובפתח השני יוצא מספר חדש - תמיד לפי אותו "חוק" קבוע. אם היום המכונה הפכה 3 ל-7, אז גם מחר, אם תכניסי 3 - יצא לך שוב 7. אותו קלט - תמיד אותו פלט.</p>
+        <p>זה בדיוק הרעיון של <b>פונקציה</b>. לא יותר מסובך מזה.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔍 בואי נבדוק את המכונה</span>
+        <h3>המכונה שלנו: "תכפילי ב-2 ותוסיפי 1"</h3>
+        <div class="graph-box">
+          <div class="sliders">
+            <div class="slider-row">
+              <label>מספר שמכניסים (x) <span id="m0-xval" class="ltr">3</span></label>
+              <input type="range" id="m0-x" min="-5" max="5" step="1" value="3">
+            </div>
+          </div>
+          <div class="live-readout" id="m0-readout">3 &rarr; פי 2 = 6 &rarr; ועוד 1 = <span class="ltr">7</span></div>
+        </div>
+        <p class="muted">הזיזי את המחוון ותראי: לכל x שתבחרי, המכונה תמיד נותנת בדיוק תוצאה אחת. נסי כמה פעמים את אותו מספר - התוצאה לא משתנה!</p>
+      </div>
+
+      <div class="card concept-card">
+        <span class="badge concept">🏷️ עכשיו יש לזה שם</span>
+        <h3>פונקציה</h3>
+        <p><b>פונקציה</b> היא חוק התאמה: לכל ערך קלט (נקרא <b>x</b>) היא נותנת ערך פלט אחד ויחיד (נקרא <b>y</b>). לא שניים, לא אפס - בדיוק אחד.</p>
+        <p>אוסף כל ה-x-ים המותרים נקרא <b>תחום</b>. אוסף כל ה-y-ים שיוצאים נקרא <b>טווח</b>.</p>
+        <h3 style="margin-top:14px;">איך בודקים בגרף? מבחן הקו האנכי</h3>
+        <p>אם מעבירים קו אנכי (מלמעלה למטה) בכל מקום בגרף, וקו כזה תמיד פוגש את הגרף בנקודה <b>אחת בלבד</b> - זו פונקציה. אם יש מקום שבו קו אנכי פוגש את הגרף פעמיים - זו <b>לא</b> פונקציה (כי אז לאותו x יש שני y שונים).</p>
+      </div>
+
+      <div class="card">
+        <span class="badge concept">🌍 דוגמאות מהחיים</span>
+        <ul class="intro-list">
+          <li><b>מספר תעודת זהות &larr; שם האדם:</b> פונקציה! לכל ת.ז. יש בדיוק בעל אחד.</li>
+          <li><b>שם פרטי &larr; כל האנשים עם השם הזה:</b> לא פונקציה - יכולים להיות הרבה "דנה"ות.</li>
+        </ul>
+      </div>
+
+      ${thinkBox([
+        'מה הקלט (x) ומה הפלט (y) במצב הזה?',
+        'לכל קלט - האם באמת יוצא רק פלט אחד תמיד?',
+        'אם זה גרף - קו אנכי דמיוני פוגש אותו פעם אחת או יותר?'
+      ])}
+
+      <div class="card" id="m0-practice"></div>
+      <div class="next-wrap" id="m0-next-wrap"></div>
+    `;
+
+    const xSlider = $('#m0-x');
+    function updateReadout(){
+      const x = parseInt(xSlider.value,10);
+      $('#m0-xval').textContent = x;
+      const y = 2*x+1;
+      $('#m0-readout').innerHTML = `${x} &rarr; פי 2 = ${2*x} &rarr; ועוד 1 = <span class="ltr">${y}</span>`;
+    }
+    xSlider.addEventListener('input', updateReadout);
+    updateReadout();
+
+    unlockTerms(['func','domain','range']);
+
+    const questions = [
+      { type:'tf', text:'עיגול שלם (מעגל) שמצויר בגרף יכול לייצג פונקציה.', correct:false,
+        explainRight:'נכון שזה שגוי! בעיגול יש מקומות שקו אנכי חותך אותו בשתי נקודות - אז לאותו x יש שני y. זה לא פונקציה.',
+        explainWrong:'נסי לדמיין קו אנכי שעובר דרך אמצע העיגול - הוא פוגע בעיגול פעמיים. סימן שזו לא פונקציה.' },
+      { type:'mc', text:'איזו התאמה היא פונקציה?', correctIndex:0,
+        options:['מספר ת.ז. &larr; שם האדם','שם פרטי &larr; כל האנשים עם השם','מספר &larr; כל השברים השווים לו','תלמיד &larr; כל המורים שלו'],
+        explainRight:'לכל תעודת זהות יש בעל אחד בלבד - קלט אחד, פלט אחד.',
+        explainWrong:'שאלי את עצמך: האם לקלט הזה יכול להיות יותר מפלט אחד? בת.ז&larr;שם - אין ברירה, זה תמיד אדם אחד.' },
+      { type:'input', text:'המכונה מכפילה כל מספר שנכנס ב-3 ומוסיפה 1. מה יוצא כשמכניסים 4?', accepted:[13],
+        explainRight:'4×3=12, ועוד 1 = 13. בדיוק ככה בונים כל פונקציה - שלב אחר שלב.',
+        explainWrong:'נסי לפי השלבים: קודם 4×3, ואז תוסיפי 1.' },
+      { type:'mc', text:'ה"תחום" של פונקציה הוא...', correctIndex:0,
+        options:['כל ערכי ה-x שמותר להציב בפונקציה','כל ערכי ה-y שיוצאים','שם המשוואה','הגרף עצמו'],
+        explainRight:'בדיוק - התחום הוא כל הקלטים המותרים.',
+        explainWrong:'תחום = קלטים (x). טווח = פלטים (y). שווה לזכור את הסדר: x נכנס - לכן x=תחום.' },
+    ];
+    renderPracticeSection(questions, 0, $('#m0-practice'), ()=> completeModule(0));
+    renderNextButton(0);
+  }
+});
+
+/* ---- Module 1: notation f(x) ---- */
+MODULES.push({
+  id:1, emoji:'🔤', title:'שפת הפונקציות: f(x)', short:'סימון',
+  render(container){
+    container.innerHTML = `
+      <div class="card hook-card">
+        <span class="badge hook">🎬 קוד סודי</span>
+        <h2>למה כותבים f(x)?</h2>
+        <p>נתנו שם למכונה - קראנו לה <b class="ltr">f</b> (מהמילה function). כשכותבים <span class="ltr">f(x)</span>, זה פשוט אומר: "התוצאה שהמכונה <span class="ltr">f</span> נותנת כשמכניסים לה את <span class="ltr">x</span>". זה בדיוק כמו ה-y שהכרנו, רק עם "תווית" שמזכירה לנו איזו מכונה השתמשנו בה.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔍 נתרגל יחד: <span class="ltr">f(x) = 2x - 3</span></span>
+        <div class="graph-box">
+          <div class="sliders">
+            <div class="slider-row">
+              <label>בחרי x <span id="m1-xval" class="ltr">5</span></label>
+              <input type="range" id="m1-x" min="-5" max="8" step="1" value="5">
+            </div>
+          </div>
+          <div class="live-readout" id="m1-readout"></div>
+        </div>
+        <table class="func-table" id="m1-table"></table>
+      </div>
+
+      <div class="card concept-card">
+        <span class="badge concept">🏷️ בשפה מדויקת</span>
+        <p><span class="ltr">f(2)</span> = "מציבים 2 במקום x בנוסחה של f, ומחשבים." זה מספר, בדיוק כמו y.</p>
+      </div>
+
+      ${thinkBox([
+        'תזהי מה כתוב בתוך הסוגריים - זה הערך שמציבים במקום x.',
+        'החליפי כל x בביטוי בערך הזה (בזהירות עם סימנים!).',
+        'חשבי צעד-צעד: קודם כפל/חזקה, אחר כך חיבור/חיסור.'
+      ], 'סדר פעולות תמיד נשאר סדר פעולות - גם בפונקציות.')}
+
+      <div class="card" id="m1-practice"></div>
+      <div class="next-wrap" id="m1-next-wrap"></div>
+    `;
+    const f = x => 2*x-3;
+    const xSlider = $('#m1-x');
+    function update(){
+      const x = parseInt(xSlider.value,10);
+      $('#m1-xval').textContent = x;
+      $('#m1-readout').innerHTML = `<span class="ltr">f(${x}) = 2×${x} - 3 = ${f(x)}</span>`;
+      const vals = [];
+      for(let v=x-2; v<=x+2; v++){ if(v>=-5 && v<=8) vals.push(v); }
+      const rows = '<tr><th>x</th><th class="ltr">f(x)</th></tr>' + vals.map(v=>`<tr><td class="ltr">${v}</td><td class="ltr">${f(v)}</td></tr>`).join('');
+      $('#m1-table').innerHTML = rows;
+    }
+    xSlider.addEventListener('input', update);
+    update();
+    unlockTerms(['fx']);
+
+    const questions = [
+      { type:'input', text:'עבור <span class="ltr">f(x)=2x-3</span>, כמה שווה <span class="ltr">f(5)</span>?', accepted:[7],
+        explainRight:'2×5-3 = 10-3 = 7. ', explainWrong:'הציבי 5 במקום x: 2×5, ואז תחסירי 3.' },
+      { type:'input', text:'עבור <span class="ltr">f(x)=2x-3</span>, כמה שווה <span class="ltr">f(0)</span>?', accepted:[-3],
+        explainRight:'2×0-3 = 0-3 = -3.', explainWrong:'זכרי: 2 כפול 0 הוא 0, ואז נשאר רק -3.' },
+      { type:'input', text:'לאיזה ערך x מתקיים <span class="ltr">f(x)=9</span>? (רמז: 2x-3=9)', accepted:[6],
+        explainRight:'2x-3=9 &rarr; 2x=12 &rarr; x=6.', explainWrong:'העבירי את ה-3 אגף: 2x = 9+3 = 12, ואז חלקי ב-2.' },
+      { type:'mc', text:'<span class="ltr">f(2)</span> אומר...', correctIndex:0,
+        options:['את ערך הפונקציה f כאשר x=2','את המספר 2 בלבד','שם של פונקציה חדשה','תמיד את המספר 0'],
+        explainRight:'בדיוק - זה הערך שמתקבל כאשר מציבים x=2.',
+        explainWrong:'הסוגריים לא "כפל" - הם אומרים באיזה x מציבים.' },
+    ];
+    renderPracticeSection(questions, 1, $('#m1-practice'), ()=> completeModule(1));
+    renderNextButton(1);
+  }
+});
+
+/* ---- Module 2: graphing / reading graphs ---- */
+MODULES.push({
+  id:2, emoji:'📈', title:'מציירים ולקוראים גרף', short:'גרפים',
+  render(container){
+    container.innerHTML = `
+      <div class="card hook-card">
+        <span class="badge hook">🎬 מספרים שהופכים לתמונה</span>
+        <h2>מטבלה לגרף</h2>
+        <p>כל שורה בטבלה (x , y) היא בעצם נקודה על מפה. כשמחברים את כל הנקודות - מקבלים תמונה של הפונקציה: הגרף שלה.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔍 בואי נבנה נקודה-נקודה: <span class="ltr">f(x)=x+1</span></span>
+        <div class="graph-box">
+          <canvas id="m2-canvas1" width="300" height="300"></canvas>
+          <div class="sliders">
+            <div class="slider-row">
+              <label>הזיזי את x <span id="m2-tval" class="ltr">0</span></label>
+              <input type="range" id="m2-t" min="-5" max="5" step="1" value="0">
+            </div>
+          </div>
+        </div>
+        <table class="func-table" id="m2-table"></table>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔍 עכשיו תפקידך: קוראת גרף</span>
+        <p>הפעם לא נגלה לך את הנוסחה - רק תסתכלי בגרף ותעני.</p>
+        <div class="graph-box">
+          <canvas id="m2-canvas2" width="300" height="300"></canvas>
+        </div>
+      </div>
+
+      ${thinkBox([
+        'מצאי על ציר ה-x את הנקודה שנשאלת, ותעלי אנכית עד שתפגשי את הגרף.',
+        'משם תרדי/תעלי אופקית עד ציר ה-y - זה הערך שמבקשים.',
+        'לשאלה "מתי f(x)=0" - חפשי איפה הגרף חוצה את ציר ה-x.'
+      ])}
+
+      <div class="card" id="m2-practice"></div>
+      <div class="next-wrap" id="m2-next-wrap"></div>
+    `;
+    // exploration graph 1: point sliding along f(x)=x+1
+    const g1 = new Graph($('#m2-canvas1'), {xMin:-6,xMax:6,yMin:-6,yMax:6});
+    const f1 = x=>x+1;
+    const tSlider = $('#m2-t');
+    function drawG1(){
+      const t = parseInt(tSlider.value,10);
+      $('#m2-tval').textContent = t;
+      g1.clear(); g1.drawGrid();
+      // draw points already visited
+      for(let v=-5; v<=t; v++){ g1.point(v, f1(v), '#C7C4EE', 4); }
+      g1.point(t, f1(t), '#4F46E5', 6, `(${t}, ${f1(t)})`);
+      let rows = '<tr><th>x</th><th class="ltr">y=x+1</th></tr>';
+      const vals=[]; for(let v=t-2; v<=t+2; v++){ if(v>=-5&&v<=5) vals.push(v); }
+      $('#m2-table').innerHTML = rows + vals.map(v=>`<tr><td class="ltr">${v}</td><td class="ltr">${f1(v)}</td></tr>`).join('');
+    }
+    tSlider.addEventListener('input', drawG1);
+    drawG1();
+
+    // reading graph 2: f(x) = -(x-2)^2+4
+    const g2 = new Graph($('#m2-canvas2'), {xMin:-4,xMax:8,yMin:-6,yMax:6});
+    const f2 = x=> -Math.pow(x-2,2)+4;
+    g2.clear(); g2.drawGrid(); g2.plotFn(f2, '#EF4444');
+    g2.point(2,4,'#0F9D6C',5);
+    g2.point(0,0,'#4F46E5',4); g2.point(4,0,'#4F46E5',4);
+
+    const questions = [
+      { type:'input', text:'לפי הגרף האדום, מה הערך הכי גבוה (המקסימלי) שהפונקציה מגיעה אליו?', accepted:[4],
+        explainRight:'הנקודה הכי גבוהה על העקומה נמצאת בגובה y=4.',
+        explainWrong:'חפשי את הנקודה הכי "גבוהה" בעקומה - כמה y יש לה?' },
+      { type:'input', text:'באיזה ערך x מתקבל אותו ערך מקסימלי?', accepted:[2],
+        explainRight:'הפסגה נמצאת מעל x=2.', explainWrong:'הסתכלי היכן, על ציר ה-x, נמצאת הנקודה הכי גבוהה בעקומה.' },
+      { type:'mc', text:'עבור אילו ערכי x הגרף חותך את ציר ה-x (כלומר f(x)=0)?', correctIndex:0,
+        options:['x=0 וגם x=4','רק x=2','x=-4 וגם x=4','x=1 וגם x=3'],
+        explainRight:'הגרף נוגע בציר ה-x בדיוק בשתי הנקודות המסומנות: 0 ו-4.',
+        explainWrong:'חפשי את הנקודות הכחולות על ציר ה-x - איפה הגרף "נוגע ברצפה"?' },
+      { type:'mc', text:'בקטע שבין x=-1 ל-x=2, הפונקציה בגרף האדום...', correctIndex:0,
+        options:['עולה (y גדל ככל שx גדל)','יורדת','נשארת קבועה','לא ניתן לדעת'],
+        explainRight:'עד לפסגה ב-x=2 העקומה מטפסת - זו עלייה.',
+        explainWrong:'עקבי עם האצבע על העקומה משמאל לימין עד x=2 - היא עולה או יורדת?' },
+    ];
+    renderPracticeSection(questions, 2, $('#m2-practice'), ()=> completeModule(2));
+    renderNextButton(2);
+  }
+});
+
+/* ---- Module 3: linear function ---- */
+MODULES.push({
+  id:3, emoji:'📏', title:'הקו הישר', short:'ליניארית',
+  render(container){
+    container.innerHTML = `
+      <div class="card hook-card">
+        <span class="badge hook">🎬 מהירות קבועה</span>
+        <h2>מכונית בכביש</h2>
+        <p>מכונית מתחילה 2 ק"מ מהבית ונוסעת במהירות קבועה של 3 ק"מ לכל דקה. המרחק שלה מהבית הוא פונקציה של הזמן - וזו בדיוק דוגמה ל<b>פונקציה ליניארית</b> (קו ישר): קצב קבוע = שיפוע קבוע.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔍 שחקי עם הישר <span class="ltr">y = mx + b</span></span>
+        <div class="graph-box">
+          <canvas id="m3-canvas" width="300" height="300"></canvas>
+          <div class="sliders">
+            <div class="slider-row">
+              <label>שיפוע m <span id="m3-mval" class="ltr">1</span></label>
+              <input type="range" id="m3-m" min="-4" max="4" step="0.5" value="1">
+            </div>
+            <div class="slider-row">
+              <label>חיתוך עם ציר y &nbsp; b <span id="m3-bval" class="ltr">0</span></label>
+              <input type="range" id="m3-b" min="-5" max="5" step="1" value="0">
+            </div>
+          </div>
+          <div class="live-readout" id="m3-readout"></div>
+        </div>
+        <p class="muted">שימי לב: m חיובי &larr; הישר עולה. m שלילי &larr; הישר יורד. b קובע איפה הישר חותך את ציר ה-y.</p>
+      </div>
+
+      <div class="card concept-card">
+        <span class="badge concept">🏷️ הנוסחה</span>
+        <p><span class="ltr">y = mx + b</span> &nbsp;|&nbsp; <b class="ltr">m</b> = שיפוע (עלייה חלקי ריצה) &nbsp;|&nbsp; <b class="ltr">b</b> = ערך ה-y כש-x=0.</p>
+        <p>שיפוע בין שתי נקודות: <span class="ltr">m = (y₂-y₁) / (x₂-x₁)</span></p>
+      </div>
+
+      ${thinkBox([
+        'יש לי שתי נקודות? קודם אחשב שיפוע: (הפרש ה-y) חלקי (הפרש ה-x).',
+        'אז אציב נקודה אחת בנוסחה y=mx+b כדי למצוא את b.',
+        'תמיד אבדוק: האם הנקודות באמת מתאימות למשוואה שקיבלתי?'
+      ])}
+
+      <div class="card" id="m3-practice"></div>
+      <div class="next-wrap" id="m3-next-wrap"></div>
+    `;
+    const g = new Graph($('#m3-canvas'), {xMin:-8,xMax:8,yMin:-8,yMax:8});
+    const mSlider = $('#m3-m'), bSlider = $('#m3-b');
+    function draw(){
+      const m = parseFloat(mSlider.value), b = parseFloat(bSlider.value);
+      $('#m3-mval').textContent = fmt(m); $('#m3-bval').textContent = fmt(b);
+      g.clear(); g.drawGrid();
+      g.plotFn(x=> m*x+b, '#4F46E5');
+      g.point(0,b,'#0F9D6C',5,'b');
+      // rise/run triangle at x=1
+      const x1=1, y1=m*1+b;
+      g.segment(0,b,x1,b,'#F59E0B',[4,3]);
+      g.segment(x1,b,x1,y1,'#F59E0B',[4,3]);
+      $('#m3-readout').innerHTML = `<span class="ltr">y = ${fmt(m)}x ${b>=0?'+':''}${fmt(b)}</span> &nbsp;|&nbsp; הישר ${m>0?'עולה 📈':(m<0?'יורד 📉':'אופקי ➡️')}`;
+    }
+    mSlider.addEventListener('input', draw); bSlider.addEventListener('input', draw);
+    draw();
+    unlockTerms(['slope','yint']);
+
+    const questions = [
+      { type:'input', text:'מה השיפוע (m) של הישר <span class="ltr">y = 3x - 2</span>?', accepted:[3],
+        explainRight:'המספר שצמוד ל-x הוא תמיד השיפוע.', explainWrong:'בנוסחה y=mx+b, השיפוע הוא המקדם שכפול x.' },
+      { type:'input', text:'מה ערך ה-y בנקודה שבה הישר <span class="ltr">y = 3x - 2</span> חותך את ציר ה-y?', accepted:[-2],
+        explainRight:'זה פשוט b - האיבר החופשי במשוואה.', explainWrong:'הציבי x=0 בנוסחה: y=3×0-2.' },
+      { type:'input', text:'נתונות הנקודות A(1,2) ו-B(3,8). מה השיפוע של הישר ביניהן?', accepted:[3],
+        explainRight:'(8-2)/(3-1) = 6/2 = 3.', explainWrong:'שיפוע = (הפרש y) חלקי (הפרש x) = (8-2)/(3-1).' },
+      { type:'mc', text:'הישר <span class="ltr">y = -2x + 5</span> הוא ישר...', correctIndex:0,
+        options:['יורד, כי השיפוע שלילי','עולה, כי השיפוע שלילי','אופקי','אנכי'],
+        explainRight:'שיפוע שלילי תמיד אומר שהישר יורד משמאל לימין.',
+        explainWrong:'הסתכלי בסימן של המספר שליד ה-x: -2 הוא שלילי.' },
+      { type:'mc', text:'נתונות הנקודות A(0,7) ו-B(1,0). מהי משוואת הישר ביניהן?', correctIndex:2,
+        options:['y=7x+1','y=-x+7','y=-7x+7','y=7x-1'],
+        explainRight:'שיפוע = (0-7)/(1-0)=-7, וב-x=0 מתקבל y=7 (הנקודה A). לכן y=-7x+7.',
+        explainWrong:'קודם חשבי שיפוע: (0-7)/(1-0). אז בדקי מה ה-b, לפי הנקודה A שבה x=0.' },
+    ];
+    renderPracticeSection(questions, 3, $('#m3-practice'), ()=> completeModule(3));
+    renderNextButton(3);
+  }
+});
+
+/* ---- Module 4: quadratic / parabola ---- */
+MODULES.push({
+  id:4, emoji:'🎢', title:'הפרבולה', short:'ריבועית',
+  render(container){
+    container.innerHTML = `
+      <div class="card hook-card">
+        <span class="badge hook">🎬 קפיצת האופנוע</span>
+        <h2>המסלול שאינו ישר</h2>
+        <p>אופנוען עושה קפיצת סטאנט: הוא עולה, מגיע לנקודה הכי גבוהה, ואז יורד - בדיוק כמו כדור שנזרק לאוויר. המסלול הזה הוא <b>פרבולה</b> - הגרף של <b>פונקציה ריבועית</b> (יש בה x בריבוע).</p>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔍 שחקי עם הפרבולה <span class="ltr">f(x)=a(x-h)²+k</span></span>
+        <div class="graph-box">
+          <canvas id="m4-canvas" width="300" height="300"></canvas>
+          <div class="sliders">
+            <div class="slider-row"><label>a (פתיחה וכיוון) <span id="m4-aval" class="ltr">1</span></label>
+              <input type="range" id="m4-a" min="-3" max="3" step="0.5" value="1"></div>
+            <div class="slider-row"><label>h (הזזה אופקית) <span id="m4-hval" class="ltr">0</span></label>
+              <input type="range" id="m4-h" min="-5" max="5" step="1" value="0"></div>
+            <div class="slider-row"><label>k (הזזה אנכית) <span id="m4-kval" class="ltr">0</span></label>
+              <input type="range" id="m4-k" min="-5" max="5" step="1" value="0"></div>
+          </div>
+          <div class="live-readout" id="m4-readout"></div>
+        </div>
+      </div>
+
+      <div class="card concept-card">
+        <span class="badge concept">🏷️ המילים החשובות</span>
+        <ul class="intro-list">
+          <li><b>קודקוד</b> - הנקודה (h,k), שם הפרבולה "מחליפה כיוון".</li>
+          <li><b>ציר סימטריה</b> - הקו האנכי x=h שעליו "מקופלת" הפרבולה כמו במראה.</li>
+          <li><b>a חיובי</b> = פרבולה "מחייכת" (פתוחה למעלה). <b>a שלילי</b> = "עצובה" (פתוחה למטה).</li>
+          <li><b>שורשים</b> - נקודות החיתוך עם ציר ה-x, כלומר איפה f(x)=0.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="badge concept">🧮 דוגמה: מוצאים שורשים</span>
+        <p>עבור <span class="ltr">f(x) = (x-2)² - 9</span>: משווים ל-0: <span class="ltr">(x-2)² = 9</span>, ולכן <span class="ltr">x-2 = 3</span> או <span class="ltr">x-2 = -3</span>. כלומר <span class="ltr">x=5</span> או <span class="ltr">x=-1</span>.</p>
+      </div>
+
+      ${thinkBox([
+        'זהי h ו-k לפי הצורה a(x-h)²+k - שימי לב לסימן ההפוך של h!',
+        'קבעי כיוון פתיחה לפי סימן a.',
+        'למציאת שורשים: השווי ל-0 ופתרי משוואה.'
+      ], 'טעות נפוצה: ב-f(x)=(x-3)²+5 הקודקוד הוא (3,5) ולא (-3,5) - יש להפוך סימן ל-h.')}
+
+      <div class="card misconception-card">
+        <span class="badge misconception">⚠️ שימו לב</span>
+        <p>הרבה תלמידים טועים וחושבים שב-<span class="ltr">(x+1)²</span> ה-h הוא 1. בעצם h=-1, כי <span class="ltr">x+1 = x-(-1)</span>.</p>
+      </div>
+
+      <div class="card" id="m4-practice"></div>
+      <div class="next-wrap" id="m4-next-wrap"></div>
+    `;
+    const g = new Graph($('#m4-canvas'), {xMin:-8,xMax:8,yMin:-8,yMax:8});
+    const aS=$('#m4-a'), hS=$('#m4-h'), kS=$('#m4-k');
+    function draw(){
+      const a=parseFloat(aS.value), h=parseFloat(hS.value), k=parseFloat(kS.value);
+      $('#m4-aval').textContent=fmt(a); $('#m4-hval').textContent=fmt(h); $('#m4-kval').textContent=fmt(k);
+      g.clear(); g.drawGrid();
+      g.plotFn(x=> a*Math.pow(x-h,2)+k, '#4F46E5');
+      g.segment(h,-8,h,8,'#C7C4EE',[3,3]);
+      g.point(h,k,'#0F9D6C',6,'קודקוד');
+      const face = a>0 ? '🙂 פתוחה למעלה' : (a<0 ? '🙁 פתוחה למטה' : '➖ קו ישר (a=0)');
+      $('#m4-readout').innerHTML = `<span class="ltr">f(x)=${fmt(a)}(x-${fmt(h)})²+${fmt(k)}</span> &nbsp;|&nbsp; קודקוד: <span class="ltr">(${fmt(h)},${fmt(k)})</span> &nbsp;|&nbsp; ${face}`;
+    }
+    aS.addEventListener('input',draw); hS.addEventListener('input',draw); kS.addEventListener('input',draw);
+    draw();
+    unlockTerms(['vertex','axis','roots']);
+
+    const questions = [
+      { type:'mc', text:'לפרבולה <span class="ltr">f(x) = (x+1)² - 4</span> יש קודקוד ב...', correctIndex:0,
+        options:['(-1,-4)','(1,-4)','(-1,4)','(1,4)'],
+        explainRight:'x+1 = x-(-1), אז h=-1. ו-k=-4 כמו שכתוב.',
+        explainWrong:'זכרי: הצורה היא (x-h) - אז ב-(x+1) צריך להפוך סימן: h=-1.' },
+      { type:'mc', text:'אם a שלילי, הפרבולה...', correctIndex:1,
+        options:['פתוחה כלפי מעלה, כמו חיוך','פתוחה כלפי מטה, כמו קשת עצובה','היא קו ישר','לא קיימת'],
+        explainRight:'a שלילי הופך את הפרבולה "עצובה" - פתוחה למטה.',
+        explainWrong:'נסי להזיז את המחוון a לערך שלילי בתרגול למעלה ותראי מה קורה לכיוון.' },
+      { type:'input', text:'מהו ציר הסימטריה של <span class="ltr">f(x) = (x-3)² + 5</span>? (כתבי רק את המספר)', accepted:[3],
+        explainRight:'ציר הסימטריה הוא תמיד x=h, וכאן h=3.', explainWrong:'ציר הסימטריה עובר דרך הקודקוד - מה ה-h כאן?' },
+      { type:'input', text:'לפונקציה <span class="ltr">f(x) = (x-2)² - 9</span> יש שני שורשים. מה השורש הקטן יותר?', accepted:[-1],
+        explainRight:'(x-2)²=9 &rarr; x-2=±3 &rarr; x=5 או x=-1. הקטן הוא -1.',
+        explainWrong:'פתרי: (x-2)²=9, כלומר x-2=3 או x-2=-3.' },
+      { type:'input', text:'ומה השורש הגדול יותר?', accepted:[5],
+        explainRight:'x-2=3 נותן x=5.', explainWrong:'אחד הפתרונות הוא x-2=3.' },
+    ];
+    renderPracticeSection(questions, 4, $('#m4-practice'), ()=> completeModule(4));
+    renderNextButton(4);
+  }
+});
+
+/* ---- Module 5: increasing/decreasing, sign ---- */
+MODULES.push({
+  id:5, emoji:'🚦', title:'עולה/יורדת, חיובית/שלילית', short:'תחומים',
+  render(container){
+    container.innerHTML = `
+      <div class="card hook-card">
+        <span class="badge hook">🎬 שני סוגי שאלות על אותו גרף</span>
+        <p>שאלה אחת שואלת "לאן הגרף הולך?" (עולה/יורדת - מסתכלים על <b>כיוון</b>). שאלה שנייה שואלת "איפה הגרף חיובי?" (מעל/מתחת לציר ה-x - מסתכלים על <b>גובה</b>). אלה שני דברים שונים לגמרי!</p>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔍 עקבי אחרי הנקודה על הפרבולה <span class="ltr">f(x)=-(x-2)²+4</span></span>
+        <div class="graph-box">
+          <canvas id="m5-canvas" width="300" height="300"></canvas>
+          <div class="sliders">
+            <div class="slider-row"><label>מיקום x <span id="m5-tval" class="ltr">-2</span></label>
+              <input type="range" id="m5-t" min="-2" max="6" step="0.2" value="-2"></div>
+          </div>
+          <div class="live-readout" id="m5-readout"></div>
+        </div>
+      </div>
+
+      <div class="card concept-card">
+        <span class="badge concept">🏷️ הבחנה חשובה</span>
+        <p><b>עולה/יורדת</b> = מסתכלים אם y גדל או קטן ככל שמתקדמים ימינה (לפי x).</p>
+        <p><b>חיובית/שלילית</b> = מסתכלים אם הגרף נמצא מעל ציר ה-x (y&gt;0) או מתחתיו (y&lt;0).</p>
+      </div>
+
+      ${thinkBox([
+        'לעלייה/ירידה: תעקבי עם האצבע משמאל לימין - y עולה או יורד?',
+        'לחיוביות/שליליות: תסתכלי רק אם העקומה מעל או מתחת לציר ה-x.',
+        'תמיד תני את התשובה כתחום של x (למשל x<2), לא כערך בודד.'
+      ])}
+
+      <div class="card" id="m5-practice"></div>
+      <div class="next-wrap" id="m5-next-wrap"></div>
+    `;
+    const g = new Graph($('#m5-canvas'), {xMin:-4,xMax:8,yMin:-6,yMax:6});
+    const f = x=> -Math.pow(x-2,2)+4;
+    const tS = $('#m5-t');
+    function draw(){
+      const t = parseFloat(tS.value);
+      $('#m5-tval').textContent = fmt(t);
+      g.clear(); g.drawGrid(); g.plotFn(f,'#EF4444');
+      g.point(t, f(t), '#4F46E5', 6);
+      const eps=0.01;
+      const deriv = (f(t+eps)-f(t-eps))/(2*eps);
+      const dirTxt = deriv>0.05 ? '📈 עולה' : (deriv<-0.05 ? '📉 יורדת' : '➖ בפסגה');
+      const signTxt = f(t)>0.05 ? '➕ חיובית (מעל הציר)' : (f(t)<-0.05 ? '➖ שלילית (מתחת לציר)' : '⚪ בדיוק על הציר');
+      $('#m5-readout').innerHTML = `כיוון: <b>${dirTxt}</b> &nbsp;|&nbsp; סימן: <b>${signTxt}</b>`;
+    }
+    tS.addEventListener('input', draw);
+    draw();
+    unlockTerms(['incdec','possign']);
+
+    const questions = [
+      { type:'mc', text:'עבור <span class="ltr">f(x) = -(x-2)²+4</span>, תחום העלייה הוא:', correctIndex:0,
+        options:['x<2','x>2','כל x','אין תחום עלייה'],
+        explainRight:'עד הפסגה ב-x=2 הפרבולה עולה, ומשם היא יורדת.',
+        explainWrong:'תזכרי: פרבולה "עצובה" (a שלילי) עולה לפני הקודקוד ויורדת אחריו.' },
+      { type:'tf', text:'לפונקציה <span class="ltr">f(x)=x-1</span>, לכל x&lt;0 הפונקציה שלילית.', correct:true,
+        explainRight:'הישר חוצה 0 ב-x=1; לכל x קטן מ-1 (וגם x<0) הישר מתחת לציר, כלומר שלילי.',
+        explainWrong:'בדקי: מהו f(0)? הוא -1, כלומר שלילי - וזה נשאר כך לכל x קטן יותר.' },
+      { type:'mc', text:'עבור <span class="ltr">f(x)=-(x-2)²+4</span> (חותכת את ציר ה-x ב-0 וב-4), מתי הפונקציה חיובית?', correctIndex:0,
+        options:['0<x<4','x<0 או x>4','x>2 בלבד','לעולם לא'],
+        explainRight:'בין שני השורשים הפרבולה ה"עצובה" נמצאת מעל הציר - שם היא חיובית.',
+        explainWrong:'הסתכלי בגרף: בין שתי הנקודות הכחולות (0 ו-4) הגרף מעל הציר או מתחתיו?' },
+      { type:'input', text:'מהו תחום הירידה של <span class="ltr">f(x) = -(x-2)²+4</span>? כתבי בצורה x> ומספר (למשל x>1)', accepted:[], accepted2:true,
+        explainRight:'אחרי הפסגה ב-x=2 הפרבולה יורדת: x>2.', explainWrong:'הירידה מתחילה מיד אחרי הקודקוד. מהו ה-x של הקודקוד?' },
+    ];
+    // custom check for last free-text question (x>2 style)
+    renderPracticeSection(questions.slice(0,3), 5, $('#m5-practice'), ()=>{});
+    // handle the special text question separately
+    const specialWrap = document.createElement('div');
+    const qid = 'q-5-3';
+    specialWrap.innerHTML = `<div class="qcard" id="${qid}">
+      <div class="qtext">מהו תחום הירידה של <span class="ltr">f(x) = -(x-2)²+4</span>? כתבי בצורה "x>מספר" (לדוגמה x>1)</div>
+      <div class="qinput-row"><input type="text" id="${qid}-in" placeholder="x>..."><button class="check-btn" id="${qid}-check">בדוק/י</button></div>
+      <div class="qfeedback" id="${qid}-fb"></div>
+    </div>`;
+    $('#m5-practice').appendChild(specialWrap);
+    $('#'+qid+'-check').addEventListener('click', ()=>{
+      const v = $('#'+qid+'-in').value.replace(/\s/g,'');
+      const fb = $('#'+qid+'-fb');
+      const ok = /^x?>2$/.test(v) || v==='2<x' || v.replace('x','')==='>2';
+      fb.className = 'qfeedback show ' + (ok?'good':'bad');
+      if(ok){
+        fb.innerHTML = '✅ בדיוק! אחרי הקודקוד ב-x=2 הפרבולה יורדת: x>2.';
+        $('#'+qid+'-in').disabled = true; $('#'+qid+'-check').disabled = true;
+        STORE.solved[qid] = true; saveState();
+        checkModule5();
+      } else {
+        fb.innerHTML = '🤔 נסי לכתוב בדיוק בצורה x>2 (עם הסימן > והמספר של הקודקוד).<span class="again">נסה/י שוב</span>';
+        fb.querySelector('.again').addEventListener('click', ()=> fb.classList.remove('show'));
+      }
+    });
+    function checkModule5(){
+      const ids = ['q-5-0','q-5-1','q-5-2','q-5-3'];
+      if(ids.every(id=>STORE.solved[id])) completeModule(5);
+    }
+    checkModule5();
+    renderNextButton(5);
+  }
+});
+
+/* ---- Module 6: capstone - line meets parabola ---- */
+MODULES.push({
+  id:6, emoji:'🏁', title:'כשהישר פוגש את הפרבולה', short:'שיא המסע',
+  render(container){
+    container.innerHTML = `
+      <div class="card hook-card">
+        <span class="badge hook">🎬 שני מסלולים שנפגשים</span>
+        <p>המסלול העקום של האופנוען (הפרבולה) חוצה בדרך גם כביש ישר (ישר). איפה בדיוק הם נפגשים? זו בדיוק השאלה שממתינה לך בתרגילי הבחינה - ועכשיו יש לך את כל הכלים כדי לפתור אותה.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge explore">🔍 <span class="ltr">f(x)=x²-2x-3</span> ו- <span class="ltr">g(x)=x+1</span></span>
+        <div class="graph-box">
+          <canvas id="m6-canvas" width="300" height="300"></canvas>
+        </div>
+        <p class="muted">שתי הנקודות הירוקות הן נקודות החיתוך - המקומות שבהם לשני הגרפים יש בדיוק אותו x ואותו y.</p>
+      </div>
+
+      <div class="card concept-card">
+        <span class="badge concept">🏷️ הרעיון המרכזי</span>
+        <p>בנקודת חיתוך <span class="ltr">f(x) = g(x)</span> - שני הגרפים "שווים". אז פשוט משווים בין שתי הנוסחאות ופותרים משוואה.</p>
+      </div>
+
+      ${thinkBox([
+        'משווים: f(x) = g(x).',
+        'מעבירים הכל אגף אחד ומסדרים כמשוואה ריבועית = 0.',
+        'פותרים (פירוק לגורמים או נוסחה) ומוצאים את ערכי ה-x.',
+        'מציבים כל x שמצאנו באחת הנוסחאות (הפשוטה - קרי g) כדי למצוא את ה-y.'
+      ])}
+
+      <div class="card">
+        <span class="badge practice">🧩 פותרים יחד, שלב אחר שלב</span>
+        <p class="muted">משווים: <span class="ltr">x² - 2x - 3 = x + 1</span></p>
+        <div id="m6-steps"></div>
+      </div>
+
+      <div class="card">
+        <span class="badge concept">🎓 הרחבה - כך זה נראה במבחן אמיתי</span>
+        <p>אחרי שמוצאים את נקודות החיתוך, שאלות רבות ממשיכות לבקש לחשב שטח משולש שנוצר מהנקודות. הנה דוגמה מלאה, פתורה בשבילך שלב-שלב:</p>
+        <div class="graph-box">
+          <canvas id="m6-canvas2" width="300" height="300"></canvas>
+        </div>
+        <p>נקודות החיתוך שמצאנו: <span class="ltr">A(-1,0)</span> ו-<span class="ltr">B(4,5)</span>. הישר <span class="ltr">g(x)=x+1</span> חותך את ציר ה-y בנקודה <span class="ltr">C(0,1)</span>.</p>
+        <p>נבנה משולש ABC ונחשב את שטחו בעזרת נוסחת שטח משולש לפי קואורדינטות (או פירוק לצורות מוכרות). זו בדיוק אותה שיטת חשיבה שנדרשת בשאלות הבחינה שלך על שטח משולש ABO / ABD.</p>
+      </div>
+
+      <div class="card" id="m6-practice"></div>
+      <div class="next-wrap" id="m6-next-wrap"></div>
+    `;
+    const f = x=> x*x-2*x-3, g = x=> x+1;
+    const g6 = new Graph($('#m6-canvas'), {xMin:-6,xMax:8,yMin:-6,yMax:8});
+    g6.clear(); g6.drawGrid();
+    g6.plotFn(f,'#4F46E5'); g6.plotFn(g,'#F59E0B');
+    g6.point(-1,0,'#0F9D6C',6,'A(-1,0)');
+    g6.point(4,5,'#0F9D6C',6,'B(4,5)');
+
+    const g6b = new Graph($('#m6-canvas2'), {xMin:-6,xMax:8,yMin:-6,yMax:8});
+    g6b.clear(); g6b.drawGrid();
+    g6b.plotFn(f,'#C7C4EE'); g6b.plotFn(g,'#FBDFA6');
+    g6b.segment(-1,0,4,5,'#0F9D6C');
+    g6b.segment(-1,0,0,1,'#0F9D6C');
+    g6b.segment(0,1,4,5,'#0F9D6C');
+    g6b.point(-1,0,'#0F9D6C',5,'A');
+    g6b.point(4,5,'#0F9D6C',5,'B');
+    g6b.point(0,1,'#0F9D6C',5,'C');
+
+    unlockTerms(['intersect']);
+
+    // guided scaffolded steps
+    const stepsHtml = `
+      <div class="qcard" id="s6-0">
+        <div class="qtext">אחרי שמעבירים הכל אגף אחד, מקבלים <span class="ltr">x² + bx + c = 0</span>. מה המקדם <span class="ltr">b</span>?</div>
+        <div class="qinput-row"><input type="text" id="s6-0-in"><button class="check-btn" id="s6-0-check">בדוק/י</button></div>
+        <div class="qfeedback" id="s6-0-fb"></div>
+      </div>
+      <div class="qcard" id="s6-1">
+        <div class="qtext">ומה האיבר החופשי <span class="ltr">c</span>?</div>
+        <div class="qinput-row"><input type="text" id="s6-1-in"><button class="check-btn" id="s6-1-check">בדוק/י</button></div>
+        <div class="qfeedback" id="s6-1-fb"></div>
+      </div>
+      <div class="qcard" id="s6-2">
+        <div class="qtext">הפירוק הנכון לגורמים של <span class="ltr">x² - 3x - 4</span> הוא:</div>
+        <div class="qoptions">
+          <button class="opt-btn" data-i="0"><span class="ltr">(x-4)(x+1)</span></button>
+          <button class="opt-btn" data-i="1"><span class="ltr">(x+4)(x-1)</span></button>
+          <button class="opt-btn" data-i="2"><span class="ltr">(x-2)(x+2)</span></button>
+        </div>
+        <div class="qfeedback" id="s6-2-fb"></div>
+      </div>
+      <div class="qcard" id="s6-3">
+        <div class="qtext">אם כך, מהו השורש הקטן?</div>
+        <div class="qinput-row"><input type="text" id="s6-3-in"><button class="check-btn" id="s6-3-check">בדוק/י</button></div>
+        <div class="qfeedback" id="s6-3-fb"></div>
+      </div>
+      <div class="qcard" id="s6-4">
+        <div class="qtext">ומה השורש הגדול?</div>
+        <div class="qinput-row"><input type="text" id="s6-4-in"><button class="check-btn" id="s6-4-check">בדוק/י</button></div>
+        <div class="qfeedback" id="s6-4-fb"></div>
+      </div>
+      <div class="qcard" id="s6-5">
+        <div class="qtext">מציבים ב-<span class="ltr">g(x)=x+1</span>: מהו ה-y עבור x=-1?</div>
+        <div class="qinput-row"><input type="text" id="s6-5-in"><button class="check-btn" id="s6-5-check">בדוק/י</button></div>
+        <div class="qfeedback" id="s6-5-fb"></div>
+      </div>
+      <div class="qcard" id="s6-6">
+        <div class="qtext">ומהו ה-y עבור x=4?</div>
+        <div class="qinput-row"><input type="text" id="s6-6-in"><button class="check-btn" id="s6-6-check">בדוק/י</button></div>
+        <div class="qfeedback" id="s6-6-fb"></div>
+      </div>
+    `;
+    $('#m6-steps').innerHTML = stepsHtml;
+    function simpleInputCheck(id, accepted, right, wrong){
+      const inp = $('#'+id+'-in'), btn = $('#'+id+'-check'), fb = $('#'+id+'-fb');
+      btn.addEventListener('click', ()=>{
+        if(checkNumeric(inp.value, accepted)){
+          fb.className='qfeedback show good'; fb.innerHTML='✅ '+right;
+          inp.disabled=true; btn.disabled=true;
+          STORE.solved[id]=true; saveState(); checkCapstone();
+        } else {
+          fb.className='qfeedback show bad'; fb.innerHTML='🤔 '+wrong+'<span class="again">נסה/י שוב</span>';
+          fb.querySelector('.again').addEventListener('click',()=>fb.classList.remove('show'));
+        }
+      });
+    }
+    simpleInputCheck('s6-0',[-3],'נכון, b=-3.','העבירי הכל אגף: x²-2x-3-x-1=0 &rarr; x²-3x-4=0.');
+    simpleInputCheck('s6-1',[-4],'נכון, c=-4.','אותו חישוב: -3-1=-4.');
+    (function(){
+      const card=$('#s6-2'); const fb=$('#s6-2-fb');
+      $all('.opt-btn',card).forEach((b,i)=>{
+        b.addEventListener('click',()=>{
+          $all('.opt-btn',card).forEach(x=>x.disabled=true);
+          if(i===0){ b.classList.add('correct'); fb.className='qfeedback show good';
+            fb.innerHTML='✅ נכון! (x-4)(x+1) = x²-3x-4.';
+            STORE.solved['s6-2']=true; saveState(); checkCapstone();
+          } else { b.classList.add('wrong'); fb.className='qfeedback show bad';
+            fb.innerHTML='🤔 בדקי: פותחים סוגריים ורואים אם מתקבל x²-3x-4.<span class="again">נסה/י שוב</span>';
+            fb.querySelector('.again').addEventListener('click',()=>{fb.classList.remove('show'); $all('.opt-btn',card).forEach(x=>{x.disabled=false;x.classList.remove('correct','wrong');});});
+          }
+        });
+      });
+    })();
+    simpleInputCheck('s6-3',[-1],'נכון, x=-1.','מ-(x+1)=0 מקבלים x=-1.');
+    simpleInputCheck('s6-4',[4],'נכון, x=4.','מ-(x-4)=0 מקבלים x=4.');
+    simpleInputCheck('s6-5',[0],'נכון, g(-1)=-1+1=0.','הציבי x=-1 בנוסחה g(x)=x+1.');
+    simpleInputCheck('s6-6',[5],'נכון, g(4)=4+1=5.','הציבי x=4 בנוסחה g(x)=x+1.');
+    function checkCapstone(){
+      const ids=['s6-0','s6-1','s6-2','s6-3','s6-4','s6-5','s6-6'];
+      if(ids.every(id=>STORE.solved[id])){
+        renderFinalQuestions();
+      }
+    }
+    checkCapstone();
+
+    function renderFinalQuestions(){
+      if($('#m6-practice').dataset.rendered) return;
+      $('#m6-practice').dataset.rendered = '1';
+      const questions = [
+        { type:'tf', text:'בהתבסס על <span class="ltr">f(x)=x²-2x-3</span> ו-<span class="ltr">g(x)=x+1</span>: מתקיים <span class="ltr">f(2) < g(2)</span>.', correct:true,
+          explainRight:'f(2)=4-4-3=-3, g(2)=2+1=3. אכן -3<3.',
+          explainWrong:'חשבי בנפרד: f(2)=2²-2×2-3, ו-g(2)=2+1, ואז השוואי.' },
+        { type:'tf', text:'לפונקציות <span class="ltr">f(x)</span> ו-<span class="ltr">g(x)</span> שלנו יש בדיוק שתי נקודות חיתוך.', correct:true,
+          explainRight:'בדיוק - מצאנו את A(-1,0) ואת B(4,5).',
+          explainWrong:'כמה פתרונות מצאנו למשוואה x²-3x-4=0?' },
+      ];
+      renderPracticeSection(questions, 6, $('#m6-practice'), ()=> completeModule(6, true));
+    }
+  }
+});
+
+/* ============ navigation / completion / boot ============ */
+function renderNextButton(moduleId){
+  const wrap = $(`#m${moduleId}-next-wrap`);
+  const isLast = moduleId === MODULES.length-1;
+  const done = STORE.completed[moduleId];
+  wrap.innerHTML = done
+    ? `<div class="celebrate">🌟 סיימת את השלב הזה! ${isLast? 'סיימת את כל המסע - כל הכבוד!' : ''}</div>
+       ${!isLast ? `<button class="next-btn" id="m${moduleId}-goto-next">לשלב הבא &larr;</button>` : ''}`
+    : `<p class="locked-note">ענו נכון על כל השאלות למעלה כדי לפתוח את השלב הבא. אין לחץ - אפשר לנסות כמה פעמים שצריך.</p>`;
+  if(done && !isLast){
+    $(`#m${moduleId}-goto-next`).addEventListener('click', ()=> goToModule(moduleId+1));
+  }
+}
+function completeModule(moduleId, silent){
+  if(!STORE.completed[moduleId]){
+    STORE.completed[moduleId] = true; saveState();
+  }
+  renderTrail();
+  renderNextButton(moduleId);
+}
+function renderTrail(){
+  const trail = $('#trail');
+  trail.innerHTML = MODULES.map(m=>{
+    const cls = ['trail-node'];
+    if(m.id===STORE.currentModule) cls.push('active');
+    if(STORE.completed[m.id]) cls.push('done');
+    return `<button class="${cls.join(' ')}" data-goto="${m.id}">
+      <span class="em">${STORE.completed[m.id] ? '✅' : m.emoji}</span>
+      <span>${m.short}</span>
+    </button>`;
+  }).join('');
+  $all('[data-goto]', trail).forEach(b=> b.addEventListener('click', ()=> goToModule(parseInt(b.dataset.goto,10))));
+}
+function goToModule(id){
+  STORE.currentModule = id; saveState();
+  renderTrail();
+  const container = $('#content');
+  container.innerHTML = '';
+  MODULES[id].render(container);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* boot: intro screen if first time, else resume last module */
+function boot(){
+  renderTrail();
+  goToModule(STORE.currentModule);
+}
+boot();
+</script>
 </body>
 </html>
