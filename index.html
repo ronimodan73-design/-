@@ -534,6 +534,53 @@ function thinkBox(steps, hint){
   </details>`;
 }
 
+/* ============ reusable guided (scaffolded) step helpers ============
+   Used to build "thinking ladders" - short chains of small steps, each
+   checked and explained immediately, that walk up to a harder question
+   instead of just asking it cold. */
+function gInputCard(id, text){
+  return `<div class="qcard" id="${id}"><div class="qtext">${text}</div>
+    <div class="qinput-row"><input type="text" id="${id}-in"><button class="check-btn" id="${id}-check">בדוק/י</button></div>
+    <div class="qfeedback" id="${id}-fb"></div></div>`;
+}
+function gMCCard(id, text, options){
+  return `<div class="qcard" id="${id}"><div class="qtext">${text}</div>
+    <div class="qoptions">${options.map((o,i)=>`<button class="opt-btn" data-i="${i}">${o}</button>`).join('')}</div>
+    <div class="qfeedback" id="${id}-fb"></div></div>`;
+}
+function gInput(id, accepted, right, wrong, onSolved){
+  const inp = $('#'+id+'-in'), btn = $('#'+id+'-check'), fb = $('#'+id+'-fb');
+  btn.addEventListener('click', ()=>{
+    if(checkNumeric(inp.value, accepted)){
+      fb.className='qfeedback show good'; fb.innerHTML='✅ '+right;
+      inp.disabled=true; btn.disabled=true;
+      STORE.solved[id]=true; saveState(); if(onSolved) onSolved();
+    } else {
+      fb.className='qfeedback show bad'; fb.innerHTML='🤔 '+wrong+'<span class="again">נסה/י שוב</span>';
+      fb.querySelector('.again').addEventListener('click',()=>fb.classList.remove('show'));
+    }
+  });
+}
+function gMC(id, correctIndex, right, wrong, onSolved){
+  const card = $('#'+id); const fb = $('#'+id+'-fb');
+  $all('.opt-btn',card).forEach((b,i)=>{
+    b.addEventListener('click',()=>{
+      $all('.opt-btn',card).forEach(x=>x.disabled=true);
+      if(i===correctIndex){
+        b.classList.add('correct'); fb.className='qfeedback show good'; fb.innerHTML='✅ '+right;
+        STORE.solved[id]=true; saveState(); if(onSolved) onSolved();
+      } else {
+        b.classList.add('wrong'); fb.className='qfeedback show bad';
+        fb.innerHTML='🤔 '+wrong+'<span class="again">נסה/י שוב</span>';
+        fb.querySelector('.again').addEventListener('click',()=>{fb.classList.remove('show'); $all('.opt-btn',card).forEach(x=>{x.disabled=false;x.classList.remove('correct','wrong');});});
+      }
+    });
+  });
+}
+function ladderCard(badgeText){
+  return `<span class="badge explore">🪜 ${badgeText}</span>`;
+}
+
 /* ============ MODULES ============ */
 const MODULES = [];
 
@@ -581,6 +628,14 @@ MODULES.push({
         </ul>
       </div>
 
+      <div class="card">
+        ${ladderCard('מדרגת חשיבה: לבדוק פונקציה משני הכיוונים')}
+        <p class="muted">נסתכל על ההתאמה: <b>תלמיד &larr; מספר הנעל שהוא נועל</b>.</p>
+        <div id="m0-ladder-a"></div>
+        <p class="muted">עכשיו נהפוך את הכיוון: <b>מספר נעל &larr; כל התלמידים שנועלים את המידה הזו</b>.</p>
+        <div id="m0-ladder-b"></div>
+      </div>
+
       ${thinkBox([
         'מה הקלט (x) ומה הפלט (y) במצב הזה?',
         'לכל קלט - האם באמת יוצא רק פלט אחד תמיד?',
@@ -603,6 +658,19 @@ MODULES.push({
 
     unlockTerms(['func','domain','range']);
 
+    $('#m0-ladder-a').innerHTML =
+      gMCCard('m0-l0','מה הקלט (x) בהתאמה הזו?', ['תלמיד','מספר הנעל','שניהם ביחד']) +
+      gMCCard('m0-l1','האם לכל תלמיד יש בכל רגע נתון מספר נעל אחד וקבוע?', ['כן','לא']) +
+      gMCCard('m0-l2','אז ההתאמה תלמיד &larr; מספר נעל היא...', ['פונקציה','לא פונקציה']);
+    $('#m0-ladder-b').innerHTML =
+      gMCCard('m0-l3','האם למספר נעל אחד (למשל 38) יכולים להתאים כמה תלמידים שונים?', ['כן, בהחלט','לא, רק תלמיד אחד בעולם']) +
+      gMCCard('m0-l4','אז ההתאמה מספר נעל &larr; תלמידים היא...', ['פונקציה','לא פונקציה']);
+    gMC('m0-l0',0,'נכון - התלמיד הוא הקלט, ומספר הנעל הוא הפלט שמתקבל ממנו.','חשבי מה "נכנס" להתאמה קודם - התלמיד או המספר?');
+    gMC('m0-l1',0,'בדיוק - בכל רגע נתון יש לו מידה קבועה אחת.','זו העובדה הכי חשובה כדי לדעת אם זו פונקציה.');
+    gMC('m0-l2',0,'נכון! לכל קלט (תלמיד) יש פלט אחד ויחיד (מידה) - זו פונקציה.','לכל תלמיד יש מידת נעל אחת קבועה - זה בדיוק התנאי לפונקציה.');
+    gMC('m0-l3',0,'בדיוק - הרבה תלמידים יכולים לנעול אותה מידה.','חשבי כמה תלמידים בכיתה שלך נועלים בערך את אותה מידה.');
+    gMC('m0-l4',1,'נכון! לקלט אחד (מידה) יש כמה פלטים אפשריים (תלמידים) - זו לא פונקציה.','אם למספר נעל אחד יש כמה תלמידים אפשריים, זה לא "פלט יחיד" - וזה שובר את הכלל.');
+
     const questions = [
       { type:'tf', text:'עיגול שלם (מעגל) שמצויר בגרף יכול לייצג פונקציה.', correct:false,
         explainRight:'נכון שזה שגוי! בעיגול יש מקומות שקו אנכי חותך אותו בשתי נקודות - אז לאותו x יש שני y. זה לא פונקציה.',
@@ -618,6 +686,13 @@ MODULES.push({
         options:['כל ערכי ה-x שמותר להציב בפונקציה','כל ערכי ה-y שיוצאים','שם המשוואה','הגרף עצמו'],
         explainRight:'בדיוק - התחום הוא כל הקלטים המותרים.',
         explainWrong:'תחום = קלטים (x). טווח = פלטים (y). שווה לזכור את הסדר: x נכנס - לכן x=תחום.' },
+      { type:'mc', text:'ב-x=קלט ו-y=פלט, מה נכון?', correctIndex:0,
+        options:['x הוא מה שמכניסים, y הוא מה שיוצא','y הוא מה שמכניסים, x הוא מה שיוצא','אין הבדל ביניהם','x ו-y תמיד שווים'],
+        explainRight:'x נכנס למכונה (הפונקציה), y יוצא ממנה.',
+        explainWrong:'תזכרי איזה אות "נכנסת" למכונה קודם.' },
+      { type:'tf', text:'בפונקציה, יכול להיות ששני ערכי x שונים ייתנו בדיוק אותו ערך y.', correct:true,
+        explainRight:'נכון! למשל אם f(x)=x², אז f(2)=4 וגם f(-2)=4 - שני קלטים שונים, פלט זהה. זה מותר - האיסור הוא רק על קלט אחד עם שני פלטים.',
+        explainWrong:'חשבי על f(x)=x²: כמה שווה f(2)? וכמה שווה f(-2)? הם יכולים להיות שווים למרות ש-x שונה.' },
     ];
     renderPracticeSection(questions, 0, $('#m0-practice'), ()=> completeModule(0));
     renderNextButton(0);
@@ -654,6 +729,12 @@ MODULES.push({
         <p><span class="ltr">f(2)</span> = "מציבים 2 במקום x בנוסחה של f, ומחשבים." זה מספר, בדיוק כמו y.</p>
       </div>
 
+      <div class="card">
+        ${ladderCard('מדרגת חשיבה: הצבה עם סימן מינוס וריבוע')}
+        <p class="muted">עבור <span class="ltr">f(x) = -x² + 4</span>, נחשב יחד את <span class="ltr">f(-2)</span> - צעד אחר צעד, כי כאן קל לטעות בסימן.</p>
+        <div id="m1-ladder"></div>
+      </div>
+
       ${thinkBox([
         'תזהי מה כתוב בתוך הסוגריים - זה הערך שמציבים במקום x.',
         'החליפי כל x בביטוי בערך הזה (בזהירות עם סימנים!).',
@@ -678,6 +759,14 @@ MODULES.push({
     update();
     unlockTerms(['fx']);
 
+    $('#m1-ladder').innerHTML =
+      gInputCard('m1-l0','שלב 1: קודם מחשבים את מה שבתוך הריבוע: (-2)² שווה...') +
+      gInputCard('m1-l1','שלב 2: עכשיו שמים מינוס לפני התוצאה: -(4) שווה...') +
+      gInputCard('m1-l2','שלב 3: לבסוף מוסיפים 4: מה שווה f(-2)?');
+    gInput('m1-l0',[4],'(-2)²=4 - ריבוע של מספר שלילי הוא תמיד חיובי.','(-2)² = (-2)×(-2). כפל של שני שליליים נותן חיובי.', ()=>{});
+    gInput('m1-l1',[-4],'-(4)=-4. שימי לב: המינוס בא אחרי הריבוע, לא לפני.','המינוס בנוסחה f(x)=-x²+4 חל על כל הביטוי x², אחרי שכבר העלינו בריבוע.', ()=>{});
+    gInput('m1-l2',[0],'f(-2) = -4+4 = 0. יפה, סיימת חישוב עם שלושה שלבים!','-4 ועוד 4 שווה...', ()=>{});
+
     const questions = [
       { type:'input', text:'עבור <span class="ltr">f(x)=2x-3</span>, כמה שווה <span class="ltr">f(5)</span>?', accepted:[7],
         explainRight:'2×5-3 = 10-3 = 7. ', explainWrong:'הציבי 5 במקום x: 2×5, ואז תחסירי 3.' },
@@ -689,6 +778,9 @@ MODULES.push({
         options:['את ערך הפונקציה f כאשר x=2','את המספר 2 בלבד','שם של פונקציה חדשה','תמיד את המספר 0'],
         explainRight:'בדיוק - זה הערך שמתקבל כאשר מציבים x=2.',
         explainWrong:'הסוגריים לא "כפל" - הם אומרים באיזה x מציבים.' },
+      { type:'input', text:'עבור <span class="ltr">f(x)=2x-3</span>: אם <span class="ltr">f(a)=11</span>, מה שווה <span class="ltr">a</span>?', accepted:[7],
+        explainRight:'2a-3=11 &rarr; 2a=14 &rarr; a=7. אותו רעיון כמו קודם, רק עם אות אחרת במקום x.',
+        explainWrong:'זו בדיוק אותה משוואה כמו f(x)=9 למעלה, רק שהאות נקראת a: 2a-3=11.' },
     ];
     renderPracticeSection(questions, 1, $('#m1-practice'), ()=> completeModule(1));
     renderNextButton(1);
@@ -728,6 +820,12 @@ MODULES.push({
         </div>
       </div>
 
+      <div class="card">
+        ${ladderCard('מדרגת חשיבה: משווים בלי לחשב מספרים')}
+        <p class="muted">אותו גרף אדום. הפעם לא נחשב - רק נשווה גבהים.</p>
+        <div id="m2-ladder"></div>
+      </div>
+
       ${thinkBox([
         'מצאי על ציר ה-x את הנקודה שנשאלת, ותעלי אנכית עד שתפגשי את הגרף.',
         'משם תרדי/תעלי אופקית עד ציר ה-y - זה הערך שמבקשים.',
@@ -762,6 +860,14 @@ MODULES.push({
     g2.point(2,4,'#0F9D6C',5);
     g2.point(0,0,'#4F46E5',4); g2.point(4,0,'#4F46E5',4);
 
+    $('#m2-ladder').innerHTML =
+      gMCCard('m2-l0','על ציר ה-x, מי קרוב יותר לפסגה (x=2): x=0 או x=3?', ['x=3 (מרחק 1 מהפסגה)','x=0 (מרחק 2 מהפסגה)']) +
+      gMCCard('m2-l1','ככל שמתקרבים לפסגה בפרבולה הזו, הגובה y...', ['גדל','קטן']) +
+      gMCCard('m2-l2','אז בלי לחשב שום מספר - מי גדול יותר: f(0) או f(3)?', ['f(3)','f(0)','הם שווים']);
+    gMC('m2-l0',0,'נכון - המרחק מ-3 עד 2 הוא רק 1, לעומת מרחק 2 מ-0 עד 2.','חשבי במספרים: |3-2| לעומת |0-2|.', ()=>{});
+    gMC('m2-l1',0,'בדיוק - זו בדיוק ההגדרה של "פסגה": הנקודה הכי גבוהה מסביב.','תסתכלי בגרף - כשמתקרבים לפסגה מכל צד, האם עולים או יורדים?', ()=>{});
+    gMC('m2-l2',0,'נכון! בלי לחשב שום מספר, ידענו את זה רק מהמרחק מהפסגה. (למי שסקרן: f(0)=0, f(3)=3)','x=3 קרוב יותר לפסגה מ-x=0, ולכן f(3) גבוה יותר.', ()=>{});
+
     const questions = [
       { type:'input', text:'לפי הגרף האדום, מה הערך הכי גבוה (המקסימלי) שהפונקציה מגיעה אליו?', accepted:[4],
         explainRight:'הנקודה הכי גבוהה על העקומה נמצאת בגובה y=4.',
@@ -776,6 +882,10 @@ MODULES.push({
         options:['עולה (y גדל ככל שx גדל)','יורדת','נשארת קבועה','לא ניתן לדעת'],
         explainRight:'עד לפסגה ב-x=2 העקומה מטפסת - זו עלייה.',
         explainWrong:'עקבי עם האצבע על העקומה משמאל לימין עד x=2 - היא עולה או יורדת?' },
+      { type:'mc', text:'מהו תחום ההגדרה (x-ים המותרים) של הפונקציה בגרף האדום?', correctIndex:0,
+        options:['כל x האפשרי (כל הממשיים)','רק x בין 0 ל-4','רק x חיוביים','רק x=2'],
+        explainRight:'זו פרבולה רגילה - מותר להציב בה כל x, גם אם על המסך רואים רק חלק מהגרף.',
+        explainWrong:'תחום ההגדרה הוא מגבלה על אילו x מותר להציב - לא על כמה מהגרף נראה על המסך.' },
     ];
     renderPracticeSection(questions, 2, $('#m2-practice'), ()=> completeModule(2));
     renderNextButton(2);
@@ -818,6 +928,12 @@ MODULES.push({
         <p>שיפוע בין שתי נקודות: <span class="ltr">m = (y₂-y₁) / (x₂-x₁)</span></p>
       </div>
 
+      <div class="card">
+        ${ladderCard('מדרגת חשיבה: ישר מקביל דרך נקודה')}
+        <p class="muted">מבקשים: משוואת הישר המקביל ל-<span class="ltr">y=2x+1</span>, שעובר דרך הנקודה <span class="ltr">(3,5)</span>.</p>
+        <div id="m3-ladder"></div>
+      </div>
+
       ${thinkBox([
         'יש לי שתי נקודות? קודם אחשב שיפוע: (הפרש ה-y) חלקי (הפרש ה-x).',
         'אז אציב נקודה אחת בנוסחה y=mx+b כדי למצוא את b.',
@@ -845,6 +961,14 @@ MODULES.push({
     draw();
     unlockTerms(['slope','yint']);
 
+    $('#m3-ladder').innerHTML =
+      gMCCard('m3-l0','ישר מקביל לישר אחר תמיד יש לו אותו...', ['שיפוע (m)','חיתוך עם ציר y (b)','שני הדברים']) +
+      gInputCard('m3-l1','אז m=2 (כמו בישר הנתון). מציבים את הנקודה (3,5) ב-y=2x+b: מה שווה b?') +
+      gMCCard('m3-l2','אם כך, מהי משוואת הישר המקביל?', ['y=2x-1','y=2x+5','y=3x+2']);
+    gMC('m3-l0',0,'נכון - ישרים מקבילים "עולים" באותו קצב, אז יש להם אותו שיפוע.','שני ישרים מקבילים לעולם לא נפגשים - זה קורה כי הם עולים באותו קצב בדיוק.', ()=>{});
+    gInput('m3-l1',[-1],'5=2×3+b &rarr; 5=6+b &rarr; b=-1.','הציבי x=3,y=5 בנוסחה y=2x+b: 5=2×3+b.', ()=>{});
+    gMC('m3-l2',0,'עם m=2 ו-b=-1 מקבלים בדיוק y=2x-1.','חברי את ה-m וה-b שמצאנו לנוסחה y=mx+b.', ()=>{});
+
     const questions = [
       { type:'input', text:'מה השיפוע (m) של הישר <span class="ltr">y = 3x - 2</span>?', accepted:[3],
         explainRight:'המספר שצמוד ל-x הוא תמיד השיפוע.', explainWrong:'בנוסחה y=mx+b, השיפוע הוא המקדם שכפול x.' },
@@ -860,6 +984,9 @@ MODULES.push({
         options:['y=7x+1','y=-x+7','y=-7x+7','y=7x-1'],
         explainRight:'שיפוע = (0-7)/(1-0)=-7, וב-x=0 מתקבל y=7 (הנקודה A). לכן y=-7x+7.',
         explainWrong:'קודם חשבי שיפוע: (0-7)/(1-0). אז בדקי מה ה-b, לפי הנקודה A שבה x=0.' },
+      { type:'input', text:'נתונות הנקודות A(0,3) ו-B(4,1). מה השיפוע של הישר ביניהן? (יכול לצאת שבר עשרוני)', accepted:[-0.5],
+        explainRight:'(1-3)/(4-0) = -2/4 = -0.5. שיפוע לא חייב להיות מספר שלם.',
+        explainWrong:'שיפוע = (הפרש y) חלקי (הפרש x) = (1-3)/(4-0). זה בסדר שהתשובה יוצאת שבר.' },
     ];
     renderPracticeSection(questions, 3, $('#m3-practice'), ()=> completeModule(3));
     renderNextButton(3);
@@ -919,6 +1046,12 @@ MODULES.push({
         <p>הרבה תלמידים טועים וחושבים שב-<span class="ltr">(x+1)²</span> ה-h הוא 1. בעצם h=-1, כי <span class="ltr">x+1 = x-(-1)</span>.</p>
       </div>
 
+      <div class="card">
+        ${ladderCard('מדרגת חשיבה: גם בלי צורת קודקוד')}
+        <p class="muted">בבחינה הפונקציה לרוב נתונה כך: <span class="ltr">f(x) = x² - 6x + 8</span> (בלי h,k מפורשים). יש נוסחה קצרה שמוצאת את הקודקוד ישר משם: <span class="ltr">h = -b/(2a)</span>.</p>
+        <div id="m4-ladder"></div>
+      </div>
+
       <div class="card" id="m4-practice"></div>
       <div class="next-wrap" id="m4-next-wrap"></div>
     `;
@@ -938,6 +1071,14 @@ MODULES.push({
     draw();
     unlockTerms(['vertex','axis','roots']);
 
+    $('#m4-ladder').innerHTML =
+      gInputCard('m4-l0','עבור f(x)=x²-6x+8: כאן a=1, b=-6. לפי h=-b/(2a), מה שווה h?') +
+      gInputCard('m4-l1','עכשיו מציבים את ה-h שמצאתן בחזרה בפונקציה כדי למצוא k=f(h). מה k?') +
+      gMCCard('m4-l2','אם כך, מהו הקודקוד?', ['(3,-1)','(-3,-1)','(3,1)']);
+    gInput('m4-l0',[3],'h = -(-6)/(2×1) = 6/2 = 3.','h = -b/(2a) = -(-6)/(2×1).', ()=>{});
+    gInput('m4-l1',[-1],'f(3) = 9-18+8 = -1.','הציבו x=3 בנוסחה x²-6x+8: 3²-6×3+8.', ()=>{});
+    gMC('m4-l2',0,'בדיוק - הקודקוד הוא (h,k) = (3,-1).','חברו את ה-h וה-k שמצאתן.', ()=>{});
+
     const questions = [
       { type:'mc', text:'לפרבולה <span class="ltr">f(x) = (x+1)² - 4</span> יש קודקוד ב...', correctIndex:0,
         options:['(-1,-4)','(1,-4)','(-1,4)','(1,4)'],
@@ -954,6 +1095,10 @@ MODULES.push({
         explainWrong:'פתרי: (x-2)²=9, כלומר x-2=3 או x-2=-3.' },
       { type:'input', text:'ומה השורש הגדול יותר?', accepted:[5],
         explainRight:'x-2=3 נותן x=5.', explainWrong:'אחד הפתרונות הוא x-2=3.' },
+      { type:'input', text:'ולסיום, בואי נמצא גם את השורשים של <span class="ltr">f(x) = x² - 6x + 8</span> מהמדרגה למעלה. מה השורש הקטן? (רמז: פרקו לגורמים - שני מספרים שסכומם -6 ומכפלתם 8)', accepted:[2],
+        explainRight:'x²-6x+8 = (x-2)(x-4), ולכן x=2 או x=4.', explainWrong:'חפשו שני מספרים שסכומם -6 ומכפלתם 8: הם -2 ו-4.' },
+      { type:'input', text:'ומה השורש הגדול של אותה פונקציה?', accepted:[4],
+        explainRight:'(x-2)(x-4)=0 נותן x=2 או x=4.', explainWrong:'השורש השני של (x-2)(x-4)=0.' },
     ];
     renderPracticeSection(questions, 4, $('#m4-practice'), ()=> completeModule(4));
     renderNextButton(4);
@@ -988,6 +1133,12 @@ MODULES.push({
         <p><b>חיובית/שלילית</b> = מסתכלים אם הגרף נמצא מעל ציר ה-x (y&gt;0) או מתחתיו (y&lt;0).</p>
       </div>
 
+      <div class="card">
+        ${ladderCard('מדרגת חשיבה: קובעים סימן לפי גורמים, בלי לצייר')}
+        <p class="muted">עבור <span class="ltr">f(x) = x² - 6x + 8 = (x-2)(x-4)</span>, אפשר לדעת את הסימן בכל נקודה בלי גרף - רק לפי סימני הגורמים.</p>
+        <div id="m5-ladder"></div>
+      </div>
+
       ${thinkBox([
         'לעלייה/ירידה: תעקבי עם האצבע משמאל לימין - y עולה או יורד?',
         'לחיוביות/שליליות: תסתכלי רק אם העקומה מעל או מתחת לציר ה-x.',
@@ -1014,6 +1165,16 @@ MODULES.push({
     tS.addEventListener('input', draw);
     draw();
     unlockTerms(['incdec','possign']);
+
+    $('#m5-ladder').innerHTML =
+      gMCCard('m5-l0','ב-x=3: הגורם (x-2)=1 (חיובי), והגורם (x-4)=-1 (שלילי). מכפלה של חיובי ושלילי היא...', ['שלילית','חיובית']) +
+      gMCCard('m5-l1','אז f(3) הוא...', ['שלילי (מתחת לציר)','חיובי (מעל הציר)']) +
+      gMCCard('m5-l2','עכשיו ב-x=10: (x-2)=8 (חיובי), (x-4)=6 (חיובי). מכפלה של שני חיוביים היא...', ['חיובית','שלילית']) +
+      gMCCard('m5-l3','אז f(10) הוא...', ['חיובי (מעל הציר)','שלילי (מתחת לציר)']);
+    gMC('m5-l0',0,'נכון - חיובי כפול שלילי תמיד נותן שלילי.','חיובי × שלילי = שלילי, בכל מקרה.', ()=>{});
+    gMC('m5-l1',0,'בדיוק - וזה קורה כי x=3 נמצא בין שני השורשים (2 ו-4).','המכפלה שחישבנו שלילית, ולכן גם f(3) שלילי.', ()=>{});
+    gMC('m5-l2',0,'נכון - חיובי כפול חיובי תמיד נותן חיובי.','שני מספרים חיוביים, מכפלתם תמיד חיובית.', ()=>{});
+    gMC('m5-l3',0,'בדיוק - x=10 נמצא מחוץ לתחום שבין השורשים, ושם הפונקציה חיובית.','המכפלה שחישבנו חיובית, ולכן גם f(10) חיובי.', ()=>{});
 
     const questions = [
       { type:'mc', text:'עבור <span class="ltr">f(x) = -(x-2)²+4</span>, תחום העלייה הוא:', correctIndex:0,
@@ -1056,8 +1217,17 @@ MODULES.push({
         fb.querySelector('.again').addEventListener('click', ()=> fb.classList.remove('show'));
       }
     });
+    const q5extra = { type:'mc', text:'לפי אותה שיטה (סימני גורמים): מהו הסימן של <span class="ltr">g(x)=(x-1)(x-5)</span> בנקודה <span class="ltr">x=3</span>?', correctIndex:0,
+      options:['שלילי','חיובי','אי אפשר לדעת בלי גרף'],
+      explainRight:'ב-x=3: (3-1)=2 חיובי, (3-5)=-2 שלילי. חיובי כפול שלילי = שלילי.',
+      explainWrong:'בדקי כל גורם בנפרד ב-x=3: (3-1) ו-(3-5), ואז הכפילי את הסימנים.' };
+    const q5extraWrap = document.createElement('div');
+    q5extraWrap.innerHTML = questionHtml(q5extra, 'q-5-4');
+    $('#m5-practice').appendChild(q5extraWrap);
+    attachQuestion(q5extra, 'q-5-4', 5, ()=>checkModule5());
+
     function checkModule5(){
-      const ids = ['q-5-0','q-5-1','q-5-2','q-5-3'];
+      const ids = ['q-5-0','q-5-1','q-5-2','q-5-3','q-5-4'];
       if(ids.every(id=>STORE.solved[id])) completeModule(5);
     }
     checkModule5();
@@ -1103,12 +1273,12 @@ MODULES.push({
 
       <div class="card">
         <span class="badge concept">🎓 הרחבה - כך זה נראה במבחן אמיתי</span>
-        <p>אחרי שמוצאים את נקודות החיתוך, שאלות רבות ממשיכות לבקש לחשב שטח משולש שנוצר מהנקודות. הנה דוגמה מלאה, פתורה בשבילך שלב-שלב:</p>
+        <p>אחרי שמוצאים את נקודות החיתוך, שאלות רבות ממשיכות לבקש לחשב שטח משולש שנוצר מהנקודות וראשית הצירים - בדיוק כמו שאלות ΔABO בתרגילים שלך. בואי נחשב יחד, שלב-שלב:</p>
         <div class="graph-box">
           <canvas id="m6-canvas2" width="300" height="300"></canvas>
         </div>
-        <p>נקודות החיתוך שמצאנו: <span class="ltr">A(-1,0)</span> ו-<span class="ltr">B(4,5)</span>. הישר <span class="ltr">g(x)=x+1</span> חותך את ציר ה-y בנקודה <span class="ltr">C(0,1)</span>.</p>
-        <p>נבנה משולש ABC ונחשב את שטחו בעזרת נוסחת שטח משולש לפי קואורדינטות (או פירוק לצורות מוכרות). זו בדיוק אותה שיטת חשיבה שנדרשת בשאלות הבחינה שלך על שטח משולש ABO / ABD.</p>
+        <p>נקודות החיתוך שמצאנו: <span class="ltr">A(-1,0)</span> ו-<span class="ltr">B(4,5)</span>. שתיהן, יחד עם ראשית הצירים <span class="ltr">O(0,0)</span>, בונות משולש <span class="ltr">ABO</span>. שימי לב: A ו-O שתיהן על ציר ה-x - זה הופך את החישוב לפשוט במיוחד.</p>
+        <div id="m6-area-steps"></div>
       </div>
 
       <div class="card" id="m6-practice"></div>
@@ -1125,11 +1295,12 @@ MODULES.push({
     g6b.clear(); g6b.drawGrid();
     g6b.plotFn(f,'#C7C4EE'); g6b.plotFn(g,'#FBDFA6');
     g6b.segment(-1,0,4,5,'#0F9D6C');
-    g6b.segment(-1,0,0,1,'#0F9D6C');
-    g6b.segment(0,1,4,5,'#0F9D6C');
+    g6b.segment(-1,0,0,0,'#0F9D6C');
+    g6b.segment(0,0,4,5,'#0F9D6C');
+    g6b.segment(4,5,4,0,'#C7C4EE',[3,3]);
     g6b.point(-1,0,'#0F9D6C',5,'A');
     g6b.point(4,5,'#0F9D6C',5,'B');
-    g6b.point(0,1,'#0F9D6C',5,'C');
+    g6b.point(0,0,'#0F9D6C',5,'O');
 
     unlockTerms(['intersect']);
 
@@ -1210,8 +1381,17 @@ MODULES.push({
     simpleInputCheck('s6-4',[4],'נכון, x=4.','מ-(x-4)=0 מקבלים x=4.');
     simpleInputCheck('s6-5',[0],'נכון, g(-1)=-1+1=0.','הציבי x=-1 בנוסחה g(x)=x+1.');
     simpleInputCheck('s6-6',[5],'נכון, g(4)=4+1=5.','הציבי x=4 בנוסחה g(x)=x+1.');
+
+    $('#m6-area-steps').innerHTML =
+      gInputCard('s6-7','שלב 1: מה אורך הבסיס AO? (המרחק על ציר ה-x בין x=-1 ל-x=0)') +
+      gInputCard('s6-8','שלב 2: מה הגובה - המרחק האנכי מנקודה B לציר ה-x (קו הבסיס)?') +
+      gInputCard('s6-9','שלב 3: שטח המשולש = ½ × בסיס × גובה = כמה?');
+    gInput('s6-7',[1],'המרחק בין x=-1 ל-x=0 הוא 1.','AO נמצא על ציר ה-x, בין x=-1 ל-x=0.', checkCapstone);
+    gInput('s6-8',[5],'B נמצאת בגובה y=5, וזה בדיוק המרחק האנכי שלה מציר ה-x.','הגובה הוא ערך ה-y של B, כי הבסיס נמצא על ציר ה-x.', checkCapstone);
+    gInput('s6-9',[2.5],'½ × 1 × 5 = 2.5. בדיוק כמו שמחשבים שטח משולש ABO בבחינה.','½ כפול הבסיס (1) כפול הגובה (5).', checkCapstone);
+
     function checkCapstone(){
-      const ids=['s6-0','s6-1','s6-2','s6-3','s6-4','s6-5','s6-6'];
+      const ids=['s6-0','s6-1','s6-2','s6-3','s6-4','s6-5','s6-6','s6-7','s6-8','s6-9'];
       if(ids.every(id=>STORE.solved[id])){
         renderFinalQuestions();
       }
@@ -1400,6 +1580,9 @@ MODULES.push({
               options:['x<1','x>1','כל x','אין תחום עלייה'],
               explainRight:'a שלילי - עולה עד הקודקוד ב-x=1, ואז יורדת.',
               explainWrong:'בפרבולה "עצובה", העלייה היא לפני הקודקוד.' },
+            { type:'input', text:'שאלת סיכום: מה שטח המשולש שנוצר בין שני השורשים של g(x) לבין ציר ה-y? (רמז: בסיס = המרחק בין השורשים, גובה = ערך החיתוך עם ציר y)', accepted:[6],
+              explainRight:'בסיס = |3-(-1)|=4, גובה = |g(0)|=3, שטח = ½×4×3 = 6. בדיוק אותה שיטה שתרגלנו עם משולש ABO.',
+              explainWrong:'קודם מצאי בסיס = המרחק בין שני השורשים (-1 ל-3), ואז גובה = ערך החיתוך עם ציר y. שטח = ½×בסיס×גובה.' },
           ];
           renderPracticeSection(questions, 7, $('#m7-practice-qs'), ()=> completeModule(7, true));
         }
