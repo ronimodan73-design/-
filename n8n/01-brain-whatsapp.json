@@ -1,0 +1,433 @@
+{
+  "name": "המוח — עוזרת אישית בוואטסאפ",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["messages"]
+      },
+      "id": "trg-wa-001",
+      "name": "הודעה נכנסת בוואטסאפ",
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [-360, 300],
+      "webhookId": "roni-brain-webhook",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "WA_TRIGGER_CRED",
+          "name": "WhatsApp — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "מספר_שולח",
+              "value": "={{ $json.messages[0].from }}",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "סוג_הודעה",
+              "value": "={{ $json.messages[0].type }}",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "טקסט",
+              "value": "={{ $json.messages[0].text?.body || $json.messages[0].caption || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "a4",
+              "name": "מזהה_מדיה",
+              "value": "={{ $json.messages[0].image?.id || $json.messages[0].audio?.id || $json.messages[0].document?.id || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-parse-001",
+      "name": "פירוק ההודעה",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-140, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c1",
+                    "leftValue": "={{ $json.סוג_הודעה }}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "תמונה"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c2",
+                    "leftValue": "={{ $json.סוג_הודעה }}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "הקלטה"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "טקסט"
+        }
+      },
+      "id": "switch-001",
+      "name": "מה קיבלנו?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [80, 300]
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.מזהה_מדיה }}"
+      },
+      "id": "wa-media-img",
+      "name": "הורדת התמונה",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [320, 140],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "WA_CRED",
+          "name": "WhatsApp — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=את/ה בודק/ת מבחנים במתמטיקה עבור רוני, מורה למתמטיקה בחטיבת ביניים.\n\nלפניך תמונה של מבחן או דף עבודה של תלמיד.\n\nמשימתך:\n1. זהה את שם התלמיד אם מופיע.\n2. עבור על כל שאלה: מה התלמיד ענה, האם נכון, ואם לא — מה בדיוק הטעות.\n3. תן ניקוד לכל שאלה והצע ציון סופי.\n4. סיים בשורה אחת: מה הפער המרכזי של התלמיד ומה כדאי לתרגל איתו.\n\nכתוב בעברית, קצר וברור, בלי מבוא ובלי סיכומים מיותרים. זו תשובה שנקראת בוואטסאפ בטלפון — שורות קצרות, בלי טבלאות.\n\nהערה של רוני על הבדיקה (אם יש): {{ $('פירוק ההודעה').item.json.טקסט }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gemini-vision",
+      "name": "בדיקת המבחן",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [540, 140],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED",
+          "name": "Gemini — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.מזהה_מדיה }}"
+      },
+      "id": "wa-media-audio",
+      "name": "הורדת ההקלטה",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [320, 460],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "WA_CRED",
+          "name": "WhatsApp — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=תמלל את ההקלטה בעברית, ואז סכם אותה כסיכום פגישה מקצועי:\n\n*נושא הפגישה:*\n*משתתפים:* (אם נאמרו)\n*עיקרי הדברים:* (3-6 נקודות)\n*החלטות:*\n*מה רוני צריכה לעשות:* (משימות עם תאריך אם נאמר)\n\nכתוב בעברית בלבד. אם ההקלטה קצרה או לא ברורה — אמור זאת במשפט אחד ואל תמציא."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gemini-audio",
+      "name": "סיכום הפגישה",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [540, 460],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED",
+          "name": "Gemini — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.טקסט }}",
+        "options": {
+          "systemMessage": "=את העוזרת האישית של רוני מודן, מורה למתמטיקה בחטיבת ביניים בישראל.\n\nרוני מדברת אליך בוואטסאפ, במשפטים חופשיים, לפעמים עם שגיאות כתיב ובלי פיסוק. תביני את הכוונה — אל תבקשי ממנה לנסח מחדש.\n\n== מה את יודעת לעשות ==\nיש לך כלים. השתמשי בהם בלי לשאול רשות:\n- יומן גוגל: לקרוא מה יש לרוני היום/מחר/השבוע, ולקבוע אירועים ותזכורות\n- מייל: לשלוח מיילים בשמה\n- Google Docs: ליצור מסמכים (מערכי שיעור, דפי עבודה, מכתבים להורים, סיכומים)\n- Google Sheets: לרשום ולקרוא נתונים (ציונים, מעקב תלמידים, משימות)\n\n== איך את עונה ==\n- עברית בלבד.\n- קצר. זו הודעת וואטסאפ בטלפון, לא מסמך. 2-5 שורות ברוב המקרים.\n- בלי טבלאות, בלי כותרות מסגרת, בלי אימוג'ים מיותרים.\n- כשעשית משהו — תגידי מה עשית במשפט אחד. לא לפרט תהליך.\n- כשיצרת מסמך — תני את הקישור.\n\n== כללי עבודה ==\n1. אל תשאלי שאלות הבהרה על דברים קטנים. תחליטי לבד ותגידי מה החלטת. רוני תתקן אם צריך.\n2. שאלי רק כשבלי התשובה הפעולה תהיה שגויה (למשל: לא ברור לאיזו כיתה, ויש הבדל מהותי).\n3. תאריכים: היום הוא {{ $now.setZone('Asia/Jerusalem').format('cccc, d LLLL yyyy') }}. \"מחר\" = {{ $now.setZone('Asia/Jerusalem').plus({days:1}).toFormat('yyyy-MM-dd') }}. שעון ישראל תמיד.\n4. כשרוני מבקשת חומר לימודי (מערך שיעור, דף עבודה, מבחן) — תכיני אותו כמסמך ב-Google Docs, בעברית, מותאם לכיתות ז'-ט', עם שאלות מדורגות מקל לקשה ודרישה לנמק. אל תשלחי את כל התוכן בוואטסאפ — רק קישור ומשפט מה יש בפנים.\n5. אם רוני מבקשת משהו שאין לך כלי אליו — תגידי בכנות במשפט אחד מה חסר. אל תמציאי שעשית.\n\n== מה שאסור ==\nלעולם אל תמציאי מידע על תלמידים, ציונים, תאריכים או פגישות. אם את לא יודעת — תגידי."
+        }
+      },
+      "id": "agent-001",
+      "name": "המוח",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [400, 640]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-flash-latest",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "id": "gemini-brain",
+      "name": "Gemini (חינם)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [240, 880],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED",
+          "name": "Gemini — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('פירוק ההודעה').item.json.מספר_שולח }}",
+        "contextWindowLength": 20
+      },
+      "id": "mem-001",
+      "name": "זיכרון שיחה",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [380, 880]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "קורא מה יש ביומן של רוני בטווח תאריכים. השתמש בזה לכל שאלה על מה יש היום, מחר, השבוע, או מתי יש פגישה.",
+        "calendar": {
+          "__rl": true,
+          "value": "ronimodan73@gmail.com",
+          "mode": "list"
+        },
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{ $fromAI('מתאריך', 'תחילת הטווח בפורמט ISO', 'string') }}",
+          "timeMax": "={{ $fromAI('עד_תאריך', 'סוף הטווח בפורמט ISO', 'string') }}"
+        }
+      },
+      "id": "tool-cal-read",
+      "name": "קריאת היומן",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [520, 880],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GCAL_CRED",
+          "name": "Google — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "קובע אירוע או תזכורת ביומן של רוני. השתמש בזה כשרוני מבקשת להזכיר לה משהו, לקבוע פגישה, או לרשום מבחן/שיעור ביומן.",
+        "operation": "create",
+        "calendar": {
+          "__rl": true,
+          "value": "ronimodan73@gmail.com",
+          "mode": "list"
+        },
+        "start": "={{ $fromAI('שעת_התחלה', 'מתי האירוע מתחיל, בפורמט ISO עם שעון ישראל', 'string') }}",
+        "end": "={{ $fromAI('שעת_סיום', 'מתי האירוע מסתיים, בפורמט ISO עם שעון ישראל', 'string') }}",
+        "additionalFields": {
+          "summary": "={{ $fromAI('כותרת', 'כותרת האירוע בעברית', 'string') }}",
+          "description": "={{ $fromAI('פירוט', 'פירוט נוסף, אפשר ריק', 'string') }}"
+        }
+      },
+      "id": "tool-cal-write",
+      "name": "קביעה ביומן",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [660, 880],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GCAL_CRED",
+          "name": "Google — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "יוצר מסמך חדש ב-Google Docs ומחזיר קישור. השתמש בזה למערכי שיעור, דפי עבודה, מבחנים, מכתבים להורים וסיכומים. כתוב את כל התוכן בעברית.",
+        "operation": "create",
+        "title": "={{ $fromAI('שם_המסמך', 'שם קצר למסמך בעברית', 'string') }}",
+        "folderId": "={{ 'root' }}"
+      },
+      "id": "tool-docs",
+      "name": "יצירת מסמך",
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [800, 880],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "GDOCS_CRED",
+          "name": "Google — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "שולח מייל בשמה של רוני. השתמש בזה כשרוני מבקשת לשלוח מייל למישהו — הורה, מנהלת, רכזת.",
+        "sendTo": "={{ $fromAI('אל', 'כתובת המייל של הנמען', 'string') }}",
+        "subject": "={{ $fromAI('נושא', 'שורת הנושא בעברית', 'string') }}",
+        "emailType": "text",
+        "message": "={{ $fromAI('תוכן', 'גוף המייל בעברית, מנוסח בנימוס ובמקצועיות', 'string') }}",
+        "options": {}
+      },
+      "id": "tool-gmail",
+      "name": "שליחת מייל",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [940, 880],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GMAIL_CRED",
+          "name": "Google — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "WA_PHONE_ID",
+        "recipientPhoneNumber": "={{ $('פירוק ההודעה').item.json.מספר_שולח }}",
+        "textBody": "={{ $json.output || $json.content?.parts?.[0]?.text || $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "wa-send-001",
+      "name": "תשובה בוואטסאפ",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [900, 400],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "WA_CRED",
+          "name": "WhatsApp — רוני"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "הודעה נכנסת בוואטסאפ": {
+      "main": [[{ "node": "פירוק ההודעה", "type": "main", "index": 0 }]]
+    },
+    "פירוק ההודעה": {
+      "main": [[{ "node": "מה קיבלנו?", "type": "main", "index": 0 }]]
+    },
+    "מה קיבלנו?": {
+      "main": [
+        [{ "node": "הורדת התמונה", "type": "main", "index": 0 }],
+        [{ "node": "הורדת ההקלטה", "type": "main", "index": 0 }],
+        [{ "node": "המוח", "type": "main", "index": 0 }]
+      ]
+    },
+    "הורדת התמונה": {
+      "main": [[{ "node": "בדיקת המבחן", "type": "main", "index": 0 }]]
+    },
+    "בדיקת המבחן": {
+      "main": [[{ "node": "תשובה בוואטסאפ", "type": "main", "index": 0 }]]
+    },
+    "הורדת ההקלטה": {
+      "main": [[{ "node": "סיכום הפגישה", "type": "main", "index": 0 }]]
+    },
+    "סיכום הפגישה": {
+      "main": [[{ "node": "תשובה בוואטסאפ", "type": "main", "index": 0 }]]
+    },
+    "המוח": {
+      "main": [[{ "node": "תשובה בוואטסאפ", "type": "main", "index": 0 }]]
+    },
+    "Gemini (חינם)": {
+      "ai_languageModel": [[{ "node": "המוח", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "זיכרון שיחה": {
+      "ai_memory": [[{ "node": "המוח", "type": "ai_memory", "index": 0 }]]
+    },
+    "קריאת היומן": {
+      "ai_tool": [[{ "node": "המוח", "type": "ai_tool", "index": 0 }]]
+    },
+    "קביעה ביומן": {
+      "ai_tool": [[{ "node": "המוח", "type": "ai_tool", "index": 0 }]]
+    },
+    "יצירת מסמך": {
+      "ai_tool": [[{ "node": "המוח", "type": "ai_tool", "index": 0 }]]
+    },
+    "שליחת מייל": {
+      "ai_tool": [[{ "node": "המוח", "type": "ai_tool", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,121 @@
+{
+  "name": "תזכורת בוקר יומית",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * 0-4"
+            }
+          ]
+        }
+      },
+      "id": "sched-001",
+      "name": "כל בוקר ב-7:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "ronimodan73@gmail.com",
+          "mode": "list"
+        },
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{ $now.setZone('Asia/Jerusalem').startOf('day').toISO() }}",
+          "timeMax": "={{ $now.setZone('Asia/Jerusalem').endOf('day').toISO() }}",
+          "singleEvents": true,
+          "orderBy": "startTime"
+        }
+      },
+      "id": "cal-today",
+      "name": "מה יש היום ביומן",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [20, 300],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GCAL_CRED",
+          "name": "Google — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "agg-001",
+      "name": "איסוף",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=כתוב לרוני, מורה למתמטיקה, תזכורת בוקר קצרה בעברית ליום {{ $now.setZone('Asia/Jerusalem').format('cccc, d LLLL') }}.\n\nאלה האירועים ביומן שלה היום (ייתכן שהרשימה ריקה):\n{{ JSON.stringify($json.data) }}\n\nכללים:\n- עד 6 שורות. זו הודעת וואטסאפ בטלפון.\n- כל אירוע בשורה אחת: שעה + מה.\n- אם היומן ריק — כתוב משפט אחד קליל שהיום פנוי ביומן.\n- סיים בשורה אחת של תזכורת מעשית אחת בלבד למה כדאי להתכונן היום.\n- בלי מבוא, בלי \"הנה התזכורת שלך\", בלי טבלאות, בלי אימוג'ים מלבד אחד לכל היותר.\n- החזר טקסט בלבד, בלי כותרת."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gemini-brief",
+      "name": "ניסוח התזכורת",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED",
+          "name": "Gemini — רוני"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "WA_PHONE_ID",
+        "recipientPhoneNumber": "RONI_PHONE",
+        "textBody": "={{ $json.content?.parts?.[0]?.text || $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "wa-morning",
+      "name": "שליחה לוואטסאפ",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [700, 300],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "WA_CRED",
+          "name": "WhatsApp — רוני"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "כל בוקר ב-7:00": { "main": [[{ "node": "מה יש היום ביומן", "type": "main", "index": 0 }]] },
+    "מה יש היום ביומן": { "main": [[{ "node": "איסוף", "type": "main", "index": 0 }]] },
+    "איסוף": { "main": [[{ "node": "ניסוח התזכורת", "type": "main", "index": 0 }]] },
+    "ניסוח התזכורת": { "main": [[{ "node": "שליחה לוואטסאפ", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  },
+  "pinData": {}
+}
