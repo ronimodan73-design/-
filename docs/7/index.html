@@ -121,9 +121,13 @@ svg{display:block;width:100%;height:auto;direction:ltr}
 
 .pairbox{display:flex;gap:10px;align-items:center;justify-content:center;margin:14px 0;flex-wrap:wrap}
 .coordin{
-  width:92px;height:66px;border:2px solid var(--line);border-radius:16px;text-align:center;
-  font-size:1.5rem;font-weight:800;color:var(--ink);background:#fff;direction:ltr;font-family:inherit
+  width:92px;height:66px;border:2.5px dashed var(--primary);border-radius:16px;text-align:center;
+  font-size:1.6rem;font-weight:800;color:var(--ink);background:var(--primary-soft);direction:ltr;font-family:inherit
 }
+.coordin::placeholder{color:#a9b6d8;font-weight:700}
+.howto{display:flex;align-items:center;gap:8px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;
+  border-radius:14px;padding:10px 12px;margin:12px 0 4px;font-weight:700;font-size:.98rem}
+.howto .ic{font-size:1.2rem}
 .coordin:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
 .paren{font-size:2rem;color:var(--ink-soft);font-weight:300}
 .axlabel{font-size:.8rem;color:var(--ink-soft);text-align:center;margin-top:2px}
@@ -847,6 +851,13 @@ function renderQuestion(){
     c.appendChild(box);
   }
 
+
+  const KINDTXT={choice:['👆','בחרו את התשובה הנכונה מבין האפשרויות'],
+                 coords:['⌨️','הקלידו בתיבות: קודם שיעור x, אחר כך שיעור y'],
+                 num:['⌨️','הקלידו את התשובה בתיבה'],
+                 plot:['👆','לחצו על מערכת הצירים במקום המדויק']};
+  const kt=KINDTXT[q.kind];
+  if(kt){const hw=h('div','howto');hw.innerHTML='<span class="ic">'+kt[0]+'</span><span>'+kt[1]+'</span>';c.appendChild(hw);}
   const actions=h('div','sticky-actions');
   const hintBtn=h('button','btn ghost','רמז');
   const checkBtn=h('button','btn','בדיקה');
@@ -873,7 +884,7 @@ function renderQuestion(){
     const pb=h('div','pairbox');pb.setAttribute('dir','ltr');
     const mk=(lab)=>{const w=h('div','pairwrap');
       const i=document.createElement('input');
-      i.className='coordin';i.type='number';i.inputMode='numeric';i.setAttribute('aria-label',lab);
+      i.className='coordin';i.type='number';i.inputMode='numeric';i.placeholder='?';i.setAttribute('aria-label',lab);
       w.appendChild(i);const l=h('div','axlabel',lab);w.appendChild(l);return {w,i};};
     const a=mk('שיעור x'),b=mk('שיעור y');
     inX=a.i;inY=b.i;
@@ -885,7 +896,7 @@ function renderQuestion(){
   else if(q.kind==='num'){
     const pb=h('div','pairbox');
     const i=document.createElement('input');
-    i.className='coordin';i.type='number';i.inputMode='numeric';i.style.width='120px';
+    i.className='coordin';i.type='number';i.inputMode='numeric';i.placeholder='?';i.style.width='120px';
     inV=i;pb.appendChild(i);
     pb.appendChild(h('span','axlabel',q.unitLabel||''));
     c.appendChild(pb);
