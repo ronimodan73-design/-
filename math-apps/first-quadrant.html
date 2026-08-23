@@ -745,7 +745,7 @@ function renderHome(){
     for(let i=0;i<total;i++) dots+='<i class="'+(i<done?'on':'')+'"></i>';
     b.innerHTML='<div class="em" style="background:'+s.color+'1a;color:'+s.color+'">'+s.icon+'</div>'+
       '<div><div class="st-name">'+(s.id===0?'':'<span class="ltr">'+s.id+'.</span> ')+s.name+'</div>'+
-      '<div class="st-sub">'+s.sub+'</div><div class="dots">'+dots+'</div></div>'+
+      '<div class="st-sub">'+s.sub+(s.id===0?'':' · <b>'+total+' שאלות לתרגול</b>')+'</div><div class="dots">'+dots+'</div></div>'+
       '<div class="chev">‹</div>';
     b.onclick=()=>{
       if(s.id===0){S.view='explore';}
