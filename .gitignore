@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+math-apps/build/
+math-apps/__pycache__/
