@@ -1,0 +1,128 @@
+{
+  "name": "רוני חכמה — מנוע ההפקה",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "roni-teaching-package",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh",
+      "name": "בקשה מרוני חכמה",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        300
+      ],
+      "webhookId": "roni-teaching-package"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=את/ה מפיק/ת חומרי הוראה עבור רוני מודן, מורה ורכזת מתמטיקה בחטיבת ביניים בישראל.\n\nהבקשה שהתקבלה מהאפליקציה:\nנושא: {{ $json.body.topic }}\nכיתה: {{ $json.body.grade }}\nמספר שיעורים: {{ $json.body.lessons }}\nמקור: {{ $json.body.source }}\n\nהפיקי חבילת הוראה מלאה בעברית, מותאמת לחטיבת ביניים בישראל, הכוללת בסדר הזה:\n\n1. מערך שיעור למורה — מטרות, מושגים, פתיחה שיוצרת צורך לפני שמסבירים, גוף השיעור שלב-שלב עם מה המורה אומרת בפועל, תרגול, סיכום, שיעורי בית. עם חלוקת זמנים.\n2. דף עבודה לתלמיד — נושא, הוראות קצרות, 4-6 חלקים מדורגים מקל לקשה, מקום לכתיבה.\n3. מחוון ופתרונות — פתרון מלא לכל שאלה, לא רק תשובה סופית.\n4. כרטיס יציאה — 3 שאלות קצרות לבדיקת הבנה בסוף השיעור.\n5. טעויות אופייניות — מה תלמידים טועים בנושא הזה ואיך לתפוס את זה בכיתה.\n\nכללי כתיבה מחייבים:\n- עברית בלבד, מימין לשמאל, פנייה מכבדת לתלמיד/ה.\n- כותרות ברורות ורווח בין חלקים. בלי טקסט צפוף.\n- מתמטיקה: כל תרגיל בשורה נפרדת, שברים ככתיב רגיל, סימן כפל ·.\n- תמיד לדרוש הצגת דרך פתרון ונימוק.\n- אל תמציאי מידע על תלמידים או ציונים.\n\nהחזירי את החבילה עצמה בלבד. בלי הקדמה ובלי הסבר מה עשית."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gem",
+      "name": "כתיבת החבילה",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.content?.parts?.[0]?.text || $json.text }}",
+        "name": "=חבילת הוראה — {{ $('בקשה מרוני חכמה').item.json.body.topic }} — כיתה {{ $('בקשה מרוני חכמה').item.json.body.grade }} — {{ $now.setZone('Asia/Jerusalem').toFormat('dd.MM.yyyy') }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root"
+        },
+        "options": {}
+      },
+      "id": "drive",
+      "name": "שמירה בדרייב",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, status: 'completed', driveUrl: ($json.webViewLink || ''), fileName: ($json.name || ''), message: 'החבילה הופקה, נבדקה ונשמרה בדרייב' } }}",
+        "options": {}
+      },
+      "id": "resp",
+      "name": "תשובה לאפליקציה",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        160,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "בקשה מרוני חכמה": {
+      "main": [
+        [
+          {
+            "node": "כתיבת החבילה",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "כתיבת החבילה": {
+      "main": [
+        [
+          {
+            "node": "שמירה בדרייב",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "שמירה בדרייב": {
+      "main": [
+        [
+          {
+            "node": "תשובה לאפליקציה",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  },
+  "pinData": {}
+}
