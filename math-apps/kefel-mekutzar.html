@@ -162,8 +162,12 @@ input[type=range]{width:100%; direction:ltr; accent-color:var(--teal); height:26
 .opt.wrong .k{background:var(--warn); color:var(--card); border-color:var(--warn)}
 .opt.dim{opacity:.42}
 .opt:disabled{cursor:default}
-.numin{font-family:'IBM Plex Mono',monospace; font-size:24px; font-weight:600; text-align:center; direction:ltr;
-  width:190px; padding:12px; border-radius:11px; border:1.5px solid var(--line); background:var(--card); color:var(--ink)}
+.numin{font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:700; text-align:center; direction:ltr;
+  width:190px; padding:12px; border-radius:11px; border:2.5px dashed var(--teal); background:var(--teal-soft); color:var(--ink)}
+.numin::placeholder{color:var(--ink-3); font-weight:600}
+.howto{display:flex; align-items:center; gap:8px; background:var(--amber-soft); border:1px solid var(--amber-line);
+  color:var(--amber); border-radius:12px; padding:10px 12px; margin:12px 0 2px; font-weight:700; font-size:15px}
+.howto .ic{font-size:19px}
 .fb{border-radius:11px; padding:15px 17px; margin-top:14px; border:1px solid}
 .fb.ok{background:var(--good-soft); border-color:var(--good-line)}
 .fb.no{background:var(--warn-soft); border-color:var(--warn-line)}
@@ -2067,14 +2071,17 @@ function vPractice(){
   let body = '';
   if(it.k==='mc'){
     body = `<div class="qtext">${MT(qText(it.q))}</div><div class="qbig">${XB(it.e)}</div>
+      <div class="howto"><span class="ic">👆</span><span>בחרו את התשובה הנכונה מבין האפשרויות</span></div>
       <div class="opts">${it.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${'אבגד'[i]}</span><span class="x">${o.t}</span></button>`).join('')}</div>`;
   } else if(it.k==='in'){
     body = `<div class="qtext">${MT(qText(it.q))}</div><div class="qbig">${XB(it.e)}</div>
+      <div class="howto"><span class="ic">⌨️</span><span>הקלידו את התשובה בתיבה ואז לחצו "בדיקה"</span></div>
       <div class="row" style="justify-content:center;margin-top:8px">
         <input class="numin" id="ans" inputmode="numeric" autocomplete="off" placeholder="?">
         <button class="btn" id="chk">בדיקה</button></div>`;
   } else {
     body = `<div class="qtext">${MT(qText(it.head))}</div>
+      <div class="howto"><span class="ic">👆</span><span>לחצו על השורה שבה נכנסה הטעות</span></div>
       <div class="lines">${it.lines.map((l,i)=>`<button class="line" data-i="${i}"><span class="n">${i+1}</span><span class="x">${l}</span></button>`).join('')}</div>`;
   }
 
