@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>הרביע הראשון — מסע במערכת הצירים</title>
+<style>
+:root{
+  --ink:#12203a; --ink-soft:#4a5b7a; --line:#dbe3f0;
+  --primary:#4f46e5; --primary-soft:#eef0ff;
+  --accent:#0891b2; --accent-soft:#e0f7fb;
+  --ok:#12855b; --ok-soft:#e6f7ef;
+  --warn:#b45309; --warn-soft:#fff5e3;
+  --card:#ffffff; --shadow:0 10px 30px rgba(18,32,58,.10);
+  --r:20px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Assistant','Rubik','Segoe UI',Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 600px at 80% -10%, #e5eaff 0%, rgba(229,234,255,0) 60%),
+    radial-gradient(900px 500px at 0% 100%, #dff6fb 0%, rgba(223,246,251,0) 55%),
+    #f6f8fd;
+  min-height:100vh;
+  line-height:1.55;
+  font-size:17px;
+}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 90px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+.hidden{display:none!important}
+button{font-family:inherit;font-size:1rem;cursor:pointer;border:none}
+h1,h2,h3{margin:0 0 8px;line-height:1.25}
+h1{font-size:1.85rem;letter-spacing:-.02em}
+h2{font-size:1.3rem}
+p{margin:0 0 10px}
+.ltr{direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:30;backdrop-filter:blur(8px);
+  background:rgba(246,248,253,.9);border-bottom:1px solid var(--line);
+  margin:-14px -14px 14px;padding:10px 14px;display:flex;align-items:center;gap:10px
+}
+.topbar .t-title{font-weight:700;flex:1;font-size:1.02rem}
+.icon-btn{
+  width:42px;height:42px;border-radius:14px;background:#fff;border:1px solid var(--line);
+  display:grid;place-items:center;font-size:1.15rem;box-shadow:0 2px 6px rgba(18,32,58,.06)
+}
+.pillbar{height:9px;border-radius:99px;background:#e7ecf6;overflow:hidden;flex:1;max-width:130px}
+.pillbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--primary));border-radius:99px;transition:width .45s ease}
+
+/* ---------- home ---------- */
+.hero{
+  background:linear-gradient(150deg,#4f46e5 0%,#0891b2 100%);
+  color:#fff;border-radius:26px;padding:26px 22px;box-shadow:0 16px 40px rgba(79,70,229,.28);
+  position:relative;overflow:hidden
+}
+.hero:after{
+  content:"";position:absolute;inset:auto -40px -70px auto;width:220px;height:220px;border-radius:50%;
+  background:rgba(255,255,255,.12)
+}
+.hero h1{color:#fff}
+.hero p{color:#e8ecff;margin:0}
+.hero .kicker{font-size:.85rem;letter-spacing:.14em;opacity:.85;margin-bottom:6px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--primary);color:#fff;border-radius:16px;padding:14px 22px;font-weight:700;
+  box-shadow:0 8px 18px rgba(79,70,229,.28);min-height:52px;font-size:1.05rem
+}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:#fff;color:var(--primary);border:2px solid var(--primary-soft);box-shadow:none}
+.btn.soft{background:var(--primary-soft);color:var(--primary);box-shadow:none}
+.btn.wide{width:100%}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn-row .btn{flex:1 1 200px}
+
+.stations{display:grid;gap:12px;margin-top:16px}
+@media(min-width:620px){.stations{grid-template-columns:1fr 1fr}}
+.station{
+  display:flex;gap:12px;align-items:center;text-align:right;width:100%;
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:var(--shadow)
+}
+.station .em{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:1.5rem;flex:none}
+.station .st-name{font-weight:800;font-size:1.06rem}
+.station .st-sub{font-size:.86rem;color:var(--ink-soft)}
+.dots{display:flex;gap:4px;margin-top:6px}
+.dots i{width:9px;height:9px;border-radius:50%;background:#e2e8f4;display:block}
+.dots i.on{background:var(--ok)}
+.station .chev{margin-inline-start:auto;color:#b9c4d8;font-size:1.3rem}
+.station.done{border-color:#bfe8d6;background:linear-gradient(180deg,#fff, #f4fcf8)}
+
+/* ---------- question ---------- */
+.qhead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.badge{font-size:.78rem;font-weight:800;padding:5px 11px;border-radius:99px;background:var(--primary-soft);color:var(--primary)}
+.badge.lvl{background:var(--accent-soft);color:var(--accent)}
+.qtext{font-size:1.16rem;font-weight:700;margin:6px 0 4px}
+.qsub{color:var(--ink-soft);font-size:.95rem;margin-bottom:10px}
+.gridbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px;margin:10px 0}
+svg{display:block;width:100%;height:auto;direction:ltr}
+.opts{display:grid;gap:10px;margin-top:6px}
+.opt{
+  text-align:right;background:#fff;border:2px solid var(--line);border-radius:16px;padding:14px 16px;
+  font-size:1.03rem;min-height:56px;display:flex;align-items:center;gap:10px;width:100%
+}
+.opt:hover{border-color:#c7cdfa}
+.opt.sel{border-color:var(--primary);background:var(--primary-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrongpick{border-color:var(--warn);background:var(--warn-soft)}
+.opt .mark{width:26px;height:26px;border-radius:50%;border:2px solid #cfd7e8;flex:none;display:grid;place-items:center;font-size:.85rem}
+.opt.sel .mark{border-color:var(--primary);background:var(--primary);color:#fff}
+.opt.right .mark{border-color:var(--ok);background:var(--ok);color:#fff}
+.opt.wrongpick .mark{border-color:var(--warn);background:var(--warn);color:#fff}
+
+.pairbox{display:flex;gap:10px;align-items:center;justify-content:center;margin:14px 0;flex-wrap:wrap}
+.coordin{
+  width:92px;height:66px;border:2px solid var(--line);border-radius:16px;text-align:center;
+  font-size:1.5rem;font-weight:800;color:var(--ink);background:#fff;direction:ltr;font-family:inherit
+}
+.coordin:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.paren{font-size:2rem;color:var(--ink-soft);font-weight:300}
+.axlabel{font-size:.8rem;color:var(--ink-soft);text-align:center;margin-top:2px}
+.pairwrap{display:flex;flex-direction:column;align-items:center}
+
+.hintbox{background:var(--accent-soft);border-radius:16px;padding:12px 14px;margin-top:10px;font-size:.98rem}
+.hintbox b{color:var(--accent)}
+
+.fb{border-radius:20px;padding:16px;margin-top:14px;animation:pop .28s ease}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fb.ok{background:var(--ok-soft);border:2px solid #b7e6cf}
+.fb.no{background:var(--warn-soft);border:2px solid #f6ddb0}
+.fb h3{display:flex;align-items:center;gap:8px;font-size:1.1rem}
+.fb.ok h3{color:var(--ok)}
+.fb.no h3{color:var(--warn)}
+.fb .why{background:rgba(255,255,255,.75);border-radius:14px;padding:10px 12px;margin-top:8px}
+.fb ol{margin:8px 0 0;padding-inline-start:20px}
+.fb li{margin-bottom:6px}
+.tag{display:inline-block;font-size:.78rem;font-weight:800;background:#fff;border-radius:99px;padding:3px 10px;border:1px solid rgba(0,0,0,.06);margin-bottom:6px}
+
+.legend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:.85rem;color:var(--ink-soft);margin-top:4px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+
+.readout{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px
+}
+.rd{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 14px;text-align:center;min-width:132px}
+.rd b{display:block;font-size:1.35rem;direction:ltr}
+.rd small{color:var(--ink-soft)}
+.rd.x b{color:var(--primary)} .rd.y b{color:var(--accent)}
+
+.concept{background:linear-gradient(180deg,#fff,#f7f9ff);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}
+.concept h3{font-size:1.05rem;color:var(--primary)}
+.concept ul{margin:6px 0 0;padding-inline-start:20px}
+.concept li{margin-bottom:6px}
+
+.done-hero{text-align:center;padding:26px 18px}
+.done-hero .big{font-size:3.2rem}
+.stars{font-size:1.6rem;letter-spacing:4px}
+.summary{display:grid;gap:8px;margin-top:14px;text-align:right}
+.srow{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.srow .sc{margin-inline-start:auto;font-weight:800}
+.footer-note{text-align:center;color:var(--ink-soft);font-size:.82rem;margin-top:18px}
+.sticky-actions{margin-top:14px;display:flex;gap:10px}
+.sticky-actions .btn{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar hidden" id="topbar">
+    <button class="icon-btn" id="backBtn" aria-label="חזרה">→</button>
+    <div class="t-title" id="topTitle">מערכת הצירים</div>
+    <div class="pillbar"><i id="topProg" style="width:0%"></i></div>
+  </div>
+  <div id="app"></div>
+  <div class="footer-note">נבנה עבור תלמידי כיתה ז׳ · הרביע הראשון של מערכת הצירים</div>
+</div>
+<script>
+/* =========================================================
+   כלי ציור: מערכת צירים ברביע הראשון
+   ========================================================= */
+const SVGNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,txt){
+  const n=document.createElementNS(SVGNS,tag);
+  for(const k in attrs) n.setAttribute(k,attrs[k]);
+  if(txt!=null) n.textContent=txt;
+  return n;
+}
+function h(tag,cls,txt){
+  const n=document.createElement(tag);
+  if(cls) n.className=cls;
+  if(txt!=null) n.innerHTML=txt;
+  return n;
+}
+const CELL=34;
+
+/* o: {xMax,yMax,unitX,unitY,points,segments,polyline,axisTitles,interactive,onPick,cross} */
+function makeGrid(o){
+  o=Object.assign({xMax:10,yMax:10,unitX:1,unitY:1,points:[],segments:[],polyline:null,
+                   axisTitles:null,interactive:false,onPick:null},o);
+  const nx=Math.round(o.xMax/o.unitX), ny=Math.round(o.yMax/o.unitY);
+  const padL=o.axisTitles?52:34, padB=o.axisTitles?46:30, padT=22, padR=26;
+  const W=padL+nx*CELL+padR, H=padT+ny*CELL+padB;
+  const X0=padL, Y0=padT+ny*CELL;                 // מיקום הראשית על הבד
+  const px=v=>X0+(v/o.unitX)*CELL;
+  const py=v=>Y0-(v/o.unitY)*CELL;
+
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  svg.style.touchAction='manipulation';
+
+  // רשת
+  for(let i=0;i<=nx;i++){
+    svg.appendChild(el('line',{x1:X0+i*CELL,y1:padT,x2:X0+i*CELL,y2:Y0,
+      stroke:i?'#e6ecf6':'#94a3b8','stroke-width':1}));
+  }
+  for(let j=0;j<=ny;j++){
+    svg.appendChild(el('line',{x1:X0,y1:Y0-j*CELL,x2:X0+nx*CELL,y2:Y0-j*CELL,
+      stroke:j?'#e6ecf6':'#94a3b8','stroke-width':1}));
+  }
+  // צירים + חצים
+  svg.appendChild(el('line',{x1:X0,y1:Y0,x2:X0+nx*CELL+10,y2:Y0,stroke:'#334155','stroke-width':2.4}));
+  svg.appendChild(el('line',{x1:X0,y1:Y0,x2:X0,y2:padT-10,stroke:'#334155','stroke-width':2.4}));
+  svg.appendChild(el('polygon',{points:`${X0+nx*CELL+10},${Y0} ${X0+nx*CELL+2},${Y0-4.5} ${X0+nx*CELL+2},${Y0+4.5}`,fill:'#334155'}));
+  svg.appendChild(el('polygon',{points:`${X0},${padT-10} ${X0-4.5},${padT-2} ${X0+4.5},${padT-2}`,fill:'#334155'}));
+  // שמות הצירים
+  const tx=el('text',{x:X0+nx*CELL+14,y:Y0-8,'font-size':15,'font-style':'italic',fill:'#334155','font-weight':'700','text-anchor':'middle'},'x');
+  const ty=el('text',{x:X0+14,y:padT+2,'font-size':15,'font-style':'italic',fill:'#334155','font-weight':'700','text-anchor':'middle'},'y');
+  svg.appendChild(tx); svg.appendChild(ty);
+  // מספרים
+  for(let i=0;i<=nx;i++){
+    const v=+(i*o.unitX).toFixed(2);
+    svg.appendChild(el('text',{x:px(v),y:Y0+17,'font-size':12,fill:'#64748b','text-anchor':'middle'},i?String(v):'0'));
+  }
+  for(let j=1;j<=ny;j++){
+    const v=+(j*o.unitY).toFixed(2);
+    svg.appendChild(el('text',{x:X0-8,y:py(v)+4,'font-size':12,fill:'#64748b','text-anchor':'end'},String(v)));
+  }
+  if(o.axisTitles){
+    const a=el('text',{x:X0+nx*CELL/2,y:H-8,'font-size':13,fill:'#334155','text-anchor':'middle','font-weight':'700'},o.axisTitles.x);
+    a.style.direction='rtl'; svg.appendChild(a);
+    const b=el('text',{x:16,y:padT+ny*CELL/2,'font-size':13,fill:'#334155','text-anchor':'middle','font-weight':'700',
+      transform:`rotate(-90 16 ${padT+ny*CELL/2})`},o.axisTitles.y);
+    b.style.direction='rtl'; svg.appendChild(b);
+  }
+
+  const layer=el('g',{}); svg.appendChild(layer);      // שכבת תוכן קבוע
+  const live =el('g',{}); svg.appendChild(live);       // שכבת סימון התלמיד
+
+  function drawPoint(g,p){
+    const c=p.color||'#4f46e5';
+    if(p.guides!==false && p.guides){
+      g.appendChild(el('line',{x1:px(0),y1:py(0),x2:px(p.x),y2:py(0),stroke:c,'stroke-width':3,'stroke-linecap':'round',opacity:.55}));
+      g.appendChild(el('line',{x1:px(p.x),y1:py(0),x2:px(p.x),y2:py(p.y),stroke:c,'stroke-width':3,'stroke-linecap':'round',opacity:.55,'stroke-dasharray':'1 0'}));
+    }
+    if(p.dashed){
+      g.appendChild(el('line',{x1:px(p.x),y1:py(p.y),x2:px(p.x),y2:py(0),stroke:c,'stroke-width':1.6,'stroke-dasharray':'4 4',opacity:.75}));
+      g.appendChild(el('line',{x1:px(p.x),y1:py(p.y),x2:px(0),y2:py(p.y),stroke:c,'stroke-width':1.6,'stroke-dasharray':'4 4',opacity:.75}));
+    }
+    g.appendChild(el('circle',{cx:px(p.x),cy:py(p.y),r:p.r||6.5,fill:c,stroke:'#fff','stroke-width':2.4}));
+    if(p.label){
+      const t=el('text',{x:px(p.x)+11,y:py(p.y)-10,'font-size':14,'font-weight':'800',fill:c},p.label);
+      g.appendChild(t);
+    }
+  }
+  (o.segments||[]).forEach(s=>layer.appendChild(el('line',{x1:px(s.from[0]),y1:py(s.from[1]),
+      x2:px(s.to[0]),y2:py(s.to[1]),stroke:s.color||'#0891b2','stroke-width':s.width||2.6,
+      'stroke-dasharray':s.dash||'0','stroke-linecap':'round'})));
+  if(o.polyline&&o.polyline.length){
+    layer.appendChild(el('polyline',{points:o.polyline.map(p=>px(p[0])+','+py(p[1])).join(' '),
+      fill:'none',stroke:'#0891b2','stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'}));
+  }
+  (o.points||[]).forEach(p=>drawPoint(layer,p));
+
+  let picked=null;
+  function setPick(x,y,color,label){
+    picked={x,y};
+    live.innerHTML='';
+    drawPoint(live,{x,y,color:color||'#e11d48',label:label===undefined?'':label,dashed:true,r:7});
+  }
+  function clearPick(){picked=null;live.innerHTML='';}
+
+  if(o.interactive){
+    const hit=el('rect',{x:X0-CELL/2,y:padT-CELL/2,width:nx*CELL+CELL,height:ny*CELL+CELL,
+      fill:'transparent',style:'cursor:pointer'});
+    svg.appendChild(hit);
+    const grab=ev=>{
+      const pt=svg.getBoundingClientRect();
+      const cx=(ev.touches?ev.touches[0].clientX:ev.clientX)-pt.left;
+      const cy=(ev.touches?ev.touches[0].clientY:ev.clientY)-pt.top;
+      const sx=W/pt.width, sy=H/pt.height;
+      let gx=Math.round(((cx*sx)-X0)/CELL), gy=Math.round((Y0-(cy*sy))/CELL);
+      gx=Math.max(0,Math.min(nx,gx)); gy=Math.max(0,Math.min(ny,gy));
+      const vx=+(gx*o.unitX).toFixed(2), vy=+(gy*o.unitY).toFixed(2);
+      setPick(vx,vy);
+      if(o.onPick) o.onPick(vx,vy);
+    };
+    hit.addEventListener('click',grab);
+    hit.addEventListener('touchstart',e=>{e.preventDefault();grab(e);},{passive:false});
+  }
+  return {node:svg,setPick,clearPick,get picked(){return picked;},px,py,addPoint:p=>drawPoint(layer,p)};
+}
+
+/* מיני-שרטוט להשוואה: מה שהתלמיד סימן מול הנקודה הנכונה */
+function compareGrid(target,given,cfg){
+  cfg=cfg||{};
+  const uX=cfg.unitX||1, uY=cfg.unitY||1;
+  const xM=Math.max(cfg.xMax||10,Math.ceil(Math.max(0,given.x)/uX)*uX);
+  const yM=Math.max(cfg.yMax||10,Math.ceil(Math.max(0,given.y)/uY)*uY);
+  const g=makeGrid({xMax:xM,yMax:yM,unitX:uX,unitY:uY,
+    points:[
+      {x:given.x,y:given.y,color:'#e11d48',label:'סימנת',dashed:true},
+      {x:target.x,y:target.y,color:'#12855b',label:'הנכונה',dashed:true}
+    ]});
+  const box=h('div','gridbox'); box.appendChild(g.node);
+  const lg=h('div','legend');
+  lg.innerHTML='<span><i style="background:#e11d48"></i>התשובה שלך</span><span><i style="background:#12855b"></i>התשובה הנכונה</span>';
+  box.appendChild(lg);
+  return box;
+}
+
+/* =========================================================
+   התחנות והשאלות — שש רמות חשיבה
+   ========================================================= */
+const STATIONS=[
+ {id:0,name:'חקירה חופשית',icon:'🧭',color:'#0891b2',sub:'מגלים איך הנקודה זזה'},
+ {id:1,name:'זיהוי וידע',icon:'🔎',color:'#2563eb',sub:'מכירים את השטח'},
+ {id:2,name:'הבנה והסבר',icon:'💡',color:'#0891b2',sub:'מבינים למה זה עובד'},
+ {id:3,name:'יישום',icon:'✏️',color:'#7c3aed',sub:'מסמנים בעצמכם'},
+ {id:4,name:'הסקה ובעיה הפוכה',icon:'🧩',color:'#db2777',sub:'חושבים אחורה'},
+ {id:5,name:'ניתוח טעות',icon:'🕵️',color:'#ea580c',sub:'תופסים את הטעות'},
+ {id:6,name:'אוריינות והעברה',icon:'🌍',color:'#059669',sub:'מתמטיקה בחיים'}
+];
+
+const Q={};
+
+/* ---------- 1. זיהוי וידע ---------- */
+Q[1]=[
+{
+ kind:'choice',
+ prompt:'הציר האופקי — זה שנמצא בשכיבה — נקרא:',
+ grid:{xMax:6,yMax:6},
+ opts:[
+  {t:'ציר ה‑x',ok:true},
+  {t:'ציר ה‑y',why:'ציר ה‑y הוא הציר האנכי — זה שעומד למעלה. את הציר השוכב מסמנים באות x. הסתכלו בשרטוט: האות x כתובה בקצה הימני של הציר השוכב.'},
+  {t:'ראשית הצירים',why:'ראשית הצירים היא נקודה אחת בלבד — המקום שבו שני הצירים נפגשים, ושיעוריה (0,0). היא נקודה, לא ציר.'},
+  {t:'זוג סדור',why:'זוג סדור הוא הדרך לרשום נקודה, למשל (3,4). זה לא שם של ציר.'}
+ ],
+ okWhy:'בדיוק. x שוכב — מודד ימינה. y עומד — מודד למעלה.',
+ hint:'הסתכלו בשרטוט: איזו אות כתובה בקצה של הציר השוכב?'
+},
+{
+ kind:'choice',
+ prompt:'מהם שיעורי ראשית הצירים?',
+ grid:{xMax:6,yMax:6,points:[{x:0,y:0,label:'O',color:'#ea580c'}]},
+ opts:[
+  {t:'<span class="ltr">(0 , 0)</span>',ok:true},
+  {t:'<span class="ltr">(1 , 1)</span>',why:'‏(1,1) נמצאת משבצת אחת ימינה ומשבצת אחת למעלה מהראשית — היא כבר לא במפגש של הצירים. בראשית עוד לא זזנו בכלל, ולכן שני השיעורים 0.'},
+  {t:'<span class="ltr">(0 , 1)</span>',why:'‏(0,1) נמצאת על ציר ה‑y, יחידה אחת מעל הראשית. בראשית עצמה גם שיעור ה‑y הוא 0.'},
+  {t:'אין לה שיעורים',why:'גם לראשית יש שיעורים — היא נקודה ככל נקודה אחרת. השיעורים שלה הם (0,0), כי לא זזנו ממנה לשום כיוון.'}
+ ],
+ okWhy:'נכון. בראשית לא זזנו ימינה ולא זזנו למעלה — 0 ועוד 0.',
+ hint:'כמה יחידות צריך ללכת ימינה כדי להגיע לראשית? וכמה למעלה?'
+},
+{
+ kind:'coords', target:{x:4,y:3},
+ prompt:'רשמו את שיעורי הנקודה A.',
+ sub:'קודם x (ימינה), אחר כך y (למעלה).',
+ grid:{xMax:10,yMax:10,points:[{x:4,y:3,label:'A',dashed:true}]},
+ hint:'ספרו כמה יחידות מהראשית ימינה עד שמגיעים מתחת ל‑A, ואז כמה יחידות למעלה.'
+},
+{
+ kind:'coords', target:{x:0,y:5},
+ prompt:'רשמו את שיעורי הנקודה B.',
+ sub:'שימו לב איפה בדיוק היא יושבת.',
+ grid:{xMax:10,yMax:10,points:[{x:0,y:5,label:'B',color:'#0891b2',dashed:true}]},
+ extra:[{when:(g,t)=>g.x===5&&g.y===5,tag:'ספירה מהציר הלא נכון',
+   text:'‏B יושבת בדיוק על ציר ה‑y, ולכן לא הלכנו ימינה בכלל — שיעור ה‑x שלה 0. המספר 5 מתאר רק כמה עלינו למעלה.'}],
+ hint:'הנקודה יושבת על הציר העומד. כמה יחידות הלכנו ימינה כדי להגיע אליה?'
+}];
+
+/* ---------- 2. הבנה והסבר ---------- */
+Q[2]=[
+{
+ kind:'choice',
+ prompt:'מדוע <span class="ltr">(3 , 5)</span> ו‑<span class="ltr">(5 , 3)</span> הן שתי נקודות שונות?',
+ grid:{xMax:8,yMax:8,points:[{x:3,y:5,label:'(3,5)',dashed:true},{x:5,y:3,label:'(5,3)',color:'#ea580c',dashed:true}]},
+ opts:[
+  {t:'כי בזוג סדור הסדר קובע: המספר הראשון הוא תמיד שיעור x, והשני תמיד שיעור y',ok:true},
+  {t:'הן בעצם אותה נקודה, רק כתובה בסדר הפוך',why:'לא. ספרו בשרטוט: ב‑(3,5) הולכים 3 ימינה ואז 5 למעלה, וב‑(5,3) הולכים 5 ימינה ואז 3 למעלה. נוחתים בשני מקומות שונים לגמרי.'},
+  {t:'כי 3 ו‑5 הם מספרים שונים',why:'נכון ש‑3 שונה מ‑5, אבל זה לא ההסבר: גם בזוג (5,3) מופיעים אותם שני מספרים. מה שמבדיל הוא התפקיד של כל מספר — מי מודד ימינה ומי מודד למעלה.'},
+  {t:'כי אחת נמצאת על ציר והשנייה לא',why:'שתיהן לא נמצאות על צירים — בשתיהן שני השיעורים גדולים מ‑0. ההבדל הוא בסדר של המספרים.'}
+ ],
+ okWhy:'זה בדיוק העיקרון של "זוג סדור" — לא רק המספרים חשובים, אלא גם התפקיד של כל אחד.',
+ hint:'שאלו את עצמכם: מה תפקידו של המספר הראשון בכל זוג?'
+},
+{
+ kind:'choice',
+ prompt:'איזו מהנקודות בשרטוט היא <span class="ltr">(2 , 6)</span>?',
+ grid:{xMax:8,yMax:8,points:[{x:2,y:6,label:'P',dashed:true},{x:6,y:2,label:'Q',color:'#ea580c',dashed:true}]},
+ opts:[
+  {t:'הנקודה P',ok:true},
+  {t:'הנקודה Q',why:'‏Q נמצאת 6 יחידות ימינה ורק 2 למעלה, ולכן השיעורים שלה הם (6,2). בזוג שביקשנו, ה‑2 הוא שמודד ימינה.'},
+  {t:'שתיהן — זה אותו זוג',why:'שתי הנקודות נמצאות במקומות שונים בשרטוט, אז אי אפשר שיהיו להן אותם שיעורים. ב‑P הולכים 2 ימינה, ב‑Q הולכים 6 ימינה.'},
+  {t:'אי אפשר לדעת בלי לדעת את המרחק מהראשית',why:'אפשר בהחלט לדעת — פשוט סופרים על הצירים: כמה ימינה, כמה למעלה.'}
+ ],
+ okWhy:'נכון. ב‑P: 2 יחידות ימינה, 6 יחידות למעלה.',
+ hint:'התחילו מהראשית וספרו קודם ימינה. באיזו נקודה עוצרים אחרי 2 יחידות ימינה?'
+},
+{
+ kind:'choice',
+ prompt:'לנקודה מסוימת שיעור ה‑x הוא 0. איפה היא נמצאת בוודאות?',
+ grid:{xMax:8,yMax:8,points:[{x:0,y:6,label:'',color:'#0891b2'},{x:0,y:3,label:'',color:'#0891b2'},{x:0,y:1,label:'',color:'#0891b2'}]},
+ opts:[
+  {t:'על ציר ה‑y — הציר העומד',ok:true},
+  {t:'על ציר ה‑x — הציר השוכב',why:'הפוך. אם x=0 בכלל לא זזנו ימינה, ולכן נשארנו על הציר העומד. על ציר ה‑x יושבות דווקא הנקודות שבהן y=0, כמו (4,0).'},
+  {t:'בראשית הצירים',why:'רק אם גם y=0. לדוגמה (0,7): שיעור ה‑x שלה 0 והיא רחוקה 7 יחידות מהראשית.'},
+  {t:'אי אפשר לדעת',why:'אפשר לדעת. שיעור x=0 אומר "לא זזנו ימינה בכלל", וכל נקודה כזו יושבת על ציר ה‑y.'}
+ ],
+ okWhy:'נכון. x=0 פירושו "אפס יחידות ימינה", ולכן הנקודה נשארת מודבקת לציר העומד.',
+ hint:'נסו לסמן שתיים‑שלוש נקודות שבהן x=0. מה משותף להן?'
+},
+{
+ kind:'choice',
+ prompt:'מה בדיוק מודד שיעור ה‑y של נקודה?',
+ grid:{xMax:8,yMax:8,points:[{x:5,y:4,label:'M',dashed:true}]},
+ opts:[
+  {t:'כמה יחידות הנקודה נמצאת מעל ציר ה‑x',ok:true},
+  {t:'כמה יחידות הנקודה נמצאת ימינה מציר ה‑y',why:'זה בדיוק התפקיד של שיעור ה‑x. שיעור ה‑y מודד גובה — כמה עולים.'},
+  {t:'את המרחק מהראשית בקו ישר (אלכסוני)',why:'המרחק האלכסוני מהראשית הוא גודל אחר לגמרי. שיעור ה‑y מודד רק את החלק של העלייה למעלה.'},
+  {t:'את מספר המשבצות בשרטוט',why:'משבצות הן רק הרשת שעוזרת לנו לספור. שיעור ה‑y מודד יחידות — ולפעמים משבצת אחת שווה יותר מיחידה אחת.'}
+ ],
+ okWhy:'נכון. x מודד ימינה מציר ה‑y, ו‑y מודד למעלה מציר ה‑x.',
+ hint:'אם נעלה את הנקודה M גבוה יותר בלי להזיז אותה הצידה — איזה שיעור ישתנה?'
+}];
+
+/* ---------- 3. יישום ---------- */
+Q[3]=[
+{
+ kind:'plot', target:{x:5,y:2},
+ prompt:'סמנו את הנקודה <span class="ltr">(5 , 2)</span>.',
+ sub:'לחצו על מערכת הצירים במקום המדויק.',
+ grid:{xMax:10,yMax:10},
+ hint:'מהראשית: 5 יחידות ימינה, ורק אז 2 יחידות למעלה.'
+},
+{
+ kind:'plot', target:{x:0,y:4},
+ prompt:'סמנו את הנקודה <span class="ltr">(0 , 4)</span>.',
+ sub:'שימו לב לשיעור הראשון.',
+ grid:{xMax:10,yMax:10},
+ hint:'שיעור ה‑x הוא 0 — לא זזים ימינה בכלל.'
+},
+{
+ kind:'plot', target:{x:6,y:4},
+ prompt:'סמנו את הנקודה <span class="ltr">(6 , 4)</span>.',
+ sub:'זהירות: כאן כל משבצת שווה 2 יחידות.',
+ grid:{xMax:20,yMax:20,unitX:2,unitY:2},
+ hint:'אם משבצת אחת = 2 יחידות, כמה משבצות צריך כדי לעבור 6 יחידות?'
+},
+{
+ kind:'coords', target:{x:8,y:6},
+ prompt:'רשמו את שיעורי הנקודה C.',
+ sub:'הסתכלו היטב במספרים שעל הצירים.',
+ grid:{xMax:20,yMax:20,unitX:2,unitY:2,points:[{x:8,y:6,label:'C',dashed:true}]},
+ hint:'אל תספרו משבצות — קראו את המספרים הכתובים על הצירים.'
+}];
+
+/* ---------- 4. הסקה ובעיה הפוכה ---------- */
+Q[4]=[
+{
+ kind:'plot', target:{x:2,y:5},
+ prompt:'שלושה קודקודים של מלבן מסומנים בשרטוט. סמנו את הקודקוד הרביעי D.',
+ sub:'חשבו: מה חייב להיות משותף ל‑D ולשכנותיה?',
+ grid:{xMax:10,yMax:10,points:[
+   {x:2,y:1,label:'A'},{x:7,y:1,label:'B'},{x:7,y:5,label:'C'}],
+   segments:[{from:[2,1],to:[7,1]},{from:[7,1],to:[7,5]}]},
+ extra:[{when:(g)=>g.x===5&&g.y===2,tag:'החלפה בין השיעורים',
+   text:'סימנתם 5 ימינה ו‑2 למעלה. הקודקוד החסר צריך להיות באותו טור של A (x=2) ובאותה שורה של C (y=5).'}],
+ hint:'‏D נמצאת מעל A בדיוק — לכן שיעור ה‑x שלה זהה לשל A. וגובהה כמו של C.'
+},
+{
+ kind:'coords', target:{x:6,y:0},
+ prompt:'נקודה נמצאת על ציר ה‑x, ומרחקה מראשית הצירים 6 יחידות. מהם שיעוריה?',
+ grid:{xMax:10,yMax:10},
+ extra:[{when:(g)=>g.x===6&&g.y===6,tag:'הכפלת המספר בשני השיעורים',
+   text:'המספר 6 מתאר רק את התזוזה ימינה. הנקודה יושבת על ציר ה‑x, ולכן היא לא עולה בכלל — שיעור ה‑y שלה 0.'}],
+ hint:'נקודה שיושבת על הציר השוכב — כמה יחידות היא עולה למעלה?'
+},
+{
+ kind:'coords', target:{x:4,y:7},
+ prompt:'שיעור ה‑x של נקודה הוא 4, ושיעור ה‑y שלה גדול ממנו ב‑3. מהם שיעורי הנקודה?',
+ grid:{xMax:10,yMax:10},
+ extra:[
+  {when:(g)=>g.x===4&&g.y===1,tag:'חיסור במקום חיבור',
+   text:'"גדול ב‑3" פירושו להוסיף 3, לא להוריד. 4 ועוד 3 שווה 7.'},
+  {when:(g)=>g.x===4&&g.y===3,tag:'ההפרש נרשם כשיעור',
+   text:'המספר 3 הוא ההפרש בין השיעורים, לא שיעור ה‑y עצמו. שיעור ה‑y הוא 4 ועוד 3.'}],
+ hint:'קודם רשמו את x. אחר כך חשבו: 4 ועוד 3.'
+},
+{
+ kind:'plot', target:{x:5,y:3},
+ prompt:'הנקודה K נמצאת 3 יחידות מימין ל‑A, ו‑2 יחידות מתחתיה. סמנו את K.',
+ grid:{xMax:10,yMax:10,points:[{x:2,y:5,label:'A',dashed:true}]},
+ extra:[
+  {when:(g)=>g.x===5&&g.y===7,tag:'כיוון הפוך',
+   text:'עליתם 2 יחידות למעלה, אבל K נמצאת מתחת ל‑A. מ‑y=5 יורדים 2 ומגיעים ל‑3.'},
+  {when:(g)=>g.x===-1||(g.x===0&&g.y===3),tag:'כיוון הפוך',
+   text:'"מימין" פירושו להגדיל את שיעור ה‑x: מ‑2 עוברים ל‑5.'}],
+ hint:'קחו את A(2,5). ימינה 3 → x גדל. מתחת 2 → y קטן.'
+}];
+
+/* ---------- 5. ניתוח טעות ---------- */
+Q[5]=[
+{
+ kind:'choice',
+ prompt:'יובל התבקש לסמן את הנקודה <span class="ltr">(2 , 6)</span>. זה מה שהוא סימן. במה הוא טעה?',
+ grid:{xMax:8,yMax:8,points:[{x:6,y:2,label:'יובל',color:'#e11d48',dashed:true}]},
+ opts:[
+  {t:'הוא החליף בין השיעורים — הלך 6 ימינה ו‑2 למעלה במקום 2 ימינה ו‑6 למעלה',ok:true},
+  {t:'הוא התחיל לספור מ‑1 במקום מ‑0',why:'זו טעות אחרת (והיא מזיזה נקודה רק במשבצת אחת). כאן הנקודה נחתה רחוק — כי שני המספרים החליפו תפקידים.'},
+  {t:'הוא לא טעה בכלל',why:'בדקו: הנקודה שסימן נמצאת 6 יחידות ימינה, ולכן שיעור ה‑x שלה 6 — אבל התבקש x=2.'},
+  {t:'הוא סימן על ציר במקום ברביע',why:'הנקודה שסימן לא נמצאת על אף ציר — שני השיעורים שלה גדולים מ‑0.'}
+ ],
+ okWhy:'בדיוק. זו הטעות הכי נפוצה בזוג סדור — לזכור שהמספר הראשון תמיד מודד ימינה.',
+ hint:'קראו את השיעורים של הנקודה שיובל סימן, והשוו למה שהתבקש.'
+},
+{
+ kind:'choice',
+ prompt:'מאיה קראה את הנקודה שבשרטוט וכתבה <span class="ltr">(5 , 4)</span>. במה היא טעתה?',
+ grid:{xMax:8,yMax:8,points:[{x:4,y:3,label:'',dashed:true}]},
+ opts:[
+  {t:'היא התחילה לספור מ‑1 במקום מ‑0 — הראשית היא 0, והמשבצת הראשונה מגיעה כבר ל‑1',ok:true},
+  {t:'היא החליפה בין השיעורים',why:'החלפה הייתה נותנת (3,4). כאן שני המספרים גדולים ב‑1 בדיוק מהנכונים — סימן מובהק לספירה שהתחילה מ‑1.'},
+  {t:'היא ספרה משבצות במקום יחידות',why:'בשרטוט הזה כל משבצת שווה בדיוק יחידה אחת, אז זה לא מקור הטעות. שימו לב שכל אחד מהמספרים שלה גדול ב‑1.'},
+  {t:'היא לא טעתה',why:'הנקודה נמצאת 4 יחידות ימינה ו‑3 למעלה, כלומר (4,3). מאיה כתבה מספר גדול ב‑1 בכל שיעור.'}
+ ],
+ okWhy:'נכון. הספירה מתחילה מהראשית שהיא 0, ורק אחרי משבצת שלמה מגיעים ל‑1.',
+ hint:'השוו מספר מול מספר: מה ההפרש בין מה שמאיה כתבה לבין השיעורים האמיתיים?'
+},
+{
+ kind:'choice',
+ prompt:'עומר סימן את <span class="ltr">(6 , 4)</span> על מערכת צירים שבה כל משבצת שווה 2 יחידות. הוא ספר 6 משבצות ימינה ו‑4 משבצות למעלה. במה הוא טעה?',
+ grid:{xMax:20,yMax:20,unitX:2,unitY:2,points:[{x:12,y:8,label:'עומר',color:'#e11d48',dashed:true},{x:6,y:4,label:'הנכונה',color:'#12855b',dashed:true}]},
+ opts:[
+  {t:'הוא ספר משבצות במקום יחידות — 6 משבצות הן 12 יחידות, ו‑4 משבצות הן 8',ok:true},
+  {t:'הוא החליף בין השיעורים',why:'לא — הוא שמר על הסדר הנכון (קודם ימינה, אחר כך למעלה). הבעיה היא בגודל של כל משבצת.'},
+  {t:'הוא התחיל לספור מ‑1',why:'הטעות כאן גדולה בהרבה ממשבצת אחת: הוא הגיע ל‑(12,8) במקום ל‑(6,4) — בדיוק פי 2.'},
+  {t:'לא הייתה טעות, השרטוט פשוט קטן',why:'יש טעות: הנקודה שסימן יושבת על (12,8). ברגע שמשבצת שווה 2 יחידות, צריך לחלק: 6 יחידות = 3 משבצות.'}
+ ],
+ okWhy:'נכון. תמיד בודקים קודם כמה שווה משבצת אחת — לא כל מערכת צירים מסומנת ב‑1.',
+ hint:'הסתכלו על המספרים שכתובים על הצירים. איפה בדיוק נחתה הנקודה של עומר?'
+},
+{
+ kind:'choice',
+ prompt:'רן טוען: "הנקודה <span class="ltr">(0 , 7)</span> נמצאת על ציר ה‑x". האם הוא צודק?',
+ grid:{xMax:8,yMax:8,points:[{x:0,y:7,label:'(0,7)',color:'#0891b2'}]},
+ opts:[
+  {t:'לא — שיעור ה‑x שלה הוא 0, ולכן היא יושבת על ציר ה‑y',ok:true},
+  {t:'כן, כי מופיע בה המספר 0 שקשור לציר ה‑x',why:'המספר 0 אמנם נמצא במקום של x, אבל המשמעות שלו היא "לא זזנו ימינה" — ולכן הנקודה נשארת מודבקת לציר העומד, ציר ה‑y.'},
+  {t:'כן, כי כל נקודה שיש בה 0 נמצאת על ציר ה‑x',why:'לא כל נקודה עם 0. הנקודות שעל ציר ה‑x הן אלה שבהן דווקא שיעור ה‑y הוא 0, כמו (7,0).'},
+  {t:'אי אפשר להחליט בלי שרטוט',why:'אפשר להחליט מהשיעורים לבד: x=0 מעיד תמיד על ציר ה‑y.'}
+ ],
+ okWhy:'נכון. x=0 → ציר ה‑y.  y=0 → ציר ה‑x.  שניהם 0 → הראשית.',
+ hint:'שאלו: כמה יחידות הלכנו ימינה כדי להגיע לנקודה הזו?'
+}];
+
+/* ---------- 6. אוריינות והעברה ---------- */
+const POOL_GRID={xMax:10,yMax:80,unitX:1,unitY:10,
+  axisTitles:{x:'זמן (דקות)',y:'כמות מים (ליטרים)'},
+  polyline:[[0,0],[4,40],[6,40],[10,80]],
+  points:[{x:0,y:0,r:5},{x:4,y:40,r:5},{x:6,y:40,r:5},{x:10,y:80,r:5}]};
+const POOL_STORY='דנה ממלאת בריכה מתנפחת בחצר. הגרף מתאר כמה ליטרים של מים היו בבריכה בכל דקה מתחילת המילוי.';
+
+Q[6]=[
+{
+ kind:'num', target:40, unitLabel:'ליטרים', story:POOL_STORY, grid:POOL_GRID,
+ prompt:'כמה ליטרים היו בבריכה אחרי 4 דקות?',
+ extra:[
+  {when:v=>v===4,tag:'קריאה מהציר הלא נכון',
+   text:'המספר 4 הוא הזמן — הוא נמצא על הציר השוכב. השאלה שואלת על כמות המים, ולכן צריך לעלות מהנקודה שמעל 4 ולקרוא את המספר על הציר העומד.'},
+  {when:v=>v===4.5||v===45||v===35,tag:'קריאה לא מדויקת של הסולם',
+   text:'שימו לב שכל משבצת על הציר העומד שווה 10 ליטרים. הנקודה שמעל דקה 4 יושבת בדיוק על הקו של 40.'},
+  {when:v=>v===80,tag:'קריאה בסוף הגרף',
+   text:'‏80 ליטרים היו בבריכה רק בדקה 10, בסוף המילוי. אנחנו מחפשים את הגובה של הגרף מעל דקה 4.'}],
+ hint:'מצאו את 4 על הציר השוכב, עלו למעלה עד הגרף, ומשם לכו שמאלה אל הציר העומד.',
+ okWhy:'נכון. הנקודה (4,40) אומרת: אחרי 4 דקות היו בבריכה 40 ליטרים.'
+},
+{
+ kind:'choice', story:POOL_STORY, grid:POOL_GRID,
+ prompt:'מה מייצגת הנקודה <span class="ltr">(6 , 40)</span> בסיפור?',
+ opts:[
+  {t:'אחרי 6 דקות היו בבריכה 40 ליטרים',ok:true},
+  {t:'אחרי 40 דקות היו בבריכה 6 ליטרים',why:'החלפתם בין השיעורים. המספר הראשון בזוג נמצא תמיד על הציר השוכב — וכאן הציר השוכב מודד זמן. לכן 6 הוא הזמן ו‑40 היא הכמות.'},
+  {t:'הבריכה התמלאה ב‑6 ליטרים בכל דקה',why:'הנקודה מתארת מצב אחד ברגע אחד, לא קצב. היא אומרת מה היה המצב בדיוק בדקה 6.'},
+  {t:'הבריכה מכילה 46 ליטרים',why:'לא מחברים את שני השיעורים. כל אחד מהם מספר משהו אחר: אחד את הזמן, השני את הכמות.'}
+ ],
+ okWhy:'בדיוק — קוראים זוג סדור לפי שמות הצירים: (זמן , כמות מים).',
+ hint:'מה כתוב בשם של הציר השוכב, ומה כתוב בשם של הציר העומד?'
+},
+{
+ kind:'coords', target:{x:10,y:80}, story:POOL_STORY, grid:POOL_GRID,
+ prompt:'מתי לראשונה היו בבריכה 80 ליטרים? רשמו את הזוג הסדור של הנקודה.',
+ sub:'‏x — הזמן בדקות,  y — כמות המים בליטרים.',
+ extra:[{when:g=>g.x===80&&g.y===10,tag:'החלפה בין השיעורים',
+   text:'בזוג סדור המספר הראשון שייך לציר השוכב — כאן הזמן (10 דקות), והשני לציר העומד — כמות המים (80 ליטרים).'}],
+ hint:'מצאו 80 על הציר העומד, לכו ימינה עד שפוגשים את הגרף, וירדו לציר הזמן.',
+ okWhy:'נכון. הנקודה (10,80) היא הנקודה האחרונה בגרף.'
+},
+{
+ kind:'choice', story:POOL_STORY, grid:POOL_GRID,
+ prompt:'בין דקה 4 לדקה 6 הגרף שוכב אופקית. מה זה מספר לנו על הבריכה?',
+ opts:[
+  {t:'בשתי הדקות האלה לא נכנסו מים — הכמות נשארה 40 ליטרים',ok:true},
+  {t:'בשתי הדקות האלה הבריכה התרוקנה',why:'אם הבריכה הייתה מתרוקנת, הגרף היה יורד למטה. הוא נשאר באותו גובה בדיוק — כלומר הכמות לא השתנתה.'},
+  {t:'הבריכה התמלאה מהר מאוד',why:'מילוי מהיר נראה כמו קו שעולה בתלילות. קו שוכב אומר שאין שינוי בכלל.'},
+  {t:'הזמן הפסיק לזוז',why:'הזמן תמיד ממשיך — לכן ממשיכים ימינה על הציר השוכב. מה שלא השתנה זה הגובה, כלומר כמות המים.'}
+ ],
+ okWhy:'נכון. הגובה של הגרף הוא כמות המים — וכשהגובה קבוע, הכמות קבועה. כנראה דנה סגרה את הברז לרגע.',
+ hint:'הגובה של הגרף מספר על כמות המים. מה קורה לגובה בין 4 ל‑6?'
+},
+{
+ kind:'choice', story:POOL_STORY, grid:POOL_GRID,
+ prompt:'מה מייצגת הנקודה <span class="ltr">(0 , 0)</span> בסיפור?',
+ opts:[
+  {t:'ברגע שבו התחילה המדידה הבריכה הייתה ריקה',ok:true},
+  {t:'שאין בריכה בכלל',why:'הבריכה קיימת — פשוט עוד לא נכנסו אליה מים. ‏0 ליטרים זו כמות, לא היעדר בריכה.'},
+  {t:'שדנה שכחה למדוד',why:'הנקודה (0,0) היא מדידה לכל דבר: בזמן 0 היו 0 ליטרים.'},
+  {t:'שהבריכה התמלאה בדיוק בזמן 0',why:'הפוך — הגובה של הנקודה הוא 0, כלומר לא היו מים כלל באותו רגע.'}
+ ],
+ okWhy:'נכון. בזמן 0 (תחילת המדידה) היו 0 ליטרים — ולכן הגרף יוצא מהראשית.',
+ hint:'תרגמו כל שיעור למילים לפי שם הציר שלו.'
+}];
+
+/* =========================================================
+   מנוע האבחון — "במה בדיוק טעית"
+   ========================================================= */
+function fmtPair(x,y){return '<span class="ltr">('+x+' , '+y+')</span>';}
+function num(v){return '<span class="ltr">'+v+'</span>';}
+
+function diagnosePair(q,g){
+  const t=q.target, uX=(q.grid&&q.grid.unitX)||1, uY=(q.grid&&q.grid.unitY)||1;
+  if(g.x===t.x&&g.y===t.y) return null;
+  for(const e of (q.extra||[])) if(e.when(g,t)) return {tag:e.tag,text:e.text};
+  if(t.x!==t.y && g.x===t.y && g.y===t.x)
+    return {tag:'החלפה בין השיעורים',
+      text:'הפכתם את התפקידים: הלכתם '+num(t.y)+' ימינה ו‑'+num(t.x)+' למעלה, במקום '+num(t.x)+' ימינה ו‑'+num(t.y)+' למעלה. בזוג סדור המספר הראשון תמיד מודד ימינה על הציר השוכב, והשני תמיד מודד למעלה.'};
+  if(g.x===t.x+1&&g.y===t.y+1)
+    return {tag:'ספירה שהתחילה מ‑1',
+      text:'שני השיעורים שלכם גדולים בדיוק ב‑1. סימן מובהק שספרתם את הראשית כ‑1. הראשית היא 0, ורק אחרי משבצת שלמה מגיעים ל‑1.'};
+  if(g.x===t.x-1&&g.y===t.y-1)
+    return {tag:'משבצת אחת חסרה',
+      text:'שני השיעורים שלכם קטנים ב‑1. כנראה עצרתם משבצת אחת מוקדם מדי. ספרו שוב לאט מהראשית, ובדקו על איזה קו אתם עוצרים.'};
+  if((uX>1||uY>1) && g.x===t.x*uX && g.y===t.y*uY)
+    return {tag:'ספירת משבצות במקום יחידות',
+      text:'כאן כל משבצת שווה '+num(uX)+' יחידות. ספרתם '+num(t.x)+' משבצות ימינה ו‑'+num(t.y)+' משבצות למעלה, ולכן נחתתם על '+fmtPair(t.x*uX,t.y*uY)+'. צריך '+num(t.x/uX)+' משבצות ימינה ו‑'+num(t.y/uY)+' משבצות למעלה.'};
+  if(t.x===0&&g.x!==0)
+    return {tag:'הנקודה לא על הציר',
+      text:'שיעור ה‑x צריך להיות 0, כלומר לא זזים ימינה בכלל והנקודה יושבת בדיוק על ציר ה‑y (הציר העומד). אתם התרחקתם '+num(g.x)+' יחידות ימינה ממנו.'};
+  if(t.y===0&&g.y!==0)
+    return {tag:'הנקודה לא על הציר',
+      text:'שיעור ה‑y צריך להיות 0, כלומר לא עולים בכלל והנקודה יושבת בדיוק על ציר ה‑x (הציר השוכב). אתם עליתם '+num(g.y)+' יחידות מעליו.'};
+  if(g.x===t.x)
+    return {tag:'שיעור ה‑x מדויק, ה‑y לא',
+      text:'התזוזה ימינה נכונה — '+num(t.x)+'. אבל בגובה: מהראשית צריך לעלות '+num(t.y)+' יחידות, ואתם סימנתם גובה '+num(g.y)+'. ספרו שוב את הקווים האופקיים כלפי מעלה.'};
+  if(g.y===t.y)
+    return {tag:'שיעור ה‑y מדויק, ה‑x לא',
+      text:'הגובה נכון — '+num(t.y)+'. אבל התזוזה ימינה: צריך '+num(t.x)+' יחידות מהציר העומד, ואתם סימנתם '+num(g.x)+'. ספרו שוב על הציר השוכב, החל מ‑0.'};
+  return {tag:'שני השיעורים לא מדויקים',
+    text:'הנקודה שסימנתם היא '+fmtPair(g.x,g.y)+', והמבוקשת היא '+fmtPair(t.x,t.y)+'. חזרו לראשית וספרו בשני שלבים נפרדים: קודם '+num(t.x)+' יחידות ימינה, ורק אז '+num(t.y)+' יחידות למעלה.'};
+}
+
+function diagnoseNum(q,v){
+  if(v===q.target) return null;
+  for(const e of (q.extra||[])) if(e.when(v)) return {tag:e.tag,text:e.text};
+  return {tag:'קריאה לא מדויקת מהגרף',
+    text:'התשובה שרשמתם היא '+num(v)+', והנכונה היא '+num(q.target)+'. בדקו כמה שווה משבצת אחת על הציר, ועקבו בקו ישר מהציר אל הגרף וממנו אל הציר השני.'};
+}
+
+function solveSteps(q){
+  const t=q.target, uX=(q.grid&&q.grid.unitX)||1, uY=(q.grid&&q.grid.unitY)||1;
+  const s=['מתחילים תמיד מראשית הצירים — הנקודה '+fmtPair(0,0)+'.'];
+  if(uX>1) s.push('בודקים כמה שווה משבצת אחת: כאן '+num(uX)+' יחידות.');
+  s.push(t.x===0 ? 'שיעור ה‑x הוא 0 — לא זזים ימינה בכלל, נשארים על ציר ה‑y.'
+                 : 'שיעור ה‑x הוא '+num(t.x)+' — הולכים '+num(t.x)+' יחידות ימינה על הציר השוכב'+(uX>1?' (כלומר '+num(t.x/uX)+' משבצות).':'.'));
+  s.push(t.y===0 ? 'שיעור ה‑y הוא 0 — לא עולים בכלל, נשארים על ציר ה‑x.'
+                 : 'שיעור ה‑y הוא '+num(t.y)+' — משם עולים '+num(t.y)+' יחידות למעלה'+(uY>1?' (כלומר '+num(t.y/uY)+' משבצות).':'.'));
+  s.push('הנקודה היא '+fmtPair(t.x,t.y)+'.');
+  return s;
+}
+
+/* =========================================================
+   מצב האפליקציה
+   ========================================================= */
+const app=document.getElementById('app');
+const topbar=document.getElementById('topbar');
+const topTitle=document.getElementById('topTitle');
+const topProg=document.getElementById('topProg');
+const backBtn=document.getElementById('backBtn');
+const TOTAL=[1,2,3,4,5,6].reduce((a,l)=>a+Q[l].length,0);
+
+const S={view:'home',level:0,qi:0,tries:0,answered:{},score:{},explored:new Set()};
+[1,2,3,4,5,6].forEach(l=>{S.score[l]=0;S.answered[l]=0;});
+
+backBtn.onclick=()=>{S.view='home';render();};
+function answeredTotal(){return [1,2,3,4,5,6].reduce((a,l)=>a+S.answered[l],0);}
+function setProgress(){topProg.style.width=Math.round(answeredTotal()/TOTAL*100)+'%';}
+
+function render(){
+  app.innerHTML='';
+  topbar.classList.toggle('hidden',S.view==='home');
+  setProgress();
+  if(S.view==='home') return renderHome();
+  if(S.view==='explore') return renderExplore();
+  if(S.view==='q') return renderQuestion();
+  if(S.view==='stationDone') return renderStationDone();
+  if(S.view==='final') return renderFinal();
+}
+
+/* ---------- מסך הבית ---------- */
+function renderHome(){
+  const hero=h('div','hero');
+  hero.innerHTML='<div class="kicker">כיתה ז׳ · מערכת הצירים</div>'+
+    '<h1>הרביע הראשון</h1>'+
+    '<p>מסע בשבע תחנות: מגלים, מבינים, מסמנים — ואם טועים, מקבלים בדיוק את ההסבר במה הטעות.</p>';
+  app.appendChild(hero);
+
+  const st=h('div','stations');
+  STATIONS.forEach(s=>{
+    const b=h('button','station');
+    const total=s.id===0?1:Q[s.id].length;
+    const done=s.id===0?(S.explored.size>=3?1:0):S.answered[s.id];
+    if(done>=total) b.classList.add('done');
+    let dots='';
+    for(let i=0;i<total;i++) dots+='<i class="'+(i<done?'on':'')+'"></i>';
+    b.innerHTML='<div class="em" style="background:'+s.color+'1a;color:'+s.color+'">'+s.icon+'</div>'+
+      '<div><div class="st-name">'+(s.id===0?'':'<span class="ltr">'+s.id+'.</span> ')+s.name+'</div>'+
+      '<div class="st-sub">'+s.sub+'</div><div class="dots">'+dots+'</div></div>'+
+      '<div class="chev">‹</div>';
+    b.onclick=()=>{
+      if(s.id===0){S.view='explore';}
+      else {S.level=s.id;S.qi=0;S.tries=0;S.view='q';}
+      render();window.scrollTo(0,0);
+    };
+    st.appendChild(b);
+  });
+  app.appendChild(st);
+
+  if(answeredTotal()>=TOTAL){
+    const c=h('div','card');c.style.marginTop='14px';
+    c.innerHTML='<h2>סיימתם את כל התחנות 🎉</h2>';
+    const btn=h('button','btn wide','לסיכום המסע');
+    btn.onclick=()=>{S.view='final';render();window.scrollTo(0,0);};
+    c.appendChild(btn);app.appendChild(c);
+  }
+}
+
+/* ---------- תחנת חקירה ---------- */
+function renderExplore(){
+  topTitle.textContent='חקירה חופשית';
+  const c=h('div','card');
+  c.innerHTML='<div class="qhead"><span class="badge">תחנת פתיחה</span></div>'+
+    '<div class="qtext">לחצו בכל מקום על מערכת הצירים.</div>'+
+    '<div class="qsub">שימו לב מה קורה לשני המספרים כשאתם זזים ימינה, וכשאתם זזים למעלה.</div>';
+  const box=h('div','gridbox');
+  const rd=h('div','readout');
+  const info=h('div','hintbox');
+  info.innerHTML='<b>עדיין לא בחרתם נקודה.</b> לחצו על מפגש של שני קווים ברשת.';
+  let cur=null;
+  const g=makeGrid({xMax:10,yMax:10,interactive:true,onPick:(x,y)=>{
+    cur={x,y};
+    S.explored.add(x+','+y);
+    rd.innerHTML=
+      '<div class="rd x"><b>'+x+'</b><small>שיעור x — ימינה</small></div>'+
+      '<div class="rd y"><b>'+y+'</b><small>שיעור y — למעלה</small></div>'+
+      '<div class="rd"><b>('+x+' , '+y+')</b><small>הזוג הסדור</small></div>';
+    let txt='מהראשית הלכתם <b>'+x+'</b> יחידות ימינה, ואז <b>'+y+'</b> יחידות למעלה.';
+    if(x===0&&y===0) txt='זו ראשית הצירים — עוד לא זזתם לשום כיוון.';
+    else if(x===0) txt='לא זזתם ימינה בכלל, ולכן הנקודה יושבת על <b>ציר ה‑y</b> בגובה '+y+'.';
+    else if(y===0) txt='לא עליתם בכלל, ולכן הנקודה יושבת על <b>ציר ה‑x</b>, במרחק '+x+' יחידות מהראשית.';
+    info.innerHTML=txt+'<br>נקודות שחקרתם: '+S.explored.size+' מתוך 3.';
+    if(S.explored.size>=3) doneBtn.disabled=false;
+  }});
+  box.appendChild(g.node);
+  c.appendChild(box);c.appendChild(rd);c.appendChild(info);
+
+  const row=h('div','btn-row');
+  const pathBtn=h('button','btn soft','הראו לי את הדרך מהראשית');
+  pathBtn.onclick=()=>{
+    if(!cur){info.innerHTML='<b>קודם בחרו נקודה</b> בלחיצה על הרשת.';return;}
+    g.clearPick();
+    g.addPoint({x:cur.x,y:cur.y,color:'#e11d48',guides:true,label:'('+cur.x+' , '+cur.y+')'});
+    info.innerHTML='קודם <b>'+cur.x+' ימינה</b> על הציר השוכב, ורק אז <b>'+cur.y+' למעלה</b>. תמיד בסדר הזה.';
+  };
+  const doneBtn=h('button','btn','הבנתי, ממשיכים');
+  doneBtn.disabled=S.explored.size<3;
+  doneBtn.onclick=()=>{S.view='home';render();window.scrollTo(0,0);};
+  row.appendChild(pathBtn);row.appendChild(doneBtn);
+  c.appendChild(row);
+
+  const con=h('div','concept');
+  con.innerHTML='<h3>המילים שצריך להכיר</h3><ul>'+
+   '<li><b>ראשית הצירים</b> — הנקודה שבה נפגשים הצירים, ושיעוריה <span class="ltr">(0 , 0)</span>.</li>'+
+   '<li><b>ציר ה‑x</b> — הציר השוכב (האופקי). עליו מודדים כמה ימינה.</li>'+
+   '<li><b>ציר ה‑y</b> — הציר העומד (האנכי). עליו מודדים כמה למעלה.</li>'+
+   '<li><b>זוג סדור</b> — <span class="ltr">(x , y)</span>. הסדר קובע: קודם ימינה, אחר כך למעלה.</li>'+
+   '<li><b>הרביע הראשון</b> — האזור שבו שני השיעורים אינם שליליים.</li></ul>';
+  c.appendChild(con);
+  app.appendChild(c);
+}
+
+/* ---------- מסך שאלה ---------- */
+function renderQuestion(){
+  const lvl=STATIONS[S.level], list=Q[S.level], q=list[S.qi];
+  topTitle.textContent=S.level+'. '+lvl.name;
+  const c=h('div','card');
+
+  const head=h('div','qhead');
+  head.innerHTML='<span class="badge lvl" style="background:'+lvl.color+'14;color:'+lvl.color+'">'+lvl.icon+' '+lvl.name+'</span>'+
+                 '<span class="badge">שאלה '+(S.qi+1)+' מתוך '+list.length+'</span>';
+  c.appendChild(head);
+
+  if(q.story){const s=h('div','hintbox');s.innerHTML='<b>הסיפור:</b> '+q.story;c.appendChild(s);}
+
+  const qt=h('div','qtext');qt.innerHTML=q.prompt;c.appendChild(qt);
+  if(q.sub){const sb=h('div','qsub');sb.innerHTML=q.sub;c.appendChild(sb);}
+
+  const fb=h('div','');                       // אזור המשוב
+  let grid=null, chosen=null;
+
+  if(q.grid){
+    const box=h('div','gridbox');
+    const cfg=Object.assign({},q.grid);
+    if(q.kind==='plot'){cfg.interactive=true;cfg.onPick=(x,y)=>{chosen={x,y};checkBtn.disabled=false;};}
+    grid=makeGrid(cfg);
+    box.appendChild(grid.node);
+    c.appendChild(box);
+  }
+
+  const actions=h('div','sticky-actions');
+  const hintBtn=h('button','btn ghost','רמז');
+  const checkBtn=h('button','btn','בדיקה');
+
+  /* --- ממשק תשובה לפי סוג השאלה --- */
+  let inX,inY,inV;
+  if(q.kind==='choice'){
+    const wrap=h('div','opts');
+    q.opts.forEach((o,i)=>{
+      const b=h('button','opt');
+      b.innerHTML='<span class="mark">'+String.fromCharCode(1488+i)+'</span><span>'+o.t+'</span>';
+      b.onclick=()=>{
+        if(b.classList.contains('right')||b.classList.contains('wrongpick'))return;
+        wrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+        b.classList.add('sel');
+        judgeChoice(i,b,wrap);
+      };
+      wrap.appendChild(b);
+    });
+    c.appendChild(wrap);
+    checkBtn.classList.add('hidden');
+  }
+  else if(q.kind==='coords'){
+    const pb=h('div','pairbox');pb.setAttribute('dir','ltr');
+    const mk=(lab)=>{const w=h('div','pairwrap');
+      const i=document.createElement('input');
+      i.className='coordin';i.type='number';i.inputMode='numeric';i.setAttribute('aria-label',lab);
+      w.appendChild(i);const l=h('div','axlabel',lab);w.appendChild(l);return {w,i};};
+    const a=mk('שיעור x'),b=mk('שיעור y');
+    inX=a.i;inY=b.i;
+    pb.appendChild(h('span','paren','('));pb.appendChild(a.w);
+    pb.appendChild(h('span','paren',','));pb.appendChild(b.w);
+    pb.appendChild(h('span','paren',')'));
+    c.appendChild(pb);
+  }
+  else if(q.kind==='num'){
+    const pb=h('div','pairbox');
+    const i=document.createElement('input');
+    i.className='coordin';i.type='number';i.inputMode='numeric';i.style.width='120px';
+    inV=i;pb.appendChild(i);
+    pb.appendChild(h('span','axlabel',q.unitLabel||''));
+    c.appendChild(pb);
+  }
+  if(q.kind==='plot') checkBtn.disabled=true;
+
+  const hintBox=h('div','hintbox hidden');
+  hintBox.innerHTML='<b>רמז:</b> '+(q.hint||'');
+  c.appendChild(hintBox);
+  hintBtn.onclick=()=>{hintBox.classList.remove('hidden');hintBtn.classList.add('hidden');};
+
+  actions.appendChild(hintBtn);actions.appendChild(checkBtn);
+  c.appendChild(actions);
+  c.appendChild(fb);
+  app.appendChild(c);
+
+  checkBtn.onclick=()=>{
+    if(q.kind==='plot'){ if(!chosen)return; judgePair(chosen); }
+    else if(q.kind==='coords'){
+      if(inX.value===''||inY.value===''){shake([inX,inY]);return;}
+      judgePair({x:Number(inX.value),y:Number(inY.value)});
+    }
+    else if(q.kind==='num'){
+      if(inV.value===''){shake([inV]);return;}
+      judgeNum(Number(inV.value));
+    }
+  };
+
+  function shake(els){els.forEach(e=>{e.style.borderColor='#f59e0b';setTimeout(()=>e.style.borderColor='',900);});}
+
+  function lockInputs(){
+    [inX,inY,inV].forEach(i=>{if(i)i.disabled=true;});
+    checkBtn.classList.add('hidden');hintBtn.classList.add('hidden');
+  }
+  function finish(){                                   // רישום התקדמות
+    S.answered[S.level]=Math.max(S.answered[S.level],S.qi+1);
+  }
+  function nextBtn(label){
+    const b=h('button','btn wide',label||'לשאלה הבאה');
+    b.onclick=()=>{
+      if(S.qi+1<list.length){S.qi++;S.tries=0;S.view='q';}
+      else {S.tries=0;S.view='stationDone';}
+      render();window.scrollTo(0,0);
+    };
+    return b;
+  }
+
+  function feedbackOK(extraHtml){
+    finish();
+    if(S.tries===0) S.score[S.level]++;
+    fb.innerHTML='';
+    const d=h('div','fb ok');
+    let why=q.okWhy;
+    if(!why&&q.target&&typeof q.target==='object'){
+      const t=q.target;
+      const px=t.x===0?'לא זזים ימינה בכלל':'הולכים '+num(t.x)+' יחידות ימינה';
+      const py=t.y===0?'לא עולים בכלל — הנקודה יושבת על ציר ה‑x':'עולים '+num(t.y)+' יחידות למעלה';
+      why='מהראשית '+px+', ואז '+py+' — '+fmtPair(t.x,t.y)+'.';
+      if(t.x===0) why='מהראשית '+px+', ולכן הנקודה יושבת על ציר ה‑y, בגובה '+num(t.y)+' — '+fmtPair(t.x,t.y)+'.';
+    }
+    if(!why) why='התשובה מדויקת.';
+    d.innerHTML='<h3>✅ נכון מאוד</h3>'+
+      '<div class="why">'+why+'</div>'+(extraHtml||'');
+    d.appendChild(nextBtn(S.qi+1<list.length?'לשאלה הבאה':'לסיכום התחנה'));
+    fb.appendChild(d);
+    lockInputs();
+    d.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function feedbackNo(diag,compare){
+    S.tries++;
+    fb.innerHTML='';
+    const last=S.tries>=2;
+    const d=h('div','fb no');
+    d.innerHTML='<h3>🔍 בוא נראה מה קרה</h3>'+
+      (diag.tag?'<span class="tag">'+diag.tag+'</span>':'')+
+      '<div class="why">'+diag.text+'</div>';
+    if(compare) d.appendChild(compare);
+    if(last){
+      const st=h('div','why');
+      st.innerHTML='<b>פותרים יחד, שלב אחר שלב:</b><ol>'+
+        (q.kind==='choice'
+          ? '<li>'+(q.opts.find(o=>o.ok).t+'</li><li>'+(q.okWhy||'')+'</li>')
+          : solveSteps(q).map(s=>'<li>'+s+'</li>').join(''))+'</ol>';
+      d.appendChild(st);
+      if(q.kind!=='choice'&&grid&&q.kind==='plot'){}
+      finish();
+      d.appendChild(nextBtn(S.qi+1<list.length?'הבנתי — לשאלה הבאה':'הבנתי — לסיכום התחנה'));
+      lockInputs();
+    }else{
+      const b=h('button','btn wide','נסו שוב');
+      b.onclick=()=>{
+        fb.innerHTML='';
+        if(grid&&q.kind==='plot'){grid.clearPick();chosen=null;checkBtn.disabled=true;}
+        if(inX){inX.value='';inY.value='';inX.focus();}
+        if(inV){inV.value='';inV.focus();}
+      };
+      d.appendChild(b);
+      if(hintBox.classList.contains('hidden')){hintBox.classList.remove('hidden');hintBtn.classList.add('hidden');}
+    }
+    fb.appendChild(d);
+    d.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  function judgeChoice(i,btn,wrap){
+    const o=q.opts[i];
+    if(o.ok){btn.classList.remove('sel');btn.classList.add('right');
+      wrap.querySelectorAll('.opt').forEach(x=>{if(x!==btn)x.style.opacity=.55;});
+      feedbackOK();
+    }else{
+      btn.classList.remove('sel');btn.classList.add('wrongpick');
+      const willReveal=S.tries+1>=2;
+      feedbackNo({tag:'התשובה שבחרתם',text:o.why||'זו לא התשובה הנכונה.'});
+      if(willReveal){
+        wrap.querySelectorAll('.opt').forEach((x,j)=>{if(q.opts[j].ok)x.classList.add('right');x.style.pointerEvents='none';});
+      }
+    }
+  }
+  function judgePair(g){
+    const diag=diagnosePair(q,g);
+    if(!diag){ if(grid&&q.kind==='plot')grid.setPick(g.x,g.y,'#12855b','✔'); feedbackOK(); }
+    else feedbackNo(diag,compareGrid(q.target,g,q.grid||{}));
+  }
+  function judgeNum(v){
+    const diag=diagnoseNum(q,v);
+    if(!diag) feedbackOK();
+    else feedbackNo(diag,null);
+  }
+}
+
+/* ---------- סיכום תחנה ---------- */
+function renderStationDone(){
+  const lvl=STATIONS[S.level],total=Q[S.level].length,sc=S.score[S.level];
+  topTitle.textContent='סיכום תחנה';
+  const c=h('div','card done-hero');
+  const stars=sc===total?'⭐⭐⭐':(sc>=Math.ceil(total/2)?'⭐⭐':'⭐');
+  c.innerHTML='<div class="big">'+lvl.icon+'</div><h2>'+lvl.name+' — הושלמה</h2>'+
+    '<div class="stars">'+stars+'</div>'+
+    '<p>פתרתם נכון בניסיון הראשון <b>'+sc+'</b> מתוך <b>'+total+'</b> שאלות.</p>'+
+    '<p class="qsub">'+(sc===total?'שליטה מלאה בתחנה הזו.':'כל טעות שקיבלתם עליה הסבר — היא בדיוק המקום שכדאי לחזור אליו.')+'</p>';
+  const nxt=STATIONS.find(s=>s.id>S.level);
+  const row=h('div','btn-row');row.style.justifyContent='center';
+  if(nxt){
+    const b=h('button','btn','לתחנה הבאה: '+nxt.name);
+    b.onclick=()=>{S.level=nxt.id;S.qi=0;S.tries=0;S.view='q';render();window.scrollTo(0,0);};
+    row.appendChild(b);
+  }else{
+    const b=h('button','btn','לסיכום המסע');
+    b.onclick=()=>{S.view='final';render();window.scrollTo(0,0);};
+    row.appendChild(b);
+  }
+  const b2=h('button','btn ghost','חזרה למפה');
+  b2.onclick=()=>{S.view='home';render();window.scrollTo(0,0);};
+  row.appendChild(b2);
+  c.appendChild(row);
+  app.appendChild(c);
+}
+
+/* ---------- סיכום סופי ---------- */
+function renderFinal(){
+  topTitle.textContent='סיכום המסע';
+  const totalSc=[1,2,3,4,5,6].reduce((a,l)=>a+S.score[l],0);
+  const c=h('div','card done-hero');
+  c.innerHTML='<div class="big">🏁</div><h2>סיימתם את המסע ברביע הראשון</h2>'+
+    '<p>‏<b>'+totalSc+'</b> תשובות נכונות בניסיון הראשון מתוך <b>'+TOTAL+'</b>.</p>';
+  const sum=h('div','summary');
+  STATIONS.filter(s=>s.id>0).forEach(s=>{
+    const r=h('div','srow');
+    r.innerHTML='<span style="font-size:1.2rem">'+s.icon+'</span><span>'+s.name+'</span>'+
+      '<span class="sc" style="color:'+s.color+'">'+S.score[s.id]+'/'+Q[s.id].length+'</span>';
+    sum.appendChild(r);
+  });
+  c.appendChild(sum);
+  const con=h('div','concept');
+  con.innerHTML='<h3>שלוש המלכודות שכדאי לזכור</h3><ul>'+
+    '<li>הסדר בזוג הסדור: <b>קודם ימינה, אחר כך למעלה</b>. <span class="ltr">(3 , 5)</span> ו‑<span class="ltr">(5 , 3)</span> אינן אותה נקודה.</li>'+
+    '<li>הספירה מתחילה מ‑<b>0</b> בראשית, לא מ‑1.</li>'+
+    '<li>לפני שסופרים — בודקים <b>כמה יחידות שווה משבצת אחת</b>.</li></ul>';
+  c.appendChild(con);
+  const row=h('div','btn-row');row.style.justifyContent='center';
+  const again=h('button','btn','למסע מחדש');
+  again.onclick=()=>{[1,2,3,4,5,6].forEach(l=>{S.score[l]=0;S.answered[l]=0;});S.explored=new Set();S.view='home';render();window.scrollTo(0,0);};
+  const home=h('button','btn ghost','חזרה למפה');
+  home.onclick=()=>{S.view='home';render();window.scrollTo(0,0);};
+  row.appendChild(again);row.appendChild(home);
+  c.appendChild(row);
+  app.appendChild(c);
+}
+
+render();
+</script>
+</body>
+</html>
