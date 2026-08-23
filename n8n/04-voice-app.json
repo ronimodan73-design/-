@@ -1,0 +1,142 @@
+{
+  "name": "רוני — אפליקציית הקול",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "roni",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh-app",
+      "name": "פתיחת האפליקציה",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        120
+      ],
+      "webhookId": "roni-voice-app"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!doctype html><html lang=\"he\" dir=\"rtl\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1\">\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n<title>רוני</title>\n<link href=\"https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap\" rel=\"stylesheet\">\n<style>\n*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}\nbody{margin:0;font-family:Assistant,system-ui,sans-serif;background:#0f1720;color:#f2f6fa;\n min-height:100dvh;display:flex;flex-direction:column;padding:18px;gap:14px}\nh1{font-size:22px;font-weight:800;margin:0;text-align:center;letter-spacing:-.4px}\nh1 span{display:block;font-size:13px;font-weight:400;color:#8ea3b8;margin-top:3px}\n.card{background:#18232f;border:1px solid #263544;border-radius:16px;padding:14px}\nlabel{display:block;font-size:13px;color:#8ea3b8;margin-bottom:6px;font-weight:600}\nselect,textarea{width:100%;font-family:inherit;font-size:17px;background:#0f1720;color:#f2f6fa;\n border:1px solid #2f4152;border-radius:12px;padding:12px;outline:none}\nselect:focus,textarea:focus{border-color:#4a9eff}\ntextarea{min-height:110px;resize:vertical;line-height:1.5}\n.row{display:flex;gap:10px}.row>*{flex:1}\n#mic{width:100%;border:none;border-radius:16px;padding:20px;font-family:inherit;font-size:19px;\n font-weight:800;background:#4a9eff;color:#06121e;display:flex;align-items:center;\n justify-content:center;gap:10px;cursor:pointer;transition:.15s}\n#mic:active{transform:scale(.98)}\n#mic.rec{background:#ff4a6e;color:#fff;animation:p 1.2s infinite}\n@keyframes p{50%{opacity:.72}}\n#go{width:100%;border:none;border-radius:16px;padding:18px;font-family:inherit;font-size:19px;\n font-weight:800;background:#2ecc8f;color:#06211a;cursor:pointer}\n#go:disabled{background:#2c3a47;color:#6b7d8f;cursor:default}\n#status{text-align:center;font-size:14px;color:#8ea3b8;min-height:20px}\n#out{white-space:pre-wrap;line-height:1.65;font-size:16px;display:none}\n#out.on{display:block}\n.tools{display:flex;gap:8px;margin-top:12px}\n.tools button{flex:1;border:1px solid #2f4152;background:#0f1720;color:#cfe0f0;border-radius:10px;\n padding:11px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}\n.hint{font-size:12px;color:#6b7d8f;text-align:center;line-height:1.5}\n</style></head><body>\n\n<h1>רוני<span>מדברת — והמערכת עושה</span></h1>\n\n<button id=\"mic\">🎙️ לחצי ודברי</button>\n<div id=\"status\"></div>\n\n<div class=\"card\">\n  <label>מה שאמרת — אפשר לתקן</label>\n  <textarea id=\"txt\" placeholder=\"לדוגמה: תכיני מערך שיעור על מערכת צירים לכיתה ז׳, כיתה חלשה\"></textarea>\n  <div class=\"row\" style=\"margin-top:12px\">\n    <div><label>סוג</label><select id=\"kind\">\n      <option>מערך שיעור למורה</option><option>דף עבודה לתלמיד</option>\n      <option>מבחן קצר + מחוון</option><option>מכתב להורים</option>\n      <option>סיכום פגישה</option><option>לפי מה שאמרתי</option>\n    </select></div>\n    <div><label>כיתה</label><select id=\"grade\">\n      <option>ז</option><option>ח</option><option>ט</option><option>—</option>\n    </select></div>\n  </div>\n</div>\n\n<button id=\"go\" disabled>הפעילי</button>\n\n<div class=\"card\" id=\"outc\" style=\"display:none\">\n  <div id=\"out\"></div>\n  <div class=\"tools\">\n    <button id=\"copy\">העתקה</button>\n    <button id=\"again\">בקשה חדשה</button>\n  </div>\n</div>\n\n<div class=\"hint\">אם המיקרופון לא נתפס — פשוט הקלידי בתיבה.<br>הכל עובד גם בלי קול.</div>\n\n<script>\nvar txt=document.getElementById('txt'),mic=document.getElementById('mic'),\n go=document.getElementById('go'),st=document.getElementById('status'),\n out=document.getElementById('out'),outc=document.getElementById('outc'),rec=null,on=false;\n\nfunction sync(){go.disabled=!txt.value.trim()}\ntxt.addEventListener('input',sync);\n\nvar SR=window.SpeechRecognition||window.webkitSpeechRecognition;\nif(!SR){mic.style.display='none';st.textContent='הדפדפן הזה לא תומך בקול — אפשר להקליד.'}\nelse{\n rec=new SR();rec.lang='he-IL';rec.continuous=true;rec.interimResults=true;\n var base='';\n rec.onstart=function(){on=true;mic.classList.add('rec');mic.textContent='⏹️ לחצי לסיום';st.textContent='מקשיבה…'};\n rec.onend=function(){on=false;mic.classList.remove('rec');mic.textContent='🎙️ לחצי ודברי';\n   st.textContent=txt.value.trim()?'אפשר לתקן ולהפעיל':'לא נקלט כלום — נסי שוב או הקלידי';sync()};\n rec.onerror=function(e){st.textContent=e.error==='not-allowed'\n   ?'הדפדפן חסם את המיקרופון — אפשרי להקליד במקום':'הקול לא נקלט — נסי שוב או הקלידי'};\n rec.onresult=function(e){var fin='',itm='';\n   for(var i=e.resultIndex;i<e.results.length;i++){\n     var t=e.results[i][0].transcript;\n     if(e.results[i].isFinal)fin+=t+' ';else itm+=t}\n   if(fin)base=(base+fin);\n   txt.value=(base+itm).replace(/\\s+/g,' ').trim();sync()};\n mic.onclick=function(){if(on){rec.stop();return}\n   base=txt.value?txt.value+' ':'';try{rec.start()}catch(err){}};\n}\n\ngo.onclick=function(){\n go.disabled=true;go.textContent='עובדת…';st.textContent='כמה שניות';\n outc.style.display='none';out.classList.remove('on');\n fetch('roni-run',{method:'POST',headers:{'Content-Type':'application/json'},\n  body:JSON.stringify({text:txt.value,kind:document.getElementById('kind').value,\n   grade:document.getElementById('grade').value})})\n .then(function(r){return r.json()})\n .then(function(d){out.textContent=d.result||'לא התקבלה תשובה. נסי שוב.';\n   out.classList.add('on');outc.style.display='block';st.textContent='';\n   go.textContent='הפעילי';sync();out.scrollIntoView({behavior:'smooth'})})\n .catch(function(){st.textContent='התקשורת נכשלה — נסי שוב בעוד רגע';\n   go.textContent='הפעילי';sync()});\n};\n\ndocument.getElementById('copy').onclick=function(){\n navigator.clipboard.writeText(out.textContent);this.textContent='הועתק ✓';\n var b=this;setTimeout(function(){b.textContent='העתקה'},1500)};\ndocument.getElementById('again').onclick=function(){\n txt.value='';out.textContent='';outc.style.display='none';st.textContent='';sync();\n window.scrollTo({top:0,behavior:'smooth'})};\n</script></body></html>\n",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "id": "resp-app",
+      "name": "הצגת האפליקציה",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -140,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "roni-run",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh-run",
+      "name": "בקשה מהאפליקציה",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        400
+      ],
+      "webhookId": "roni-voice-run"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=את/ה עוזר/ת ההוראה של רוני מודן, מורה ורכזת מתמטיקה בחטיבת ביניים בישראל.\n\nמה שרוני אמרה: {{ $json.body.text }}\nסוג התוצר: {{ $json.body.kind }}\nכיתה: {{ $json.body.grade }}\n\nרוני מכתיבה בקול, ולכן ייתכנו שגיאות תמלול, מילים חסרות או פיסוק שגוי. הביני את הכוונה ואל תבקשי ממנה לנסח מחדש.\n\nכללי כתיבה מחייבים:\n1. עברית בלבד, מימין לשמאל, פנייה מכבדת לתלמיד/ה.\n2. כותרות ברורות ורווח בין חלקים. בלי טקסט צפוף.\n3. מתמטיקה: כל תרגיל בשורה נפרדת, שברים ככתיב רגיל, סימן כפל ·.\n4. תמיד לדרוש הצגת דרך פתרון ונימוק, לא רק תשובה סופית.\n5. שאלות מסודרות מקל לקשה.\n\nלפי סוג התוצר:\n- מערך שיעור למורה: מטרות, מושגים, פתיחה, גוף השיעור שלב-שלב עם מה המורה אומרת בפועל, תרגול, סיכום, שיעורי בית. עם זמנים.\n- דף עבודה לתלמיד: כותרת, נושא, הוראות קצרות, 4-6 חלקים מדורגים, מקום לכתיבה, בלי פתרונות.\n- מבחן קצר + מחוון: ניקוד מפורש לכל תת-סעיף שסכומו 100, ואחריו מחוון מלא עם פתרון ופירוט ניקוד.\n- מכתב להורים: מנוסח, מכבד, ענייני, מוכן לשליחה.\n- סיכום פגישה: נושא, עיקרי דברים, החלטות, ומשימות לרוני.\n- לפי מה שאמרתי: בדיוק מה שרוני ביקשה.\n\nהחזירי את התוצר עצמו בלבד. בלי הקדמה, בלי הסבר מה עשית, בלי שאלות חוזרות."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gem",
+      "name": "הפקה",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { result: ($json.content?.parts?.[0]?.text || $json.text || '') } }}",
+        "options": {}
+      },
+      "id": "resp-run",
+      "name": "החזרת התוצאה",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        120,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "פתיחת האפליקציה": {
+      "main": [
+        [
+          {
+            "node": "הצגת האפליקציה",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "בקשה מהאפליקציה": {
+      "main": [
+        [
+          {
+            "node": "הפקה",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "הפקה": {
+      "main": [
+        [
+          {
+            "node": "החזרת התוצאה",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  },
+  "pinData": {}
+}
