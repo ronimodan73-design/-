@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>הרביע הראשון — מסע במערכת הצירים</title>
+<title>הרביע הראשון · רוני מודן</title>
 <meta name="theme-color" content="#4f46e5">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -168,6 +168,9 @@ svg{display:block;width:100%;height:auto;direction:ltr}
 .srow{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px}
 .srow .sc{margin-inline-start:auto;font-weight:800}
 .footer-note{text-align:center;color:var(--ink-soft);font-size:.82rem;margin-top:18px}
+.brandmini{font-size:.78rem;font-weight:800;color:var(--primary);background:var(--primary-soft);border-radius:99px;padding:4px 10px;white-space:nowrap}
+.sig{text-align:center;margin-top:10px;color:var(--ink-soft);font-size:.85rem;letter-spacing:.06em}
+.sig b{color:var(--primary);letter-spacing:.02em}
 .sticky-actions{margin-top:14px;display:flex;gap:10px}
 .sticky-actions .btn{flex:1}
 </style>
@@ -177,10 +180,12 @@ svg{display:block;width:100%;height:auto;direction:ltr}
   <div class="topbar hidden" id="topbar">
     <button class="icon-btn" id="backBtn" aria-label="חזרה">→</button>
     <div class="t-title" id="topTitle">מערכת הצירים</div>
+    <div class="brandmini">רוני מודן</div>
     <div class="pillbar"><i id="topProg" style="width:0%"></i></div>
   </div>
   <div id="app"></div>
-  <div class="footer-note">נבנה עבור תלמידי כיתה ז׳ · הרביע הראשון של מערכת הצירים</div>
+  <div class="sig">נבנה ונכתב על ידי <b>רוני מודן</b> · מורה למתמטיקה</div>
+  <div class="footer-note">הרביע הראשון של מערכת הצירים · כיתה ז׳ · כל הזכויות שמורות לרוני מודן</div>
 </div>
 <script>
 /* =========================================================
@@ -725,9 +730,9 @@ function render(){
 /* ---------- מסך הבית ---------- */
 function renderHome(){
   const hero=h('div','hero');
-  hero.innerHTML='<div class="kicker">כיתה ז׳ · מערכת הצירים</div>'+
+  hero.innerHTML='<div class="kicker">רוני מודן · כיתה ז׳ · מערכת הצירים</div>'+
     '<h1>הרביע הראשון</h1>'+
-    '<p>מסע בשבע תחנות: מגלים, מבינים, מסמנים — ואם טועים, מקבלים בדיוק את ההסבר במה הטעות.</p>';
+    '<p>מסע בשבע תחנות: מגלים, מבינים, מסמנים — ואם טועים, מקבלים בדיוק את ההסבר במה הטעות.</p>'+'<p style="margin-top:12px;font-size:.86rem;opacity:.9">יחידת לימוד של רוני מודן, מורה למתמטיקה</p>';
   app.appendChild(hero);
 
   const st=h('div','stations');
@@ -1043,7 +1048,7 @@ function renderFinal(){
   topTitle.textContent='סיכום המסע';
   const totalSc=[1,2,3,4,5,6].reduce((a,l)=>a+S.score[l],0);
   const c=h('div','card done-hero');
-  c.innerHTML='<div class="big">🏁</div><h2>סיימתם את המסע ברביע הראשון</h2>'+
+  c.innerHTML='<div class="big">🏁</div><h2>סיימתם את המסע ברביע הראשון</h2>'+'<p style="color:var(--ink-soft);font-size:.9rem">יחידת לימוד של רוני מודן</p>'+
     '<p>‏<b>'+totalSc+'</b> תשובות נכונות בניסיון הראשון מתוך <b>'+TOTAL+'</b>.</p>';
   const sum=h('div','summary');
   STATIONS.filter(s=>s.id>0).forEach(s=>{

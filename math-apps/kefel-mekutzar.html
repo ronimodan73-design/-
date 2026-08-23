@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0E6B70">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>כפל מקוצר ופירוק לגורמים</title>
+<title>כפל מקוצר ופירוק לגורמים · רוני מודן</title>
 </head>
 <body>
 
@@ -258,6 +258,7 @@ body{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 .nav button.on{color:var(--teal); background:var(--teal-soft)}
 .nav button:active{transform:scale(.95)}
 
+.brandmini{font-size:12px;font-weight:700;color:var(--teal);background:var(--teal-soft);border:1px solid var(--teal-line);border-radius:99px;padding:3px 9px;white-space:nowrap}
 /* ---------- credit ---------- */
 .credit{text-align:center; padding:26px 16px 8px; color:var(--ink-3); font-size:12.5px; letter-spacing:.14em}
 .credit b{font-weight:700; color:var(--ink-2); letter-spacing:.06em}
@@ -437,6 +438,7 @@ body{background-image:none; background:var(--paper); font-size:16.5px; overflow-
   <div class="top-in">
     <button class="iconbtn" id="back" style="display:none" aria-label="חזרה">‹</button>
     <div class="ttl" id="ttl">כפל מקוצר</div>
+    <div class="brandmini">רוני מודן</div>
     <div class="streak" id="streak" style="display:none"></div>
     <div class="xp" id="xp" style="display:none"><b id="xpn">0</b> נק׳</div>
     <div class="avatar" id="av" style="display:none"></div>
@@ -446,7 +448,7 @@ body{background-image:none; background:var(--paper); font-size:16.5px; overflow-
 </div>
 
 <div class="wrap" id="app"></div>
-<div class="credit" id="credit"><span></span>ערכה <b>רוני מודן</b><span></span></div>
+<div class="credit" id="credit"><span></span>יחידת לימוד מאת <b>רוני מודן</b> · מורה למתמטיקה<span></span></div>
 
 <nav class="nav" id="nav"><div class="nav-in">
   <button data-v="map"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>מפה</button>
@@ -1598,7 +1600,7 @@ function vHome(){
   <section class="hero fade">
     <div class="hero-grid">
       <div class="hero-txt">
-        <div class="eyebrow">${UNIT.grade} · יחידת לימוד</div>
+        <div class="eyebrow">רוני מודן · ${UNIT.grade} · יחידת לימוד</div>
         <h1>${UNIT.title}</h1>
         <p>לא עוד דף תרגילים. כאן רואים <b style="color:#F0B44E">למה</b> הנוסחאות נכונות — ואז הן כבר לא צריכות שינון.</p>
       </div>
