@@ -96,8 +96,8 @@
         "descriptionType": "manual",
         "toolDescription": "שומר מסמך חדש בגוגל דרייב ומחזיר קישור אליו. השתמשי בזה בכל פעם שהפקת חומר עבור רוני — מערך שיעור, דף עבודה, מבחן, מכתב או סיכום.",
         "operation": "createFromText",
-        "name": "={{ $fromAI('שם_הקובץ', 'שם ברור בעברית שכולל את סוג התוצר, הנושא והכיתה', 'string') }}",
-        "content": "={{ $fromAI('תוכן', 'התוכן המלא של המסמך בעברית', 'string') }}",
+        "name": "={{ $fromAI('fileName', 'שם ברור בעברית שכולל את סוג התוצר, הנושא והכיתה', 'string') }}",
+        "content": "={{ $fromAI('content', 'התוכן המלא של המסמך בעברית', 'string') }}",
         "driveId": {
           "__rl": true,
           "mode": "list",

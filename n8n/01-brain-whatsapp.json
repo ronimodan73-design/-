@@ -269,8 +269,8 @@
         },
         "returnAll": true,
         "options": {
-          "timeMin": "={{ $fromAI('מתאריך', 'תחילת הטווח בפורמט ISO', 'string') }}",
-          "timeMax": "={{ $fromAI('עד_תאריך', 'סוף הטווח בפורמט ISO', 'string') }}"
+          "timeMin": "={{ $fromAI('timeMin', 'תחילת הטווח בפורמט ISO', 'string') }}",
+          "timeMax": "={{ $fromAI('timeMax', 'סוף הטווח בפורמט ISO', 'string') }}"
         }
       },
       "id": "tool-cal-read",
@@ -295,11 +295,11 @@
           "value": "ronimodan73@gmail.com",
           "mode": "list"
         },
-        "start": "={{ $fromAI('שעת_התחלה', 'מתי האירוע מתחיל, בפורמט ISO עם שעון ישראל', 'string') }}",
-        "end": "={{ $fromAI('שעת_סיום', 'מתי האירוע מסתיים, בפורמט ISO עם שעון ישראל', 'string') }}",
+        "start": "={{ $fromAI('startTime', 'מתי האירוע מתחיל, בפורמט ISO עם שעון ישראל', 'string') }}",
+        "end": "={{ $fromAI('endTime', 'מתי האירוע מסתיים, בפורמט ISO עם שעון ישראל', 'string') }}",
         "additionalFields": {
-          "summary": "={{ $fromAI('כותרת', 'כותרת האירוע בעברית', 'string') }}",
-          "description": "={{ $fromAI('פירוט', 'פירוט נוסף, אפשר ריק', 'string') }}"
+          "summary": "={{ $fromAI('title', 'כותרת האירוע בעברית', 'string') }}",
+          "description": "={{ $fromAI('description', 'פירוט נוסף, אפשר ריק', 'string') }}"
         }
       },
       "id": "tool-cal-write",
@@ -319,7 +319,7 @@
         "descriptionType": "manual",
         "toolDescription": "יוצר מסמך חדש ב-Google Docs ומחזיר קישור. השתמש בזה למערכי שיעור, דפי עבודה, מבחנים, מכתבים להורים וסיכומים. כתוב את כל התוכן בעברית.",
         "operation": "create",
-        "title": "={{ $fromAI('שם_המסמך', 'שם קצר למסמך בעברית', 'string') }}",
+        "title": "={{ $fromAI('docTitle', 'שם קצר למסמך בעברית', 'string') }}",
         "folderId": "={{ 'root' }}"
       },
       "id": "tool-docs",
@@ -338,10 +338,10 @@
       "parameters": {
         "descriptionType": "manual",
         "toolDescription": "שולח מייל בשמה של רוני. השתמש בזה כשרוני מבקשת לשלוח מייל למישהו — הורה, מנהלת, רכזת.",
-        "sendTo": "={{ $fromAI('אל', 'כתובת המייל של הנמען', 'string') }}",
-        "subject": "={{ $fromAI('נושא', 'שורת הנושא בעברית', 'string') }}",
+        "sendTo": "={{ $fromAI('to', 'כתובת המייל של הנמען', 'string') }}",
+        "subject": "={{ $fromAI('subject', 'שורת הנושא בעברית', 'string') }}",
         "emailType": "text",
-        "message": "={{ $fromAI('תוכן', 'גוף המייל בעברית, מנוסח בנימוס ובמקצועיות', 'string') }}",
+        "message": "={{ $fromAI('content', 'גוף המייל בעברית, מנוסח בנימוס ובמקצועיות', 'string') }}",
         "options": {}
       },
       "id": "tool-gmail",
