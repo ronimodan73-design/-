@@ -1,0 +1,105 @@
+{
+  "name": "רוני — הפקה מהירה",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "roni",
+        "formTitle": "רוני — הפקה מהירה",
+        "formDescription": "בחרי מה להפיק, כתבי נושא, ולחצי הפק.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "מה להפיק",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  { "option": "מערך שיעור למורה" },
+                  { "option": "דף עבודה לתלמיד" },
+                  { "option": "מבחן קצר + מחוון" },
+                  { "option": "מכתב להורים" },
+                  { "option": "סיכום פגישה" },
+                  { "option": "אחר — לפי מה שאכתוב" }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "כיתה",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  { "option": "ז" },
+                  { "option": "ח" },
+                  { "option": "ט" },
+                  { "option": "לא רלוונטי" }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "נושא ופירוט",
+              "fieldType": "textarea",
+              "placeholder": "לדוגמה: מערכת צירים — רביע ראשון. כיתה חלשה, צריך הרבה תרגול בסיסי.",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "responseNode",
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "הפק"
+        }
+      },
+      "id": "form-trigger-roni",
+      "name": "הטופס",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [-360, 300],
+      "webhookId": "roni-quick-form"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=את/ה עוזר/ת הוראה של רוני מודן, מורה ורכזת מתמטיקה בחטיבת ביניים בישראל.\n\nהבקשה:\nמה להפיק: {{ $json['מה להפיק'] }}\nכיתה: {{ $json['כיתה'] }}\nנושא ופירוט: {{ $json['נושא ופירוט'] }}\n\nכללי כתיבה מחייבים:\n1. עברית בלבד, כתיבה מימין לשמאל, פנייה מכבדת לתלמיד/ה.\n2. מבנה ברור עם כותרות מודגשות ורווח בין חלקים. בלי טקסט צפוף.\n3. במתמטיקה: שברים ככתיב רגיל (3/4), סימן כפל ·, וכל תרגיל בשורה נפרדת.\n4. תמיד לדרוש נימוק והצגת דרך פתרון, לא רק תשובה סופית.\n5. שאלות מסודרות מקל לקשה.\n\nלפי סוג התוצר:\n- מערך שיעור למורה: מטרות, מושגים, פתיחה, גוף השיעור שלב-שלב עם מה המורה אומרת, תרגול, סיכום, שיעורי בית. לציין זמנים.\n- דף עבודה לתלמיד: כותרת, נושא, הוראות קצרות, 4-6 חלקים מדורגים, מקום לכתיבה, בלי פתרונות.\n- מבחן קצר + מחוון: מבחן עם ניקוד מפורש לכל תת-סעיף שסכומו 100, ואחריו מחוון מלא עם פתרון ופירוט ניקוד.\n- מכתב להורים: מכתב מנוסח, מכבד, ענייני, מוכן לשליחה.\n- סיכום פגישה: נושא, עיקרי דברים, החלטות, משימות לרוני.\n- אחר: בדיוק מה שרוני ביקשה.\n\nהחזר/י את התוצר עצמו בלבד. בלי הקדמה, בלי הסבר מה עשית, בלי שאלות חוזרות."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gemini-produce",
+      "name": "הפקה",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [-100, 300]
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "מוכן",
+        "completionMessage": "={{ $json.content?.parts?.[0]?.text || $json.text }}",
+        "options": {}
+      },
+      "id": "form-done",
+      "name": "התוצאה",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [160, 300]
+    }
+  ],
+  "connections": {
+    "הטופס": { "main": [[{ "node": "הפקה", "type": "main", "index": 0 }]] },
+    "הפקה": { "main": [[{ "node": "התוצאה", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  },
+  "pinData": {}
+}
