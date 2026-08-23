@@ -1,0 +1,2827 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E6B70">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>כפל מקוצר ופירוק לגורמים</title>
+</head>
+<body>
+
+<title>כפל מקוצר ופירוק לגורמים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F1F5F7; --card:#FFFFFF; --card-2:#F7FAFB;
+  --ink:#0F2230; --ink-2:#405A68; --ink-3:#7A929F;
+  --line:#DAE4EA; --grid:rgba(15,34,48,.045);
+  --teal:#0E6B70; --teal-soft:#DDEEEE; --teal-line:#9CC9CA;
+  --amber:#B87614; --amber-soft:#FAEFD9; --amber-line:#E3C48A;
+  --plum:#763A62; --plum-soft:#F3E6EF; --plum-line:#D3AEC6;
+  --good:#15734D; --good-soft:#E0F0E8; --good-line:#9BCFB6;
+  --warn:#A9412C; --warn-soft:#FAE8E3; --warn-line:#E5B3A6;
+  --shadow:0 1px 2px rgba(15,34,48,.05), 0 8px 24px -12px rgba(15,34,48,.18);
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1920; --card:#132630; --card-2:#18303C;
+    --ink:#E9F1F4; --ink-2:#A6BDC8; --ink-3:#6C8593;
+    --line:#25404E; --grid:rgba(233,241,244,.05);
+    --teal:#57C6C8; --teal-soft:#123C3E; --teal-line:#2C6A6C;
+    --amber:#E5A63E; --amber-soft:#3A2C13; --amber-line:#6E5423;
+    --plum:#D18DBC; --plum-soft:#382131; --plum-line:#6A4159;
+    --good:#57C990; --good-soft:#123227; --good-line:#2A6046;
+    --warn:#F08A6E; --warn-soft:#38201A; --warn-line:#6D3D30;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1920; --card:#132630; --card-2:#18303C;
+  --ink:#E9F1F4; --ink-2:#A6BDC8; --ink-3:#6C8593;
+  --line:#25404E; --grid:rgba(233,241,244,.05);
+  --teal:#57C6C8; --teal-soft:#123C3E; --teal-line:#2C6A6C;
+  --amber:#E5A63E; --amber-soft:#3A2C13; --amber-line:#6E5423;
+  --plum:#D18DBC; --plum-soft:#382131; --plum-line:#6A4159;
+  --good:#57C990; --good-soft:#123227; --good-line:#2A6046;
+  --warn:#F08A6E; --warn-soft:#38201A; --warn-line:#6D3D30;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  direction:rtl; margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Heebo','Segoe UI',Arial,sans-serif; font-size:17px; line-height:1.65;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+  -webkit-text-size-adjust:100%;
+}
+h1,h2,h3{font-family:'Frank Ruhl Libre',Georgia,serif; font-weight:700; margin:0; text-wrap:balance; line-height:1.25}
+p{margin:0}
+button{font-family:inherit; font-size:inherit; cursor:pointer; border:none; background:none; color:inherit}
+button:focus-visible,input:focus-visible{outline:2.5px solid var(--teal); outline-offset:2px}
+
+/* ---------- expressions ---------- */
+.x{font-family:'IBM Plex Mono',ui-monospace,monospace; direction:ltr; unicode-bidi:isolate;
+   display:inline-block; font-weight:500; font-variant-numeric:tabular-nums; letter-spacing:.01em}
+.xb{font-size:1.28em; font-weight:600}
+
+/* ---------- shell ---------- */
+.wrap{max-width:760px; margin:0 auto; padding:0 16px 120px}
+.top{position:sticky; top:0; z-index:30; background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line); margin-bottom:22px}
+.top-in{max-width:760px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; gap:12px}
+.brand{font-family:'Frank Ruhl Libre',serif; font-weight:900; font-size:16px; letter-spacing:-.01em; white-space:nowrap}
+.brand span{color:var(--teal)}
+.bar{flex:1; height:7px; border-radius:99px; background:var(--line); overflow:hidden; direction:ltr}
+.bar i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--teal),var(--amber));
+  border-radius:99px; transition:width .5s cubic-bezier(.4,0,.2,1); float:right}
+.pct{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-2); font-variant-numeric:tabular-nums}
+.iconbtn{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:16px;
+  border:1px solid var(--line); background:var(--card); color:var(--ink-2)}
+.iconbtn:hover{border-color:var(--teal); color:var(--teal)}
+
+/* ---------- cards ---------- */
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow);
+  padding:26px 24px; margin-bottom:16px}
+.eyebrow{font-size:12.5px; font-weight:700; letter-spacing:.09em; color:var(--ink-3); text-transform:uppercase; margin-bottom:8px}
+.lead{color:var(--ink-2); margin-top:10px}
+.sep{height:1px; background:var(--line); margin:20px 0}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:13px 22px;
+  border-radius:11px; font-weight:700; background:var(--teal); color:var(--paper); transition:transform .12s, filter .12s}
+:root[data-theme="dark"] .btn, :root:not([data-theme="light"]) .btn{color:#08171C}
+.btn:hover{filter:brightness(1.08); transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{background:transparent; color:var(--ink-2); border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--teal); color:var(--teal); filter:none}
+.btn.amber{background:var(--amber)}
+.btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
+/* ---------- map ---------- */
+.maplist{display:flex; flex-direction:column; gap:10px}
+.stagerow{display:flex; align-items:center; gap:14px; width:100%; text-align:right; padding:14px 16px;
+  border:1px solid var(--line); border-radius:12px; background:var(--card); transition:border-color .15s, transform .12s}
+.stagerow:hover{border-color:var(--teal); transform:translateX(-3px)}
+.stagerow .num{flex:none; width:38px; height:38px; border-radius:10px; display:grid; place-items:center;
+  font-family:'IBM Plex Mono',monospace; font-weight:600; background:var(--card-2); color:var(--ink-2); border:1px solid var(--line)}
+.stagerow.done .num{background:var(--good-soft); color:var(--good); border-color:var(--good-line)}
+.stagerow.part .num{background:var(--amber-soft); color:var(--amber); border-color:var(--amber-line)}
+.stagerow .t{flex:1; min-width:0}
+.stagerow .t b{display:block; font-weight:700; font-size:16px}
+.stagerow .t small{color:var(--ink-3); font-size:13px}
+.chip{font-size:12px; font-weight:700; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--ink-3); white-space:nowrap}
+.chip.good{background:var(--good-soft); color:var(--good); border-color:var(--good-line)}
+.chip.warn{background:var(--amber-soft); color:var(--amber); border-color:var(--amber-line)}
+
+/* ---------- explore ---------- */
+.explore{background:var(--card-2); border:1px solid var(--line); border-radius:12px; padding:18px; margin:18px 0}
+.sliders{display:flex; gap:20px; flex-wrap:wrap; margin-bottom:14px}
+.sl{flex:1; min-width:150px}
+.sl label{display:flex; justify-content:space-between; font-size:13.5px; color:var(--ink-2); font-weight:500; margin-bottom:4px}
+.sl output{font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--teal)}
+input[type=range]{width:100%; direction:ltr; accent-color:var(--teal); height:26px}
+.svgwrap{display:grid; place-items:center; padding:6px 0}
+.tile-t{font-family:'IBM Plex Mono',monospace; font-weight:600; text-anchor:middle; dominant-baseline:middle}
+.assemble{margin-top:14px; text-align:center; font-size:19px; line-height:2.1}
+.trm{padding:3px 9px; border-radius:8px; border:1px solid transparent; margin:0 1px}
+.trm.t1{background:var(--teal-soft); color:var(--teal); border-color:var(--teal-line)}
+.trm.t2{background:var(--amber-soft); color:var(--amber); border-color:var(--amber-line)}
+.trm.t3{background:var(--plum-soft); color:var(--plum); border-color:var(--plum-line)}
+
+/* ---------- rule box ---------- */
+.rule{border:2px solid var(--teal); border-radius:12px; background:var(--teal-soft); padding:20px; text-align:center; margin:18px 0}
+.rule .lbl{font-size:12.5px; font-weight:700; letter-spacing:.09em; color:var(--teal); margin-bottom:8px}
+.rule .f{font-size:25px; color:var(--ink)}
+:root[data-theme="dark"] .rule .f,:root:not([data-theme="light"]) .rule .f{color:var(--ink)}
+
+/* ---------- misconception box ---------- */
+.mis{border-right:4px solid var(--warn); background:var(--warn-soft); border-radius:10px; padding:14px 16px; margin:16px 0}
+.mis b{color:var(--warn)}
+
+/* ---------- practice ---------- */
+.qhead{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:4px}
+.qnum{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-3)}
+.qtext{font-size:19px; font-weight:500; margin:10px 0 4px}
+.qbig{text-align:center; padding:16px 0 6px; font-size:27px}
+.opts{display:flex; flex-direction:column; gap:9px; margin-top:16px}
+.opt{display:flex; align-items:center; gap:12px; padding:14px 16px; border:1.5px solid var(--line);
+  border-radius:11px; background:var(--card); text-align:right; transition:border-color .14s, background .14s, transform .1s}
+.opt:hover:not(:disabled){border-color:var(--teal); transform:translateX(-2px)}
+.opt .k{flex:none; width:26px; height:26px; border-radius:7px; display:grid; place-items:center; font-size:13px;
+  font-weight:700; background:var(--card-2); color:var(--ink-3); border:1px solid var(--line)}
+.opt.right{border-color:var(--good); background:var(--good-soft)}
+.opt.right .k{background:var(--good); color:var(--card); border-color:var(--good)}
+.opt.wrong{border-color:var(--warn); background:var(--warn-soft)}
+.opt.wrong .k{background:var(--warn); color:var(--card); border-color:var(--warn)}
+.opt.dim{opacity:.42}
+.opt:disabled{cursor:default}
+.numin{font-family:'IBM Plex Mono',monospace; font-size:24px; font-weight:600; text-align:center; direction:ltr;
+  width:190px; padding:12px; border-radius:11px; border:1.5px solid var(--line); background:var(--card); color:var(--ink)}
+.fb{border-radius:11px; padding:15px 17px; margin-top:14px; border:1px solid}
+.fb.ok{background:var(--good-soft); border-color:var(--good-line)}
+.fb.no{background:var(--warn-soft); border-color:var(--warn-line)}
+.fb b{display:block; margin-bottom:5px; font-size:16px}
+.fb.ok b{color:var(--good)} .fb.no b{color:var(--warn)}
+.hint{background:var(--amber-soft); border:1px dashed var(--amber-line); border-radius:11px; padding:13px 16px; margin-top:12px; color:var(--ink-2)}
+.steps{margin-top:12px; padding:14px 16px; background:var(--card-2); border:1px solid var(--line); border-radius:11px}
+.steps div{padding:3px 0}
+
+/* ---------- find error ---------- */
+.lines{display:flex; flex-direction:column; gap:8px; margin-top:14px}
+.line{display:flex; align-items:center; gap:12px; padding:12px 15px; border:1.5px solid var(--line); border-radius:10px;
+  background:var(--card); text-align:right; transition:border-color .14s, background .14s}
+.line:hover:not(:disabled){border-color:var(--amber)}
+.line .n{flex:none; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-3); width:18px}
+.line.right{border-color:var(--warn); background:var(--warn-soft)}
+.line.wrong{border-color:var(--line); background:var(--card-2); opacity:.6}
+
+/* ---------- teacher ---------- */
+.stat{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin:16px 0}
+.stat div{background:var(--card-2); border:1px solid var(--line); border-radius:11px; padding:13px 14px}
+.stat b{display:block; font-family:'IBM Plex Mono',monospace; font-size:25px; font-weight:600; line-height:1.2}
+.stat small{color:var(--ink-3); font-size:12.5px}
+.mrow{margin:9px 0}
+.mrow .mh{display:flex; justify-content:space-between; font-size:14px; gap:10px}
+.mrow .mt{height:8px; border-radius:99px; background:var(--line); overflow:hidden; margin-top:4px; direction:ltr}
+.mrow .mt i{display:block; height:100%; background:var(--warn); float:right; border-radius:99px}
+textarea{width:100%; min-height:90px; font-family:'IBM Plex Mono',monospace; font-size:12px; direction:ltr;
+  border:1px solid var(--line); border-radius:10px; padding:11px; background:var(--card-2); color:var(--ink-2); resize:vertical}
+table{width:100%; border-collapse:collapse; font-size:14.5px}
+th,td{text-align:right; padding:9px 8px; border-bottom:1px solid var(--line)}
+th{font-size:12.5px; color:var(--ink-3); font-weight:700; letter-spacing:.04em}
+td.n{font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums}
+
+.tabs{display:flex; gap:6px; margin-bottom:18px; border-bottom:1px solid var(--line)}
+.tabs button{padding:10px 15px; font-weight:600; color:var(--ink-3); border-bottom:2.5px solid transparent; margin-bottom:-1px}
+.tabs button.on{color:var(--teal); border-color:var(--teal)}
+
+.fade{animation:fade .32s cubic-bezier(.2,.6,.3,1)}
+@keyframes fade{from{opacity:0; transform:translateY(7px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+@media (max-width:520px){
+  body{font-size:16px}
+  .card{padding:20px 16px}
+  .qbig{font-size:22px}
+  .rule .f{font-size:21px}
+}
+
+/* ---------- app shell ---------- */
+button{-webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none}
+body{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+.wrap{padding-bottom:30px}
+
+/* ---------- hero ---------- */
+.hero{position:relative; overflow:hidden; border-radius:18px; margin-bottom:16px;
+  background:#0B1E28; color:#EAF4F6; padding:30px 24px 26px;
+  box-shadow:0 20px 44px -26px rgba(11,30,40,.85)}
+.hero::before{content:""; position:absolute; inset:0;
+  background-image:linear-gradient(rgba(234,244,246,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(234,244,246,.055) 1px,transparent 1px);
+  background-size:26px 26px; pointer-events:none}
+.hero-grid{position:relative; display:flex; gap:20px; align-items:center; flex-wrap:wrap-reverse}
+.hero-txt{flex:1 1 210px; min-width:0}
+.hero .eyebrow{color:#78C6C4; margin-bottom:10px}
+.hero h1{font-size:33px; line-height:1.14; letter-spacing:-.02em; color:#F4FAFB}
+.hero p{color:#9FC0C8; margin-top:10px; font-size:16px; line-height:1.6}
+.hero-art{flex:0 0 132px; display:grid; place-items:center}
+.hero-art svg{width:132px; height:132px; overflow:visible}
+.ha-line{fill:none; stroke:#EAF4F6; stroke-width:2.2; stroke-linecap:square;
+  stroke-dasharray:420; stroke-dashoffset:420; animation:draw 1.1s cubic-bezier(.5,0,.2,1) .15s forwards}
+.ha-in{fill:none; stroke:rgba(234,244,246,.5); stroke-width:1.6; stroke-dasharray:110; stroke-dashoffset:110;
+  animation:draw .55s ease-out .95s forwards}
+.ha-f{opacity:0; animation:pop .5s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0; transform:scale(.86)} to{opacity:1; transform:none}}
+.hook{position:relative; margin-top:18px; border-top:1px solid rgba(234,244,246,.14); padding-top:16px;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.hook .q{font-family:'IBM Plex Mono',monospace; font-size:23px; font-weight:600; color:#F0B44E; direction:ltr}
+.hook .s{font-size:15px; color:#9FC0C8; flex:1 1 130px}
+.hook button{background:rgba(234,244,246,.1); border:1px solid rgba(234,244,246,.24); color:#EAF4F6;
+  padding:9px 16px; border-radius:10px; font-weight:600; font-size:15px}
+.hook button:hover{background:rgba(234,244,246,.18)}
+
+/* ---------- bottom nav ---------- */
+.nav{position:fixed; bottom:0; left:0; right:0; z-index:40; display:none;
+  background:color-mix(in srgb,var(--card) 92%,transparent); backdrop-filter:blur(14px);
+  border-top:1px solid var(--line); padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
+.nav.on{display:block}
+.nav-in{max-width:560px; margin:0 auto; display:grid; grid-template-columns:repeat(5,1fr); gap:2px}
+.nav button{display:flex; flex-direction:column; align-items:center; gap:3px; padding:7px 2px 5px;
+  border-radius:11px; color:var(--ink-3); font-size:10.5px; font-weight:600; min-height:52px; transition:color .15s, background .15s}
+.nav button svg{width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round}
+.nav button.on{color:var(--teal); background:var(--teal-soft)}
+.nav button:active{transform:scale(.95)}
+
+/* ---------- credit ---------- */
+.credit{text-align:center; padding:26px 16px 8px; color:var(--ink-3); font-size:12.5px; letter-spacing:.14em}
+.credit b{font-weight:700; color:var(--ink-2); letter-spacing:.06em}
+.credit span{display:inline-block; width:22px; height:1px; background:var(--line); vertical-align:middle; margin:0 10px}
+
+/* ---------- color code: a / 2ab / b ---------- */
+.cA{color:var(--teal); font-weight:700}
+.cM{color:var(--amber); font-weight:700}
+.cB{color:var(--plum); font-weight:700}
+.cN{color:var(--ink)}
+.legend{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:12px; font-size:13.5px; color:var(--ink-2)}
+.legend i{display:inline-block; width:11px; height:11px; border-radius:3px; margin-left:6px; vertical-align:-1px}
+.lvlchip{font-size:11.5px; font-weight:700; letter-spacing:.05em; padding:3px 9px; border-radius:99px;
+  background:var(--card-2); border:1px solid var(--line); color:var(--ink-3)}
+
+/* ---------- story beats ---------- */
+.beat{border-right:3px solid var(--teal); padding:2px 16px 2px 0; margin:22px 0}
+.beat h3{font-size:19.5px; margin-bottom:6px}
+.beat p{color:var(--ink-2)}
+.beat.last{border-color:var(--amber)}
+.hookbox{background:var(--card-2); border:1px solid var(--line); border-radius:12px; padding:20px; margin:16px 0}
+.hookbox .qq{font-size:18px; font-weight:500}
+.calcrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+.calccard{flex:1 1 110px; text-align:center; border:1.5px dashed var(--line); border-radius:11px; padding:14px 8px;
+  background:var(--card); transition:border-color .15s}
+.calccard .e{font-family:'IBM Plex Mono',monospace; font-size:19px; font-weight:600; direction:ltr}
+.calccard .a{font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:600; color:var(--teal); margin-top:6px; direction:ltr}
+.calccard.shown{border-style:solid; border-color:var(--teal-line); background:var(--teal-soft)}
+.reveal{background:var(--amber-soft); border:1px solid var(--amber-line); border-radius:11px; padding:15px 17px; margin-top:14px}
+.stepbtn{display:flex; justify-content:center; margin:20px 0 4px}
+.consol{background:var(--teal-soft); border:1px solid var(--teal-line); border-radius:12px; padding:20px; text-align:center}
+
+/* ---------- app bar ---------- */
+html{touch-action:manipulation}
+.top{padding-bottom:0}
+.top-in{padding:9px 14px; gap:10px}
+.ttl{flex:1; font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:17px; min-width:0;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.top .bar{height:3px; border-radius:0; background:transparent; margin:0}
+.top .bar i{border-radius:0}
+#back{font-size:26px; line-height:0; padding-bottom:4px; transform:scaleX(-1)}
+.avatar{flex:none; width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
+  background:var(--teal); color:var(--card); font-weight:700; font-size:15px; font-family:'Heebo',sans-serif}
+:root[data-theme="dark"] .avatar,:root:not([data-theme="light"]) .avatar{color:#08171C}
+.xp{flex:none; font-size:12.5px; color:var(--ink-2); background:var(--card); border:1px solid var(--line);
+  padding:4px 9px; border-radius:99px; white-space:nowrap}
+.xp b{font-family:'IBM Plex Mono',monospace; color:var(--teal); font-size:13.5px}
+.streak{flex:none; display:flex; align-items:center; gap:3px; font-size:12.5px; font-weight:700; color:var(--amber);
+  background:var(--amber-soft); border:1px solid var(--amber-line); padding:4px 9px; border-radius:99px; white-space:nowrap}
+.streak svg{width:12px; height:12px; fill:var(--amber)}
+
+/* ---------- stars ---------- */
+.stars{display:flex; gap:2px; flex:none}
+.stars svg{width:15px; height:15px}
+.stars .f{fill:var(--amber); stroke:none}
+.stars .e{fill:none; stroke:var(--line); stroke-width:1.6}
+.bigstars{display:flex; gap:10px; justify-content:center; margin:14px 0}
+.bigstars svg{width:44px; height:44px; animation:starin .5s cubic-bezier(.2,.8,.3,1.2) backwards}
+.bigstars svg:nth-child(2){animation-delay:.14s} .bigstars svg:nth-child(3){animation-delay:.28s}
+.bigstars .f{fill:var(--amber); stroke:none}
+.bigstars .e{fill:none; stroke:var(--line); stroke-width:1.6}
+@keyframes starin{from{opacity:0; transform:scale(.3) rotate(-25deg)} to{opacity:1; transform:none}}
+
+/* ---------- install card ---------- */
+.install{display:flex; gap:14px; align-items:flex-start; background:var(--card-2); border:1px dashed var(--teal-line);
+  border-radius:12px; padding:16px}
+.install ol{margin:8px 0 0; padding-inline-start:18px; color:var(--ink-2); font-size:15px}
+.install li{margin:3px 0}
+
+/* ---------- screen transition ---------- */
+.fade{animation:slidein .34s cubic-bezier(.2,.7,.3,1)}
+@keyframes slidein{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+
+/* =====================================================================
+   APP LOOK — שכבת עיצוב אפליקציה
+   ===================================================================== */
+body{background-image:none; background:var(--paper); font-size:16.5px; overflow-x:hidden}
+.wrap{max-width:560px; padding:0 14px 34px}
+.top{border-bottom:none; box-shadow:0 1px 0 var(--line)}
+.top-in{max-width:560px}
+.ttl{font-size:16.5px}
+
+.card{border-radius:20px; padding:22px 20px; margin-bottom:14px; border-color:transparent;
+  box-shadow:0 1px 3px rgba(15,34,48,.06), 0 12px 28px -18px rgba(15,34,48,.3)}
+:root[data-theme="dark"] .card,:root:not([data-theme="light"]) .card{border-color:var(--line); box-shadow:none}
+.btn{border-radius:14px; min-height:48px; padding:12px 22px; font-size:16px}
+.btn.wide{width:100%}
+.opt{border-radius:15px; padding:15px 16px; min-height:56px; border-width:2px}
+.opt .k{width:28px; height:28px; border-radius:9px}
+.line{border-radius:14px; min-height:52px; border-width:2px}
+.numin{border-radius:14px; border-width:2px}
+.chip{padding:5px 12px}
+.hero{border-radius:22px}
+
+/* ---------- learning path ---------- */
+.path{position:relative; padding:14px 0 10px; overflow:hidden}
+.path::before{content:""; position:absolute; top:36px; bottom:36px; right:50%; width:4px;
+  background:var(--line); border-radius:99px; transform:translateX(50%)}
+.node{position:relative; display:flex; flex-direction:column; align-items:center; gap:5px; margin:14px 0 16px; width:100%}
+.node .circ{width:70px; height:70px; border-radius:50%; display:grid; place-items:center; position:relative;
+  font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:23px;
+  background:var(--card); color:var(--ink-3); border:3px solid var(--line);
+  box-shadow:0 4px 0 var(--line); transition:transform .12s, box-shadow .12s}
+.node:active .circ{transform:translateY(3px); box-shadow:0 1px 0 var(--line)}
+.node.done .circ{background:var(--teal); color:#fff; border-color:var(--teal); box-shadow:0 4px 0 color-mix(in srgb,var(--teal) 70%,#000)}
+:root[data-theme="dark"] .node.done .circ,:root:not([data-theme="light"]) .node.done .circ{color:#08171C}
+.node.part .circ{background:var(--amber); color:#fff; border-color:var(--amber); box-shadow:0 4px 0 color-mix(in srgb,var(--amber) 70%,#000)}
+.node.now .circ{border-color:var(--amber); color:var(--amber); background:var(--card)}
+.node.now::after{content:""; position:absolute; top:-6px; width:82px; height:82px; border-radius:50%;
+  border:2px solid var(--amber); opacity:.55; animation:pulse 2s ease-out infinite; pointer-events:none}
+@keyframes pulse{0%{transform:scale(.9); opacity:.6} 70%{transform:scale(1.12); opacity:0} 100%{opacity:0}}
+.node .lbl{font-weight:700; font-size:14.5px; text-align:center; max-width:190px; line-height:1.3}
+.node.future .lbl{color:var(--ink-3)}
+.node .stars svg{width:14px; height:14px}
+.node .flag{position:absolute; top:-13px; left:auto; z-index:2; background:var(--amber); color:#fff;
+  font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:99px; letter-spacing:.03em}
+:root[data-theme="dark"] .node .flag,:root:not([data-theme="light"]) .node .flag{color:#1A1206}
+
+/* ---------- dashboard ---------- */
+.dash{display:flex; align-items:center; gap:14px}
+.dash .big{width:56px; height:56px; border-radius:50%; display:grid; place-items:center; flex:none;
+  background:var(--teal); color:#fff; font-size:23px; font-weight:700}
+:root[data-theme="dark"] .dash .big,:root:not([data-theme="light"]) .dash .big{color:#08171C}
+.dash .who{flex:1; min-width:0}
+.dash .who b{display:block; font-size:19px; font-family:'Frank Ruhl Libre',serif}
+.dash .who small{color:var(--ink-3); font-size:13.5px}
+.ring{flex:none; width:56px; height:56px; position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute; inset:0; display:grid; place-items:center; font-family:'IBM Plex Mono',monospace;
+  font-size:13px; font-weight:600; color:var(--teal)}
+.pills{display:flex; gap:8px; margin-top:14px}
+.pill{flex:1; text-align:center; background:var(--card-2); border-radius:14px; padding:10px 6px}
+.pill b{display:block; font-family:'IBM Plex Mono',monospace; font-size:19px; line-height:1.2}
+.pill small{color:var(--ink-3); font-size:11.5px}
+
+/* ---------- sticky primary action ---------- */
+.qbig{font-size:29px; padding:18px 0 10px}
+@media (max-width:520px){ .qbig{font-size:25px} .card{padding:20px 16px} }
+
+/* ---------- tricks ---------- */
+.trick{display:flex; align-items:center; gap:14px; width:100%; text-align:right; padding:15px 16px;
+  border:1.5px solid var(--line); border-radius:16px; background:var(--card); margin-bottom:10px; transition:border-color .15s, transform .1s}
+.trick:active{transform:scale(.985)}
+.trick .bolt{flex:none; width:42px; height:42px; border-radius:12px; display:grid; place-items:center;
+  background:var(--amber-soft); color:var(--amber); font-size:19px; font-weight:700}
+.trick .tt{flex:1; min-width:0}
+.trick .tt b{display:block; font-size:16.5px}
+.trick .tt small{color:var(--ink-3); font-size:13.5px}
+.trick .go{flex:none; color:var(--ink-3); font-size:22px; transform:scaleX(-1)}
+.tagchip{display:inline-block; font-size:11px; font-weight:700; letter-spacing:.04em; padding:2px 8px;
+  border-radius:99px; background:var(--teal-soft); color:var(--teal); margin-bottom:4px}
+.reel{background:#0B1E28; color:#EAF4F6; border-radius:20px; padding:26px 20px; text-align:center; position:relative; overflow:hidden}
+.reel::before{content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(234,244,246,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(234,244,246,.05) 1px,transparent 1px); background-size:24px 24px}
+.reel > *{position:relative}
+.reel .rx{font-family:'IBM Plex Mono',monospace; direction:ltr; font-size:30px; font-weight:600; color:#F0B44E}
+.rstep{margin-top:16px; padding-top:14px; border-top:1px solid rgba(234,244,246,.14); animation:pop .38s cubic-bezier(.2,.8,.3,1.1)}
+.rstep .big{font-family:'IBM Plex Mono',monospace; direction:ltr; font-size:25px; font-weight:600; color:#EAF4F6}
+.rstep .sub{font-size:14px; color:#9FC0C8; margin-top:3px}
+.rstep.final .big{color:#6FE0B0; font-size:34px}
+.xsvg text{font-family:'IBM Plex Mono',monospace; font-weight:600; text-anchor:middle; dominant-baseline:middle}
+.whybox{background:var(--card-2); border-radius:14px; padding:16px; margin-top:14px}
+.whybox div{padding:4px 0; color:var(--ink-2)}
+
+/* ---------- box method ---------- */
+.boxm{direction:ltr; border-collapse:separate; border-spacing:5px; margin:14px auto;
+  font-family:'IBM Plex Mono',monospace; font-weight:600}
+.boxm td{width:62px; height:52px; text-align:center; font-size:19px; border-radius:9px}
+.boxm td.h{background:transparent; color:#F0B44E; font-size:20px}
+.boxm td.c{background:rgba(234,244,246,.09); border:1.5px solid rgba(234,244,246,.22); color:#EAF4F6}
+.boxm td.on{background:rgba(127,216,214,.22); border-color:#7FD8D6; animation:pop .34s cubic-bezier(.2,.8,.3,1.1)}
+.boxm td.hid{opacity:0}
+.boxm td.h.hid{opacity:.12}
+@media (max-width:400px){ .boxm td{width:54px;height:46px;font-size:17px} }
+</style>
+
+<div class="top">
+  <div class="top-in">
+    <button class="iconbtn" id="back" style="display:none" aria-label="חזרה">‹</button>
+    <div class="ttl" id="ttl">כפל מקוצר</div>
+    <div class="streak" id="streak" style="display:none"></div>
+    <div class="xp" id="xp" style="display:none"><b id="xpn">0</b> נק׳</div>
+    <div class="avatar" id="av" style="display:none"></div>
+  </div>
+  <div class="bar"><i id="pbar"></i></div>
+  <span class="pct" id="ppct" style="display:none">0%</span>
+</div>
+
+<div class="wrap" id="app"></div>
+<div class="credit" id="credit"><span></span>ערכה <b>רוני מודן</b><span></span></div>
+
+<nav class="nav" id="nav"><div class="nav-in">
+  <button data-v="map"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>מפה</button>
+  <button data-v="tricks"><svg viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5 8.5-11.5H12z"/></svg>טריקים</button>
+  <button data-v="quiz"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>מבדק</button>
+  <button data-v="report"><svg viewBox="0 0 24 24"><path d="M6 19V11M12 19V5M18 19v-6"/></svg>הדוח שלי</button>
+  <button data-v="teacher"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>מורה</button>
+</div></nav>
+
+<script>
+/* =====================================================================
+   יחידת לימוד = נתונים בלבד. המנוע (part3) לא יודע כלום על התוכן.
+   כדי להוסיף יחידה חדשה — מוסיפים אובייקט כזה. לא נוגעים בקוד.
+   ===================================================================== */
+
+const MIS = {
+  M1 :{n:'פותח ריבוע בלי האיבר האמצעי', d:'חושב ש‑(a+b)² שווה a²+b². זו הטעות הנפוצה ביותר ביחידה.'},
+  M2 :{n:'סימן שגוי באיבר האחרון', d:'ב‑(a−b)² כותב −b² במקום +b². מינוס כפול מינוס הוא פלוס.'},
+  M3 :{n:'שוכח להכפיל פי 2', d:'כותב a²+ab+b² במקום a²+2ab+b². יש שני מלבנים זהים, לא אחד.'},
+  M4 :{n:'לא מעלה את המקדם בריבוע', d:'כותב (3x)²=3x² במקום 9x². הריבוע חל גם על המספר וגם על האות.'},
+  M5 :{n:'שני סימנים זהים בהפרש ריבועים', d:'מפרק a²−b² ל‑(a−b)(a−b). צריך סוגריים אחד עם פלוס ואחד עם מינוס.'},
+  M6 :{n:'מנסה לפרק סכום ריבועים', d:'חושב ש‑x²+16 מתפרק. סכום של שני ריבועים אינו ניתן לפירוק.'},
+  M7 :{n:'פירוק לא מלא', d:'עוצר באמצע — נשאר גורם משותף או נוסחה שאפשר עוד לפרק.'},
+  M8 :{n:'טעות סימן בפילוג', d:'לא מכפיל את המינוס בכל האיברים בסוגריים.'},
+  M9 :{n:'זוג מספרים שגוי בטרינום', d:'בוחר זוג שהמכפלה שלו נכונה אבל הסכום לא (או להפך).'},
+  M10:{n:'לא רואה שהאמצע מצטמצם', d:'ב‑(a+b)(a−b) שני האיברים האמצעיים מבטלים זה את זה.'},
+  M11:{n:'כפל חלקי', d:'מכפיל רק ראשון בראשון ואחרון באחרון, ומדלג על שתי מכפלות.'},
+  M12:{n:'מחלק רק איבר אחד', d:'בהוצאת גורם משותף מחלק איבר אחד ושוכח את השני.'}
+};
+
+const UNIT = {
+id:'g9-kefel-mekutzar',
+title:'כפל מקוצר ופירוק לגורמים',
+grade:'כיתה ט׳',
+stages:[
+
+/* ============ 1 ============ */
+{
+id:'s1', t:'חוק הפילוג המורחב', s:'(a+b)(c+d)',
+idea:'לפני כל הנוסחאות — יש רק כלל אחד. כל איבר בסוגריים הראשונים פוגש כל איבר בסוגריים השניים. ארבע מכפלות, תמיד.',
+explore:{type:'rect4'},
+rule:{f:'(a+b)(c+d) = ac + ad + bc + bd', note:'שטח המלבן הגדול = סכום ארבעת השטחים הקטנים.'},
+mis:{t:'הטעות הכי נפוצה כאן', b:'להכפיל רק ראשון בראשון ואחרון באחרון, ולקבל שני איברים במקום ארבעה. אם קיבלת פחות מארבע מכפלות — חזור ובדוק.'},
+items:[
+ {k:'mc', q:'פתחו את הסוגריים:', e:'(x+3)(x+5)', h:'ארבע מכפלות: x·x, x·5, 3·x, 3·5. אחר כך אוספים איברים דומים.',
+  chk:['(x+3)*(x+5)','x**2+8*x+15'],
+  o:[{t:'x² + 8x + 15', c:1},
+     {t:'x² + 15', m:'M11', f:'הכפלת רק x·x ו‑3·5. חסרות שתי מכפלות: x·5 ו‑3·x, שנותנות יחד 8x.'},
+     {t:'x² + 8x + 8', m:'M11', f:'האיבר האמצעי נכון! אבל האיבר האחרון הוא 3·5 = 15, לא 3+5.'},
+     {t:'x² + 15x + 8', m:'M11', f:'התבלבלת בין הסכום למכפלה: האמצע הוא 3+5=8 כפול x, והאחרון הוא 3·5=15.'}],
+  sol:['x·x = x²','x·5 = 5x','3·x = 3x','3·5 = 15','5x + 3x = 8x','x² + 8x + 15']},
+
+ {k:'mc', q:'פתחו את הסוגריים:', e:'(x+2)(x−7)', h:'שים לב: המינוס שייך ל‑7. כל מכפלה איתו יוצאת שלילית.',
+  chk:['(x+2)*(x-7)','x**2-5*x-14'],
+  o:[{t:'x² − 5x − 14', c:1},
+     {t:'x² + 5x − 14', m:'M8', f:'בדוק את האמצע: −7x + 2x = −5x, לא +5x. −7 גדול בערכו המוחלט מ‑2.'},
+     {t:'x² − 5x + 14', m:'M8', f:'האיבר האחרון הוא 2·(−7) = −14. פלוס כפול מינוס נותן מינוס.'},
+     {t:'x² − 14', m:'M11', f:'חסרות שתי מכפלות באמצע: −7x ו‑+2x, שנותנות יחד −5x.'}],
+  sol:['x·x = x²','x·(−7) = −7x','2·x = 2x','2·(−7) = −14','−7x + 2x = −5x','x² − 5x − 14']},
+
+ {k:'mc', q:'פתחו את הסוגריים:', e:'(2x+1)(x+3)', h:'2x·x = 2x². אל תשכח את המקדם.',
+  chk:['(2*x+1)*(x+3)','2*x**2+7*x+3'],
+  o:[{t:'2x² + 7x + 3', c:1},
+     {t:'2x² + 6x + 3', m:'M11', f:'שכחת מכפלה אחת: 1·x = x. יחד עם 6x מקבלים 7x.'},
+     {t:'2x² + 7x + 4', m:'M11', f:'האמצע נכון. האחרון הוא 1·3 = 3, לא 1+3.'},
+     {t:'2x² + 3x + 3', m:'M11', f:'חסר 2x·3 = 6x. יחד עם x מקבלים 7x.'}],
+  sol:['2x·x = 2x²','2x·3 = 6x','1·x = x','1·3 = 3','6x + x = 7x','2x² + 7x + 3']},
+
+ {k:'err', q:'מצאו את הטעות', head:'תלמיד פתר כך. באיזו שורה נכנסה הטעות?',
+  lines:['(x+4)(x+6) =','x·x + x·6 + 4·x + 4·6 =','x² + 6x + 4x + 10 =','x² + 10x + 10'],
+  bad:2, m:'M11', why:'בשורה 3 הוא כתב 4·6 = 10 במקום 24. הוא חיבר במקום להכפיל.',
+  fix:'התשובה הנכונה: x² + 10x + 24'}
+]},
+
+/* ============ 2 ============ */
+{
+id:'s2', t:'ריבוע של סכום', s:'(a+b)²',
+idea:'(a+b)² זה פשוט (a+b)(a+b). אז למה צריך נוסחה? כי כשמסתכלים על הריבוע הזה כתמונה — רואים משהו שחוזר על עצמו תמיד.',
+explore:{type:'square'},
+rule:{f:'(a+b)² = a² + 2ab + b²', note:'ריבוע גדול, ריבוע קטן, ושני מלבנים זהים ביניהם.'},
+mis:{t:'הטעות מספר 1 בכל חטיבת הביניים', b:'‏(a+b)² אינו a²+b². הזז את המבט לתמונה: בין שני הריבועים יש עוד שני מלבנים. בלעדיהם חסר לך שטח.'},
+items:[
+ {k:'mc', q:'פתחו:', e:'(x+5)²', h:'a=x, b=5. האמצע הוא 2·x·5.',
+  chk:['(x+5)**2','x**2+10*x+25'],
+  o:[{t:'x² + 10x + 25', c:1},
+     {t:'x² + 25', m:'M1', f:'זו הטעות הנפוצה ביותר. חסרים שני המלבנים: 2·x·5 = 10x. בדוק במספרים: אם x=1, אז (1+5)²=36, אבל 1+25=26.'},
+     {t:'x² + 5x + 25', m:'M3', f:'כמעט! יש שני מלבנים זהים ולא אחד. האמצע הוא 2·x·5 = 10x.'},
+     {t:'x² + 10x + 5', m:'M3', f:'האמצע נכון. האחרון הוא 5² = 25, לא 5.'}],
+  sol:['a = x , b = 5','a² = x²','2ab = 2·x·5 = 10x','b² = 25','x² + 10x + 25']},
+
+ {k:'mc', q:'פתחו:', e:'(x+1)²', h:'b=1, ולכן b²=1 ו‑2ab=2x.',
+  chk:['(x+1)**2','x**2+2*x+1'],
+  o:[{t:'x² + 2x + 1', c:1},
+     {t:'x² + 1', m:'M1', f:'חסר האמצע. הצב x=3: (3+1)²=16, ואילו 9+1=10. ההפרש הוא בדיוק 2x=6.'},
+     {t:'x² + x + 1', m:'M3', f:'שכחת את הכפל ב‑2: האמצע הוא 2·x·1 = 2x.'},
+     {t:'x² + 2x', m:'M3', f:'שכחת את b² = 1² = 1.'}],
+  sol:['a = x , b = 1','a² = x²','2ab = 2·x·1 = 2x','b² = 1','x² + 2x + 1']},
+
+ {k:'mc', q:'פתחו:', e:'(3x+2)²', h:'שים לב ש‑a = 3x, ולכן a² = (3x)² = 9x².',
+  chk:['(3*x+2)**2','9*x**2+12*x+4'],
+  o:[{t:'9x² + 12x + 4', c:1},
+     {t:'3x² + 12x + 4', m:'M4', f:'‏(3x)² פירושו 3x·3x = 9x². הריבוע חל גם על ה‑3 וגם על ה‑x.'},
+     {t:'9x² + 6x + 4', m:'M3', f:'האמצע הוא 2·3x·2 = 12x. שכחת להכפיל ב‑2.'},
+     {t:'9x² + 12x + 2', m:'M3', f:'האחרון הוא 2² = 4, לא 2.'}],
+  sol:['a = 3x , b = 2','a² = (3x)² = 9x²','2ab = 2·3x·2 = 12x','b² = 4','9x² + 12x + 4']},
+
+ {k:'mc', q:'פתחו:', e:'(2a+3b)²', h:'אותה נוסחה בדיוק — רק ששני האיברים הם אותיות.',
+  chk:['(2*a+3*b)**2','4*a**2+12*a*b+9*b**2'],
+  o:[{t:'4a² + 12ab + 9b²', c:1},
+     {t:'4a² + 9b²', m:'M1', f:'חסר האיבר האמצעי 2·2a·3b = 12ab.'},
+     {t:'2a² + 6ab + 3b²', m:'M4', f:'צריך להעלות בריבוע גם את המקדמים: (2a)²=4a² ו‑(3b)²=9b².'},
+     {t:'4a² + 6ab + 9b²', m:'M3', f:'האמצע הוא 2·(2a)·(3b) = 12ab. הכפלת רק 2a·3b ושכחת את ה‑2.'}],
+  sol:['a = 2a , b = 3b','(2a)² = 4a²','2·2a·3b = 12ab','(3b)² = 9b²','4a² + 12ab + 9b²']},
+
+ {k:'err', q:'מצאו את הטעות', head:'תלמיד פתר כך. באיזו שורה נכנסה הטעות?',
+  lines:['(x+7)² =','x² + 7² =','x² + 49'],
+  bad:1, m:'M1', why:'בשורה 2 הוא "פיזר" את הריבוע על כל איבר בנפרד. אי אפשר. ריבוע של סכום אינו סכום הריבועים.',
+  fix:'הנכון: x² + 2·x·7 + 49 = x² + 14x + 49'}
+]},
+
+/* ============ 3 ============ */
+{
+id:'s3', t:'ריבוע של הפרש', s:'(a−b)²',
+idea:'אותה נוסחה, סימן אחד משתנה. השאלה היחידה שצריך לענות עליה: איזה סימן מתהפך — ולמה דווקא הוא.',
+explore:{type:'minus'},
+rule:{f:'(a−b)² = a² − 2ab + b²', note:'רק האמצע הופך למינוס. האחרון תמיד חיובי — מינוס כפול מינוס.'},
+mis:{t:'שים לב לסוף', b:'האיבר האחרון הוא (−b)·(−b) = +b². הוא תמיד חיובי, גם כשבסוגריים יש מינוס. רק האמצעי הוא שלילי.'},
+items:[
+ {k:'mc', q:'פתחו:', e:'(x−4)²', h:'a=x, b=4. האמצע שלילי, האחרון חיובי.',
+  chk:['(x-4)**2','x**2-8*x+16'],
+  o:[{t:'x² − 8x + 16', c:1},
+     {t:'x² − 8x − 16', m:'M2', f:'האיבר האחרון הוא (−4)·(−4) = +16. מינוס כפול מינוס הוא פלוס.'},
+     {t:'x² − 16', m:'M1', f:'חסר האמצע: −2·x·4 = −8x.'},
+     {t:'x² + 8x + 16', m:'M2', f:'זו הפתיחה של (x+4)². כאן בסוגריים יש מינוס, אז האמצע שלילי.'}],
+  sol:['a = x , b = 4','a² = x²','−2ab = −2·x·4 = −8x','+b² = +16','x² − 8x + 16']},
+
+ {k:'mc', q:'פתחו:', e:'(x−1)²', h:'b=1 ולכן b²=1.',
+  chk:['(x-1)**2','x**2-2*x+1'],
+  o:[{t:'x² − 2x + 1', c:1},
+     {t:'x² − 2x − 1', m:'M2', f:'(−1)·(−1) = +1. האחרון חיובי.'},
+     {t:'x² − 1', m:'M1', f:'חסר האמצע −2x. שים לב: x²−1 זה פירוק של הפרש ריבועים, לא של ריבוע.'},
+     {t:'x² − x + 1', m:'M3', f:'שכחת את הכפל ב‑2: האמצע הוא −2·x·1 = −2x.'}],
+  sol:['a = x , b = 1','x²','−2·x·1 = −2x','+1','x² − 2x + 1']},
+
+ {k:'mc', q:'פתחו:', e:'(2x−3)²', h:'a=2x ולכן a²=4x².',
+  chk:['(2*x-3)**2','4*x**2-12*x+9'],
+  o:[{t:'4x² − 12x + 9', c:1},
+     {t:'4x² − 12x − 9', m:'M2', f:'(−3)² = +9. האחרון חיובי תמיד.'},
+     {t:'2x² − 12x + 9', m:'M4', f:'(2x)² = 4x², לא 2x².'},
+     {t:'4x² − 6x + 9', m:'M3', f:'האמצע הוא 2·2x·3 = 12x עם מינוס. שכחת את הכפל ב‑2.'}],
+  sol:['a = 2x , b = 3','(2x)² = 4x²','−2·2x·3 = −12x','+9','4x² − 12x + 9']},
+
+ {k:'mc', q:'פתחו:', e:'(5−x)²', h:'כאן a=5 ו‑b=x. שים לב מי ראשון.',
+  chk:['(5-x)**2','25-10*x+x**2'],
+  o:[{t:'25 − 10x + x²', c:1},
+     {t:'25 − x²', m:'M1', f:'חסר האמצע −2·5·x = −10x.'},
+     {t:'25 + 10x + x²', m:'M2', f:'בסוגריים יש מינוס, אז האמצע שלילי: −10x.'},
+     {t:'25 − 10x − x²', m:'M2', f:'(−x)·(−x) = +x². האחרון חיובי.'}],
+  sol:['a = 5 , b = x','a² = 25','−2·5·x = −10x','+x²','25 − 10x + x²']},
+
+ {k:'err', q:'מצאו את הטעות', head:'תלמיד פתר כך. באיזו שורה נכנסה הטעות?',
+  lines:['(x−6)² =','x² − 2·x·6 + (−6)² =','x² − 12x − 36'],
+  bad:2, m:'M2', why:'עד שורה 2 הכול נכון. בשורה 3 הוא חישב (−6)² = −36. אבל מינוס בריבוע הוא חיובי: (−6)² = +36.',
+  fix:'הנכון: x² − 12x + 36'}
+]},
+
+/* ============ 4 ============ */
+{
+id:'s4', t:'הפרש ריבועים', s:'(a+b)(a−b)',
+idea:'הנוסחה היחידה שבה משהו נעלם. שני האיברים האמצעיים מבטלים זה את זה — וזה מה שהופך אותה לכלי החזק ביותר ביחידה.',
+explore:{type:'diff'},
+rule:{f:'(a+b)(a−b) = a² − b²', note:'האמצע מצטמצם: −ab + ab = 0. נשארים שני איברים בלבד.'},
+mis:{t:'למה זה עובד', b:'פתח לאט: a·a − a·b + b·a − b·b. האיברים −ab ו‑+ab מבטלים זה את זה. נשאר a² − b². אין איבר אמצעי בכלל.'},
+items:[
+ {k:'mc', q:'פתחו:', e:'(x+3)(x−3)', h:'אותם שני איברים, סימן אחד שונה. האמצע ייעלם.',
+  chk:['(x+3)*(x-3)','x**2-9'],
+  o:[{t:'x² − 9', c:1},
+     {t:'x² + 9', m:'M5', f:'האחרון הוא 3·(−3) = −9. שלילי.'},
+     {t:'x² − 6x − 9', m:'M10', f:'האמצע מצטמצם: −3x + 3x = 0. אין איבר אמצעי.'},
+     {t:'x² − 9x', m:'M10', f:'בדוק שוב: המכפלה האחרונה היא 3·(−3) = −9, בלי x.'}],
+  sol:['x·x = x²','x·(−3) = −3x','3·x = +3x','−3x + 3x = 0','3·(−3) = −9','x² − 9']},
+
+ {k:'mc', q:'פתחו:', e:'(2x+5)(2x−5)', h:'a=2x, b=5.',
+  chk:['(2*x+5)*(2*x-5)','4*x**2-25'],
+  o:[{t:'4x² − 25', c:1},
+     {t:'2x² − 25', m:'M4', f:'a² = (2x)² = 4x².'},
+     {t:'4x² + 25', m:'M5', f:'5·(−5) = −25. שלילי.'},
+     {t:'4x² − 20x − 25', m:'M10', f:'האמצע מצטמצם: −10x + 10x = 0.'}],
+  sol:['a = 2x , b = 5','a² = 4x²','b² = 25','4x² − 25']},
+
+ {k:'mc', q:'פתחו:', e:'(7+y)(7−y)', h:'מי הוא a כאן? זה שמופיע באותו סימן בשני הסוגריים.',
+  chk:['(7+y)*(7-y)','49-y**2'],
+  o:[{t:'49 − y²', c:1},
+     {t:'y² − 49', m:'M5', f:'הפכת את הסדר. a=7 ו‑b=y, ולכן a²−b² = 49 − y².'},
+     {t:'49 + y²', m:'M5', f:'y·(−y) = −y². שלילי.'},
+     {t:'49 − 14y − y²', m:'M10', f:'האמצע מצטמצם: +7y − 7y = 0.'}],
+  sol:['a = 7 , b = y','a² = 49','b² = y²','49 − y²']},
+
+ {k:'err', q:'מצאו את הטעות', head:'תלמיד פתר כך. באיזו שורה נכנסה הטעות?',
+  lines:['(x+8)(x−8) =','x² − 8x + 8x − 64 =','x² + 16x − 64'],
+  bad:2, m:'M10', why:'בשורה 3 הוא חיבר את שני האיברים האמצעיים במקום לצמצם. −8x + 8x = 0, לא 16x.',
+  fix:'הנכון: x² − 64'}
+]},
+
+/* ============ 5 ============ */
+{
+id:'s5', t:'חישוב מהיר בראש', s:'הנוסחאות בשירותך',
+idea:'עכשיו מגיע החלק שבגללו הנוסחאות האלה קיימות בכלל. אלה תרגילים שנראים כמו עבודה למחשבון — ונפתרים בראש בשלוש שניות.',
+explore:null,
+rule:{f:'102² = (100+2)² = 10000 + 400 + 4 = 10404', note:'הטריק: שוברים את המספר לעשרות עגולות ועוד שארית קטנה.'},
+mis:{t:'איך בוחרים את הפירוק', b:'תמיד לכיוון המספר העגול הקרוב: 98 = 100−2 (ולא 90+8), 51 = 50+1, 203 = 200+3. ככל שהשארית קטנה יותר, החישוב קל יותר.'},
+items:[
+ {k:'in', q:'חשבו בראש, בלי מחשבון:', e:'102²', a:10404, h:'‏102 = 100+2. השתמש ב‑(a+b)²: 10000 + 2·100·2 + 4.', chk:['102**2','10404'],
+  sol:['(100+2)²','100² = 10000','2·100·2 = 400','2² = 4','10000 + 400 + 4 = 10404']},
+ {k:'in', q:'חשבו בראש:', e:'98²', a:9604, h:'‏98 = 100−2. עכשיו (a−b)²: 10000 − 400 + 4.', chk:['98**2','9604'],
+  sol:['(100−2)²','100² = 10000','−2·100·2 = −400','+2² = +4','10000 − 400 + 4 = 9604']},
+ {k:'in', q:'חשבו בראש:', e:'51 · 49', a:2499, h:'שניהם במרחק 1 מ‑50. זה בדיוק (50+1)(50−1).', chk:['51*49','2499'],
+  sol:['(50+1)(50−1)','= 50² − 1²','= 2500 − 1','= 2499']},
+ {k:'in', q:'חשבו בראש:', e:'103 · 97', a:9991, h:'שניהם במרחק 3 מ‑100.', chk:['103*97','9991'],
+  sol:['(100+3)(100−3)','= 100² − 3²','= 10000 − 9','= 9991']},
+ {k:'in', q:'חשבו בראש:', e:'21²', a:441, h:'‏21 = 20+1.', chk:['21**2','441'],
+  sol:['(20+1)²','400 + 2·20·1 + 1','400 + 40 + 1 = 441']}
+]},
+
+/* ============ 6 ============ */
+{
+id:'s6', t:'הוצאת גורם משותף', s:'הכיוון ההפוך',
+idea:'עד עכשיו פתחנו סוגריים. מכאן והלאה נעשה את ההפך — נסגור אותם. פירוק לגורמים זה פשוט ללכת אחורה.',
+explore:null,
+rule:{f:'ab + ac = a(b + c)', note:'מוציאים את הגורם הגדול ביותר שמשותף לכל האיברים — ומחלקים בו כל איבר.'},
+mis:{t:'בדיקה שלוקחת שנייה', b:'אחרי כל פירוק — פתח בחזרה את הסוגריים בראש. אם לא חזרת בדיוק לתרגיל המקורי, הפירוק שגוי.'},
+items:[
+ {k:'mc', q:'פרקו לגורמים:', e:'6x + 9', h:'מה המספר הגדול ביותר שמחלק גם את 6 וגם את 9?',
+  chk:['6*x+9','3*(2*x+3)'],
+  o:[{t:'3(2x + 3)', c:1},
+     {t:'3(2x + 9)', m:'M12', f:'חילקת רק את האיבר הראשון. גם 9 צריך להתחלק ב‑3: 9:3 = 3.'},
+     {t:'6(x + 9)', m:'M12', f:'‏9 אינו מתחלק ב‑6. הגורם המשותף הגדול ביותר הוא 3.'},
+     {t:'3(3x + 3)', m:'M12', f:'‏6x:3 = 2x, לא 3x. בדוק בפתיחה חוזרת.'}],
+  sol:['הגורם המשותף: 3','6x : 3 = 2x','9 : 3 = 3','3(2x + 3)']},
+
+ {k:'mc', q:'פרקו לגורמים:', e:'x² + 5x', h:'מה משותף ל‑x² ול‑5x?',
+  chk:['x**2+5*x','x*(x+5)'],
+  o:[{t:'x(x + 5)', c:1},
+     {t:'x(x² + 5)', m:'M12', f:'‏x²:x = x, לא x². כשמחלקים חזקות מחסירים מעריכים.'},
+     {t:'5x(x + 1)', m:'M12', f:'‏5 אינו גורם של x². הגורם המשותף הוא x בלבד.'},
+     {t:'x²(1 + 5)', m:'M12', f:'‏5x אינו מתחלק ב‑x² . ובנוסף קיבלת מספר בלי x.'}],
+  sol:['הגורם המשותף: x','x² : x = x','5x : x = 5','x(x + 5)']},
+
+ {k:'mc', q:'פרקו לגורמים במלואם:', e:'12x³ − 8x²', h:'גם מספר וגם אות: מה המקסימום שאפשר להוציא?',
+  chk:['12*x**3-8*x**2','4*x**2*(3*x-2)'],
+  o:[{t:'4x²(3x − 2)', c:1},
+     {t:'4x(3x² − 2x)', m:'M7', f:'נכון אבל לא מלא — בסוגריים עדיין נשאר x משותף. הוצא x²  מלכתחילה.'},
+     {t:'2x²(6x − 4)', m:'M7', f:'נכון אבל לא מלא — בסוגריים נשאר גורם 2. הגורם המשותף הגדול הוא 4x².'},
+     {t:'4x²(3x + 2)', m:'M8', f:'שים לב לסימן: −8x² : 4x² = −2.'}],
+  sol:['מספרים: הגורם המשותף הוא 4','אותיות: החזקה הנמוכה היא x²','12x³ : 4x² = 3x','−8x² : 4x² = −2','4x²(3x − 2)']},
+
+ {k:'err', q:'מצאו את הטעות', head:'תלמיד פרק כך. באיזו שורה נכנסה הטעות?',
+  lines:['10x² + 15x =','5x(2x + 15x) =','5x(2x + 15)'],
+  bad:1, m:'M12', why:'בשורה 2 הוא חילק את האיבר הראשון ב‑5x, אבל את השני העתיק כמו שהוא. 15x:5x = 3.',
+  fix:'הנכון: 5x(2x + 3)'}
+]},
+
+/* ============ 7 ============ */
+{
+id:'s7', t:'פירוק לפי נוסחאות', s:'לזהות את התבנית',
+idea:'עכשיו קוראים את הנוסחאות מימין לשמאל. הכישרון היחיד שנדרש: לזהות מתי ביטוי הוא בעצם ריבוע או הפרש ריבועים בתחפושת.',
+explore:null,
+rule:{f:'a² − b² = (a+b)(a−b)   |   a² ± 2ab + b² = (a ± b)²', note:'הפרש ריבועים — שני איברים. ריבוע שלם — שלושה איברים, והאמצעי הוא בדיוק פעמיים המכפלה.'},
+mis:{t:'סכום ריבועים לא מתפרק', b:'‏x²−16 מתפרק. ‏x²+16 לא מתפרק. אין נוסחה לסכום ריבועים, וזו לא "טעות" — זו עובדה מתמטית.'},
+items:[
+ {k:'mc', q:'פרקו לגורמים:', e:'x² − 49', h:'שני איברים, שניהם ריבועים, ביניהם מינוס.',
+  chk:['x**2-49','(x+7)*(x-7)'],
+  o:[{t:'(x + 7)(x − 7)', c:1},
+     {t:'(x − 7)(x − 7)', m:'M5', f:'זה (x−7)² = x²−14x+49. צריך סוגריים אחד עם פלוס ואחד עם מינוס.'},
+     {t:'(x + 7)(x + 7)', m:'M5', f:'זה (x+7)² = x²+14x+49. כאן צריך סימנים הפוכים.'},
+     {t:'(x − 49)(x + 1)', m:'M5', f:'פתח בחזרה: תקבל x²−48x−49. השתמש בנוסחת הפרש ריבועים.'}],
+  sol:['x² = (x)²','49 = 7²','a² − b² = (a+b)(a−b)','(x + 7)(x − 7)']},
+
+ {k:'mc', q:'פרקו לגורמים:', e:'9x² − 16', h:'‏9x² הוא ריבוע של מה?',
+  chk:['9*x**2-16','(3*x+4)*(3*x-4)'],
+  o:[{t:'(3x + 4)(3x − 4)', c:1},
+     {t:'(9x + 4)(9x − 4)', m:'M4', f:'‏a הוא השורש של 9x², כלומר 3x ולא 9x. בדוק: (3x)² = 9x².'},
+     {t:'(3x − 4)(3x − 4)', m:'M5', f:'שני סוגריים זהים נותנים ריבוע שלם, לא הפרש ריבועים.'},
+     {t:'3(3x² − 16)', m:'M7', f:'‏16 אינו מתחלק ב‑3. זה לא גורם משותף — זו נוסחה.'}],
+  sol:['9x² = (3x)²','16 = 4²','(3x + 4)(3x − 4)']},
+
+ {k:'mc', q:'פרקו לגורמים:', e:'x² + 16', h:'שאלה מלכודת. חשוב לפני שאתה בוחר.',
+  chk:['x**2+16','x**2+16'],
+  o:[{t:'לא ניתן לפירוק', c:1},
+     {t:'(x + 4)(x − 4)', m:'M6', f:'פתח בחזרה: תקבל x²−16, עם מינוס. סכום ריבועים אינו מתפרק.'},
+     {t:'(x + 4)²', m:'M6', f:'פתח בחזרה: x²+8x+16. יש איבר אמצעי שלא קיים בתרגיל.'},
+     {t:'(x + 4)(x + 4)', m:'M6', f:'זה בדיוק (x+4)² = x²+8x+16. לא מתאים.'}],
+  sol:['הנוסחה קיימת רק להפרש ריבועים','a² − b² מתפרק','a² + b² אינו מתפרק','לא ניתן לפירוק']},
+
+ {k:'mc', q:'פרקו לגורמים:', e:'x² + 10x + 25', h:'שלושה איברים. בדוק אם האמצעי שווה 2·x·5.',
+  chk:['x**2+10*x+25','(x+5)**2'],
+  o:[{t:'(x + 5)²', c:1},
+     {t:'(x + 5)(x − 5)', m:'M5', f:'זה נותן x²−25, בלי איבר אמצעי. כאן יש אמצע חיובי.'},
+     {t:'(x + 25)(x + 1)', m:'M9', f:'המכפלה נכונה אבל הסכום הוא 26, לא 10.'},
+     {t:'(x − 5)²', m:'M2', f:'זה נותן x²−10x+25, עם אמצע שלילי. כאן האמצע חיובי.'}],
+  sol:['x² = (x)² , 25 = 5²','בדיקת האמצע: 2·x·5 = 10x ✓','זהו ריבוע שלם','(x + 5)²']},
+
+ {k:'mc', q:'פרקו לגורמים במלואם:', e:'2x² − 18', h:'לפני שמחפשים נוסחה — תמיד בודקים גורם משותף.',
+  chk:['2*x**2-18','2*(x+3)*(x-3)'],
+  o:[{t:'2(x + 3)(x − 3)', c:1},
+     {t:'2(x² − 9)', m:'M7', f:'נכון אבל לא גמור. x²−9 הוא הפרש ריבועים ואפשר להמשיך לפרק.'},
+     {t:'(2x + 3)(2x − 3)', m:'M4', f:'פתח בחזרה: 4x²−9. לא זה. קודם מוציאים 2.'},
+     {t:'(x + 3)(x − 3)', m:'M7', f:'איבדת את ה‑2. פתח בחזרה ותקבל x²−9 במקום 2x²−18.'}],
+  sol:['גורם משותף: 2','2(x² − 9)','x² − 9 = (x+3)(x−3)','2(x + 3)(x − 3)']}
+]},
+
+/* ============ 8 ============ */
+{
+id:'s8', t:'פירוק טרינום', s:'x² + bx + c',
+idea:'שלושה איברים שאינם ריבוע שלם. מחפשים שני מספרים שהמכפלה שלהם היא האיבר האחרון והסכום שלהם הוא מקדם האמצע. שניהם, לא אחד מהם.',
+explore:null,
+rule:{f:'x² + bx + c = (x + m)(x + n)   כאשר   m·n = c ,  m + n = b', note:'קודם המכפלה — היא מצמצמת את האפשרויות. אחר כך בוחרים מתוכן לפי הסכום.'},
+mis:{t:'סדר העבודה נכון', b:'אם c חיובי — שני המספרים באותו סימן. אם c שלילי — סימנים הפוכים, והגדול מביניהם קובע את הסימן של b.'},
+items:[
+ {k:'mc', q:'פרקו לגורמים:', e:'x² + 7x + 12', h:'מכפלה 12, סכום 7. האפשרויות: 1·12, 2·6, 3·4.',
+  chk:['x**2+7*x+12','(x+3)*(x+4)'],
+  o:[{t:'(x + 3)(x + 4)', c:1},
+     {t:'(x + 2)(x + 6)', m:'M9', f:'המכפלה 12 נכונה, אבל הסכום הוא 8 ולא 7.'},
+     {t:'(x + 1)(x + 12)', m:'M9', f:'המכפלה נכונה, הסכום הוא 13 ולא 7.'},
+     {t:'(x − 3)(x − 4)', m:'M9', f:'זה נותן x²−7x+12, עם אמצע שלילי.'}],
+  sol:['מחפשים m·n = 12 , m+n = 7','3·4 = 12 ✓','3+4 = 7 ✓','(x + 3)(x + 4)']},
+
+ {k:'mc', q:'פרקו לגורמים:', e:'x² − 7x + 12', h:'המכפלה חיובית והסכום שלילי — סימן ששני המספרים שליליים.',
+  chk:['x**2-7*x+12','(x-3)*(x-4)'],
+  o:[{t:'(x − 3)(x − 4)', c:1},
+     {t:'(x + 3)(x + 4)', m:'M9', f:'זה נותן אמצע חיובי +7x. כאן האמצע שלילי.'},
+     {t:'(x − 2)(x − 6)', m:'M9', f:'המכפלה 12 נכונה, אבל הסכום הוא −8 ולא −7.'},
+     {t:'(x − 12)(x + 1)', m:'M9', f:'המכפלה כאן היא −12, לא +12.'}],
+  sol:['m·n = 12 , m+n = −7','שניהם שליליים','(−3)·(−4) = 12 ✓','(−3)+(−4) = −7 ✓','(x − 3)(x − 4)']},
+
+ {k:'mc', q:'פרקו לגורמים:', e:'x² + x − 12', h:'האמצע הוא 1x. מכפלה −12, סכום 1.',
+  chk:['x**2+x-12','(x+4)*(x-3)'],
+  o:[{t:'(x + 4)(x − 3)', c:1},
+     {t:'(x − 4)(x + 3)', m:'M9', f:'זה נותן אמצע −x. כאן צריך +x, אז הגדול מביניהם חייב להיות החיובי.'},
+     {t:'(x + 6)(x − 2)', m:'M9', f:'המכפלה היא −12 ✓ אבל הסכום הוא 4, לא 1.'},
+     {t:'(x + 12)(x − 1)', m:'M9', f:'המכפלה נכונה, הסכום הוא 11 ולא 1.'}],
+  sol:['m·n = −12 , m+n = 1','סימנים הפוכים','4·(−3) = −12 ✓','4+(−3) = 1 ✓','(x + 4)(x − 3)']},
+
+ {k:'mc', q:'פרקו לגורמים:', e:'x² − 4x − 21', h:'מכפלה −21, סכום −4.',
+  chk:['x**2-4*x-21','(x-7)*(x+3)'],
+  o:[{t:'(x − 7)(x + 3)', c:1},
+     {t:'(x + 7)(x − 3)', m:'M9', f:'זה נותן אמצע +4x. הגדול מבין השניים צריך להיות השלילי.'},
+     {t:'(x − 21)(x + 1)', m:'M9', f:'המכפלה נכונה, אבל הסכום הוא −20 ולא −4.'},
+     {t:'(x − 3)(x − 7)', m:'M9', f:'שניהם שליליים ← המכפלה תצא +21, ולא −21.'}],
+  sol:['m·n = −21 , m+n = −4','7·3 = 21 , והפרש 4','(−7)·(+3) = −21 ✓','(−7)+3 = −4 ✓','(x − 7)(x + 3)']},
+
+ {k:'err', q:'מצאו את הטעות', head:'תלמיד פרק כך. באיזו שורה נכנסה הטעות?',
+  lines:['x² + 5x + 6 =','מחפש שני מספרים שמכפלתם 6 וסכומם 5','בוחר 1 ו‑6','(x + 1)(x + 6)'],
+  bad:2, m:'M9', why:'בשורה 3 הוא בדק רק את המכפלה: 1·6 = 6 ✓ — אבל הסכום הוא 7 ולא 5. הזוג הנכון הוא 2 ו‑3.',
+  fix:'הנכון: (x + 2)(x + 3)'}
+]},
+
+/* ============ 9 ============ */
+{
+id:'s9', t:'אתגר — הכול ביחד', s:'שילוב נוסחאות',
+idea:'השלב האחרון. כאן אף אחד לא אומר לך באיזו נוסחה להשתמש — צריך לזהות לבד. זה בדיוק מה שיופיע במבחן.',
+explore:null,
+rule:{f:'סדר עבודה: 1) גורם משותף  →  2) נוסחה  →  3) טרינום', note:'תמיד באותו סדר. גורם משותף ראשון, תמיד.'},
+mis:{t:'המלכודת של האתגר', b:'רוב הטעויות כאן אינן בנוסחה — אלא בדילוג על שלב הגורם המשותף, או בשכחת סוגריים כשמחסרים ביטוי שלם.'},
+items:[
+ {k:'mc', q:'פשטו:', e:'(x+3)² − (x−3)²', h:'פתח כל ריבוע בנפרד, ואז שים לב: מחסרים את כל הביטוי השני.',
+  chk:['(x+3)**2-(x-3)**2','12*x'],
+  o:[{t:'12x', c:1},
+     {t:'0', m:'M8', f:'הריבועים אינם זהים: אחד נותן +6x והשני −6x. ההפרש ביניהם הוא 12x.'},
+     {t:'18', m:'M1', f:'נראה שפתחת כ‑x²+9 ו‑x²−9. חסרים האיברים האמצעיים.'},
+     {t:'6x', m:'M8', f:'זכור שהמינוס מוכפל בכל הסוגריים: −(−6x) = +6x. יחד: 6x+6x = 12x.'}],
+  sol:['(x+3)² = x² + 6x + 9','(x−3)² = x² − 6x + 9','ההפרש: 6x − (−6x)','= 12x']},
+
+ {k:'mc', q:'פשטו:', e:'(x²−25) : (x+5)', h:'פרק את המונה לפי הפרש ריבועים, ואז צמצם.',
+  chk:['(x**2-25)/(x+5)','x-5'],
+  o:[{t:'x − 5', c:1},
+     {t:'x + 5', m:'M5', f:'המונה מתפרק ל‑(x+5)(x−5). מצמצמים את (x+5) ונשאר (x−5).'},
+     {t:'x − 20', m:'M7', f:'אי אפשר לצמצם איברים בודדים בשבר — רק גורמים שלמים. קודם מפרקים.'},
+     {t:'x² − 5', m:'M7', f:'אחרי הצמצום נשאר סוגר אחד בלבד: x − 5.'}],
+  sol:['x² − 25 = (x+5)(x−5)','(x+5)(x−5) : (x+5)','מצמצמים (x+5)','x − 5']},
+
+ {k:'mc', q:'פרקו לגורמים במלואם:', e:'x³ − 9x', h:'קודם כול — גורם משותף.',
+  chk:['x**3-9*x','x*(x+3)*(x-3)'],
+  o:[{t:'x(x + 3)(x − 3)', c:1},
+     {t:'x(x² − 9)', m:'M7', f:'נכון אבל לא גמור. x²−9 הוא הפרש ריבועים.'},
+     {t:'(x² + 3)(x − 3)', m:'M7', f:'פתח בחזרה ותראה שזה לא חוזר לתרגיל המקורי.'},
+     {t:'x(x − 3)²', m:'M5', f:'זה נותן x(x²−6x+9). יש כאן איבר אמצעי שלא קיים.'}],
+  sol:['גורם משותף: x','x(x² − 9)','x² − 9 = (x+3)(x−3)','x(x + 3)(x − 3)']},
+
+ {k:'mc', q:'פשטו:', e:'(x+2)² − (x+2)(x−2)', h:'פתח כל חלק בנפרד. שים לב שהשני הוא הפרש ריבועים.',
+  chk:['(x+2)**2-(x+2)*(x-2)','4*x+8'],
+  o:[{t:'4x + 8', c:1},
+     {t:'4x', m:'M8', f:'‏(x²+4x+4) − (x²−4) = 4x + 4 + 4 = 4x + 8. שים לב: −(−4) = +4.'},
+     {t:'8x', m:'M1', f:'החלק השני הוא הפרש ריבועים ואין בו איבר אמצעי כלל.'},
+     {t:'4x + 4', m:'M8', f:'המינוס חל גם על ה‑(−4): −(−4) = +4. יחד 4+4 = 8.'}],
+  sol:['(x+2)² = x² + 4x + 4','(x+2)(x−2) = x² − 4','ההפרש: 4x + 4 − (−4)','= 4x + 8']}
+]}
+
+]};
+</script>
+<script>
+/* =====================================================================
+   ה"למה". לכל שלב: בעיה פותחת שאי אפשר לפתור בלעדיו, גילוי ההיגיון
+   המתמטי צעד אחר צעד, ולאן זה מוביל. זה מה שהופך תרגול להוראה.
+   ===================================================================== */
+const WHY = {
+
+s1:{
+ hook:{ q:'מגרש כדורגל קטן: אורך 23 מטר, רוחב 14 מטר. כמה מטר רבוע? בלי מחשבון.',
+        try:'23 · 14', a:322,
+        r:'רוב האנשים ישברו את זה בראש כך: 20·10 ועוד 20·4 ועוד 3·10 ועוד 3·4. זה 200+80+30+12 = 322. ואם עשית את זה — כבר השתמשת בחוק הפילוג, בלי לדעת שקוראים לו כך.' },
+ beats:[
+  {t:'כפל הוא שטח. תמיד.', b:'‏6·4 זה לא סתם פעולה. זה מלבן שאורכו 6 ורוחבו 4. כל התרגילים ביחידה הזאת הם בעצם שאלות על שטחים — וזה בדיוק מה שיאפשר לך לראות למה הנוסחאות נכונות, במקום לזכור אותן.'},
+  {t:'עכשיו נחתוך את המלבן.', b:'אם האורך מחולק לשני חלקים, המלבן מתחלק לשני מלבנים. השטח הכולל לא השתנה — רק חילקנו אותו. וזה עדיין אותו שטח.'},
+  {t:'ומה אם נחתוך גם את הרוחב?', b:'עכשיו נוצרו ארבעה מלבנים. לא שניים, לא שלושה — ארבעה. הזז את המחוונים ותראה שזה קורה תמיד, לא משנה איך חותכים.', show:1},
+  {t:'ארבעה חלקים = ארבע מכפלות.', b:'זה כל הסוד של פתיחת סוגריים. כשתלמיד מקבל שתי מכפלות במקום ארבע — הוא לא "טעה בחישוב". הוא פשוט שכח שני מלבנים.'},
+  {t:'ולמה זה עובד גם עם אותיות?', b:'כי שטח הוא שטח. לא משנה אם כתוב 20 או x — המלבן קיים, וארבעת החלקים קיימים. האותיות רק אומרות "זה נכון לכל מספר", ולא רק לזה שבדקנו.'}
+ ],
+ matters:{ t:'למה זה השלב הכי חשוב ביחידה', b:'כל הנוסחאות שיבואו הן מקרים פרטיים של הכלל הזה. אף אחת מהן איננה כלל חדש — כולן קיצורי דרך של אותו חיתוך למלבנים. מי שמבין את זה, לא צריך לשנן שום נוסחה. הוא יכול לגזור אותה מחדש בכל רגע.' }
+},
+
+s2:{
+ hook:{ q:'כמה זה 41 בריבוע? יש לך חמש שניות ואין מחשבון.', try:'41²', a:1681,
+        r:'‏41 = 40+1. מכאן: 1600 ועוד 2·40·1 ועוד 1, כלומר 1600+80+1 = 1681. חמש שניות. בסוף השלב הזה תעשה את זה לבד.' },
+ beats:[
+  {t:'ריבוע של סכום הוא פשוט מלבן מיוחד.', b:'‏(a+b)² פירושו (a+b)(a+b) — מלבן שבו האורך והרוחב זהים. כלומר: ריבוע. לפי מה שלמדנו בשלב 1, הוא מתחלק לארבעה חלקים.'},
+  {t:'אבל כאן קורה משהו שלא קורה במלבן רגיל.', b:'הזז את a ואת b וקרא לאט את התמונה: יש ריבוע גדול, ריבוע קטן — ובאמצע שני מלבנים. הסתכל עליהם היטב.', show:1},
+  {t:'שני המלבנים האמצעיים זהים לחלוטין.', b:'לאחד יש צלעות a ו‑b. לשני יש בדיוק אותן צלעות, רק מסובבות. שטח זהה. וזה לא צירוף מקרים — זה קורה כי האורך והרוחב שווים, כלומר בגלל שזה ריבוע.'},
+  {t:'ולכן — ורק לכן — כותבים 2ab.', b:'‏ab + ab = 2ab. זה כל ההבדל בין חוק הפילוג לנוסחת הכפל המקוצר: לא צריך לחשב ארבע מכפלות, כי שתיים מהן תמיד זהות. הנוסחה חוסכת לך חצי מהעבודה.'},
+  {t:'ועכשיו התשובה לטעות הגדולה של החטיבה.', b:'למה (a+b)² לא שווה a²+b²? כי במקרה כזה שני המלבנים היו צריכים להיעלם. הם לא נעלמים. יש להם שטח אמיתי, והוא 2ab. אי אפשר לוותר על שטח.'}
+ ],
+ matters:{ t:'לאן זה מוביל', b:'ברגע שתדע לקרוא את הנוסחה גם מימין לשמאל — כלומר לזהות ש‑x²+10x+25 הוא בעצם (x+5)² — תוכל לפרק. ובלי לפרק אי אפשר לפתור משוואות ריבועיות, אי אפשר למצוא נקודות חיתוך של פרבולה, ואי אפשר לצמצם שברים אלגבריים. השער נפתח כאן.' }
+},
+
+s3:{
+ hook:{ q:'כמה זה 39 בריבוע?', try:'39²', a:1521,
+        r:'‏39 = 40−1. אז: 1600 פחות 2·40·1 ועוד 1 — כלומר 1600−80+1 = 1521. שים לב לסימן האחרון. הוא חיובי, ותכף תראה בדיוק למה.' },
+ beats:[
+  {t:'הפעם לא בונים — מורידים.', b:'‏(a−b)² הוא ריבוע שצלעו קטנה יותר. הדרך הנוחה לראות אותו: קח את הריבוע הגדול a², וגזור ממנו.'},
+  {t:'גוזרים רצועה. ועוד רצועה.', b:'רצועה אחת ברוחב b לאורך הצד הימני — שטחה ab. ורצועה שנייה בתחתית — גם שטחה ab. עד כאן הורדנו 2ab.', show:1},
+  {t:'עצור. יש כאן בעיה.', b:'הסתכל על הפינה — הריבוע הסגול הקטן. הוא נמצא גם ברצועה הימנית וגם ברצועה התחתונה. כלומר הורדנו אותו פעמיים. אבל הוא קיים רק פעם אחת.'},
+  {t:'ולכן מחזירים אותו.', b:'זו הסיבה האמיתית ש‑b² מופיע בסוף עם פלוס. לא בגלל "מינוס כפול מינוס נותן פלוס" — זה רק הכלל הטכני. הסיבה היא שספרנו את הפינה פעמיים, ולכן חייבים להוסיף אותה בחזרה.'},
+  {t:'ורק האמצע נשאר שלילי.', b:'הורדנו שטח, אז 2ab יורד. את הפינה החזרנו, אז b² עולה. שני סימנים שונים, וכל אחד מהם מסיבה שאפשר להצביע עליה בתמונה.'}
+ ],
+ matters:{ t:'הרעיון הזה גדול מהנוסחה', b:'"ספרתי משהו פעמיים, אז אני מחסיר אותו בחזרה" הוא עיקרון שלם במתמטיקה — עקרון ההכלה וההדחה. תפגוש אותו שוב בהסתברות ובקומבינטוריקה, ובכל פעם שתצטרך לספור בלי לספור פעמיים. למדת אותו כאן, על ריבוע.' }
+},
+
+s4:{
+ hook:{ q:'לפני שנסביר משהו — רק תסתכל על שלושת התרגילים האלה. יש ביניהם קשר, ואם תמצא אותו לבד לא תשכח אותו לעולם.',
+        calc:[{e:'51 · 49', a:2499},{e:'52 · 48', a:2496},{e:'53 · 47', a:2491}],
+        r:'‏50² = 2500. ההפרשים הם 1, 4, 9 — כלומר 1², 2², 3². כל זוג התרחק מ‑50 במרחק אחר, וההפרש מ‑2500 היה בדיוק המרחק הזה בריבוע. זה לא צירוף מקרים. זו נוסחה.' },
+ beats:[
+  {t:'מה בעצם קרה שם.', b:'‏51·49 זה (50+1)(50−1). ‏52·48 זה (50+2)(50−2). תמיד אותו מספר, אחד למעלה ואחד למטה. והתוצאה תמיד יצאה 50² פחות המרחק בריבוע.'},
+  {t:'עכשיו נראה למה, בלי מספרים.', b:'קח ריבוע שצלעו a. גזור ממנו בפינה ריבוע קטן שצלעו b. השטח שנשאר הוא בדיוק a² − b².', show:1},
+  {t:'ועכשיו הרגע היפה.', b:'הצורה שנשארה נראית כמו האות L. חתוך אותה לשני מלבנים, וסדר אותם מחדש — לחץ על הכפתור. הם מתאחדים למלבן מושלם.'},
+  {t:'ומה המידות של המלבן החדש?', b:'האורך שלו הוא a+b, והרוחב שלו הוא a−b. לא הוספנו ולא הורדנו שום שטח — רק הזזנו חתיכות. ולכן a² − b² שווה בדיוק (a+b)(a−b). זו הוכחה, לא כלל.'},
+  {t:'למה דווקא הנוסחה הזאת מיוחדת.', b:'היא היחידה שבה האיברים האמצעיים מבטלים זה את זה ונשארים רק שני איברים. ולכן היא גם היחידה שקל לזהות בכיוון ההפוך: כל ביטוי שנראה "ריבוע פחות ריבוע" מתפרק מיד.'}
+ ],
+ matters:{ t:'שימוש שלא ציפית לו', b:'כל מספר אי‑זוגי הוא הפרש של שני ריבועים. למשל 15 = 8² − 7². נסה בעצמך עם 21 או 33. זה נובע ישירות מהנוסחה — כי (a+b)(a−b) עם הפרש 1 נותן בדיוק את הסכום. משפטים כאלה הם הבסיס לשיטות פירוק של מספרים גדולים, כולל כאלה שמשמשות בהצפנה.' }
+},
+
+s5:{
+ hook:{ q:'עכשיו בוא נראה מה קנית. שלושה תרגילים שנראים כמו עבודה למחשבון — ונפתרים בראש.',
+        calc:[{e:'102²', a:10404},{e:'98²', a:9604},{e:'103 · 97', a:9991}],
+        r:'‏102² = (100+2)² = 10000+400+4. ‏98² = (100−2)² = 10000−400+4. ‏103·97 = 100²−3² = 9991. שלוש נוסחאות, שלושה תרגילים, אפס מחשבון.' },
+ beats:[
+  {t:'זה לא טריק מסיבות.', b:'המטרה כאן איננה להרשים. המטרה היא שתרגיש בידיים שהנוסחאות האלה הן קיצור דרך אמיתי — לא עוד משהו לשנן למבחן. מי שמרגיש את החיסכון, זוכר את הנוסחה.'},
+  {t:'הכלל היחיד: לכיוון המספר העגול.', b:'‏98 = 100−2 ולא 90+8. ‏51 = 50+1. ‏203 = 200+3. ככל שהשארית קטנה יותר, כך b² קטן יותר והחישוב קל יותר. זו כל האומנות.'},
+  {t:'ואיך מזהים מכפלה שמתאימה להפרש ריבועים?', b:'כששני המספרים נמצאים באותו מרחק ממספר עגול. ‏103 ו‑97 שניהם במרחק 3 מ‑100. ‏46 ו‑54 שניהם במרחק 4 מ‑50. ברגע שרואים את זה — התרגיל נגמר.'}
+ ],
+ matters:{ t:'מה זה מוכיח', b:'שהמתמטיקה איננה אוסף כללים שרירותיים. הנוסחאות נוצרו כי הן חוסכות עבודה. כל נוסחה שתפגוש בהמשך הדרך — במשולשים, בפונקציות, בהסתברות — נולדה מאותה סיבה בדיוק.' }
+},
+
+s6:{
+ hook:{ q:'עד עכשיו פתחנו סוגריים. עכשיו השאלה ההפוכה, והיא קשה בהרבה: אם אני נותן לך 6x+9, מאיפה זה הגיע? איזה תרגיל נפתח ויצר את זה?',
+        r:'התשובה: 3(2x+3). והשאלה הזו — ללכת אחורה — היא כל מה שנעשה מכאן ועד סוף היחידה.' },
+ beats:[
+  {t:'למה הכיוון ההפוך קשה יותר.', b:'לפתוח סוגריים זו פעולה מכנית: יש דרך אחת והיא תמיד עובדת. לסגור סוגריים זה חיפוש — צריך לנחש מה היה שם, ולבדוק. זה ההבדל בין לבצע לבין לחשוב, וזו הסיבה שפירוק לגורמים מרגיש קשה יותר.'},
+  {t:'הצעד הראשון הוא תמיד אותו צעד.', b:'שואלים: מה משותף לכל האיברים? ב‑6x+9 שניהם מתחלקים ב‑3. אז 3 יוצא החוצה, וכל איבר מתחלק בו. לא איבר אחד — כולם.'},
+  {t:'ויש בדיקה שלוקחת שנייה אחת.', b:'אחרי כל פירוק, פתח בראש בחזרה. אם לא חזרת בדיוק לתרגיל שהתחלת ממנו — הפירוק שגוי. זו בדיקה ודאית, והיא זמינה לך תמיד, גם במבחן.'},
+  {t:'ומה זה "במלואם"?', b:'‏12x³−8x² שווה גם 4x(3x²−2x). זה נכון — אבל לא גמור, כי בסוגריים עדיין נשאר x משותף. פירוק מלא פירושו שאי אפשר להוציא יותר כלום. בבחינה זה ההבדל בין נקודות מלאות לחלקיות.'}
+ ],
+ matters:{ t:'למה בכלל צריך את זה', b:'שברים אלגבריים מצטמצמים רק דרך גורמים — לעולם לא דרך איברים. אי אפשר לצמצם את ה‑x² בשבר (x²−25)/(x+5), אבל אחרי פירוק הכול נופל למקומו. וזו רק ההתחלה: משוואות ריבועיות נפתרות אך ורק אחרי פירוק.' }
+},
+
+s7:{
+ hook:{ q:'פתור את המשוואה: x² − 49 = 0. אין נוסחה שאפשר להציב בה, ואין מה לבודד. אז מה עושים?',
+        r:'מפרקים: (x+7)(x−7) = 0. ועכשיו הרעיון שפותח הכול — אם מכפלה של שני דברים שווה אפס, אחד מהם חייב להיות אפס. אז x = −7 או x = 7.' },
+ beats:[
+  {t:'הכלי היחיד שפותר משוואות ריבועיות.', b:'אם a·b = 0 אז בהכרח a = 0 או b = 0. זה נשמע טריוויאלי, אבל זה תכונה שיש רק לאפס: אם מכפלה שווה 12, אי אפשר לדעת כלום על הגורמים. אפס הוא היחיד שמסגיר אותם.'},
+  {t:'ולכן כל משוואה חייבת קודם להגיע לצורה "מכפלה = 0".', b:'זו הסיבה שמלמדים פירוק לגורמים בכיתה ט׳ ולא סתם כתרגיל טכני. בלי פירוק אין דרך לפתור, ובלי פתרון אין נקודות חיתוך של פרבולה עם ציר ה‑x.'},
+  {t:'עכשיו קוראים את הנוסחאות אחורה.', b:'‏a²−b² מתפרק ל‑(a+b)(a−b). ‏a²+2ab+b² מתפרק ל‑(a+b)². אותן נוסחאות בדיוק, אותה תמונה של שטחים — רק שעכשיו מתחילים מהתוצאה ומחפשים את המקור.'},
+  {t:'ואיך מזהים במה מדובר?', b:'שני איברים ומינוס באמצע — הפרש ריבועים. שלושה איברים והאמצעי שווה בדיוק לפעמיים המכפלה — ריבוע שלם. בדיקת האמצע היא הבדיקה המכריעה, ורוב התלמידים מדלגים עליה.'},
+  {t:'ומה עם x²+16?', b:'לא מתפרק. לא בגלל שלא מצאת — אלא כי אין לזה פירוק כלל. אם היה, המשוואה x²+16=0 הייתה נפתרת. והיא לא נפתרת: אין מספר שהריבוע שלו שלילי. חוסר הפירוק כאן הוא עובדה מתמטית, לא כישלון שלך.'}
+ ],
+ matters:{ t:'התמונה הגדולה', b:'הפירוק הוא הגשר בין אלגברה לגאומטריה. הגורמים של פונקציה ריבועית הם בדיוק המקומות שבהם הפרבולה חוצה את ציר ה‑x. כשתלמד פרבולות בכיתה י׳, תגלה שכבר יודע למצוא את הנקודות האלה — למדת את זה כאן.' }
+},
+
+s8:{
+ hook:{ q:'‏x² + 7x + 12. אין כאן הפרש ריבועים, והאמצע איננו פעמיים המכפלה. אז אין נוסחה. איך בכל זאת מפרקים?',
+        r:'התשובה: (x+3)(x+4). ואם תבין איך מגיעים אליה — תבין שזו לא ניחוש אלא חידה עם שתי משוואות.' },
+ beats:[
+  {t:'נלך אחורה מהתשובה.', b:'נניח לרגע שהפירוק הוא (x+m)(x+n). פתח את זה לפי חוק הפילוג ותקבל x² + (m+n)x + m·n. עכשיו השווה לתרגיל שלנו.'},
+  {t:'וכאן מתגלה מה בעצם מחפשים.', b:'מקדם האמצע הוא הסכום m+n. האיבר האחרון הוא המכפלה m·n. כלומר: מחפשים שני מספרים שהסכום שלהם 7 והמכפלה שלהם 12. זו לא מלאכה של ניחוש — זו מערכת של שני תנאים.'},
+  {t:'ולמה מתחילים דווקא מהמכפלה?', b:'כי היא מצמצמת. למכפלה 12 יש רק שלושה זוגות: 1 ו‑12, 2 ו‑6, 3 ו‑4. אחר כך בודקים סכום ומוצאים מיד. אם היית מתחיל מהסכום 7, היו לך אינסוף אפשרויות.'},
+  {t:'הסימנים מספרים לך מראש מה לחפש.', b:'אם האיבר האחרון חיובי — שני המספרים באותו סימן, והאמצע קובע איזה. אם האיבר האחרון שלילי — הסימנים הפוכים, והגדול מביניהם קובע את סימן האמצע. שתי שורות שחוסכות חצי מהחיפוש.'},
+  {t:'והטעות שכולם עושים.', b:'בודקים רק את המכפלה ושוכחים את הסכום. ‏1·6 אכן שווה 6 — אבל 1+6 שווה 7, ואם באמצע כתוב 5x זה פשוט לא הזוג. שני התנאים חייבים להתקיים יחד, תמיד.'}
+ ],
+ matters:{ t:'מה באמת עשית כאן', b:'פתרת מערכת של שתי משוואות בשני נעלמים — סכום ומכפלה — בראש. זו בדיוק המחשבה שתידרש לך בנוסחת השורשים, במשפט וייטה, ובכל בעיה שבה נתונים סכום ומכפלה של שני גדלים. החידה הקטנה הזאת חוזרת שוב ושוב.' }
+},
+
+s9:{
+ hook:{ q:'שאלה אחת מהמבחן: פשטו את הביטוי (x+3)² − (x−3)². נראה מפחיד. למעשה, התשובה היא ביטוי באורך שתי תווים.',
+        r:'‏12x. שני הריבועים כמעט זהים — הם נבדלים רק בסימן האמצע. ולכן כשמחסרים, x² ו‑9 מתבטלים, ונשאר 6x − (−6x) = 12x. כל השלב הזה הוא על זיהוי מהיר.' },
+ beats:[
+  {t:'סדר עבודה קבוע, תמיד אותו סדר.', b:'ראשית גורם משותף. אחר כך נוסחה. ורק בסוף טרינום. מי שמדלג על השלב הראשון מסיים עם פירוק לא מלא, ומאבד נקודות על תשובה שהיא בעצם נכונה.'},
+  {t:'המלכודת שאיננה במתמטיקה.', b:'רוב הטעויות בשאלות המשולבות אינן בנוסחה אלא בסימן: כשמחסרים ביטוי שלם, המינוס חל על כל מה שבסוגריים. ‏−(x²−4) הוא −x²+4, ולא −x²−4. שורה אחת של חוסר תשומת לב מפילה תרגיל שלם.'},
+  {t:'ולמה בכלל מפשטים.', b:'כי ביטוי מפושט מגלה את מה שהיה חבוי. ‏(x+3)²−(x−3)² נראה כמו ביטוי ריבועי מסובך — ואחרי הפישוט מתברר שהוא פונקציה קווית פשוטה. הפישוט לא רק מקצר, הוא חושף מה הדבר באמת.'}
+ ],
+ matters:{ t:'זה בדיוק המבחן', b:'בשאלות אמיתיות אף אחד לא מודיע לך באיזו נוסחה להשתמש. הזיהוי הוא המיומנות, ולא החישוב. אם הגעת עד כאן והשלבים הקודמים ברורים לך — נשאר רק להתרגל לזהות מהר.' }
+}
+
+};
+</script>
+<script>
+/* =====================================================================
+   הרחבה: שלב ביסוס במספרים טבעיים + שלב מיון (במה מדובר?) + צבעים.
+   ===================================================================== */
+
+/* ---------- שלב 0: ריבועים של מספרים טבעיים ---------- */
+const S0 = {
+id:'s0', t:'ריבועים של מספרים', s:'הבסיס — לפני האותיות',
+idea:'לפני שנוגעים ב‑x אחד, צריך שריבוע של מספר יהיה אצלך אוטומטי. בלי זה כל תרגיל אלגברי ייעצר באמצע — לא בגלל האלגברה, אלא בגלל החשבון.',
+explore:{type:'square'},
+rule:{f:'n² = n · n', note:'ריבוע של מספר הוא שטח של ריבוע שצלעו המספר הזה. זה לא "כפול 2".',
+  fc:'<span class="cA">n²</span> = <span class="cA">n · n</span>'},
+mis:{t:'הבלבול הראשון של כולם', b:'‏5² איננו 10. ‏5² הוא 25. "בריבוע" פירושו להכפיל את המספר בעצמו, לא להכפיל אותו בשתיים. מי שמתבלבל כאן, יתבלבל בכל היחידה.'},
+items:[
+ {k:'in', q:'רמה 1 · חשבו:', e:'7²', a:49, lvl:1, h:'‏7 כפול 7.', chk:['7**2','49'],
+  sol:['7² = 7 · 7','= 49']},
+ {k:'in', q:'רמה 1 · חשבו:', e:'12²', a:144, lvl:1, h:'‏12·12. אפשר גם 12·10 ועוד 12·2.', chk:['12**2','144'],
+  sol:['12 · 12','12·10 = 120','12·2 = 24','120 + 24 = 144']},
+ {k:'mc', q:'רמה 2 · הרגע הכי חשוב ביחידה. חשבו את שני הביטויים והשוו:', e:'(7+3)²  מול  7² + 3²', lvl:2,
+  h:'קודם חשב מה בסוגריים: 7+3 = 10. עכשיו 10². ובנפרד: 49 + 9.', chk:['(7+3)**2','100'],
+  o:[{t:'100 מול 58 — שונים', c:1},
+     {t:'שניהם 100', m:'M1', f:'‏7² + 3² = 49 + 9 = 58, ולא 100. חשב שוב כל אחד בנפרד.'},
+     {t:'שניהם 58', m:'M1', f:'‏(7+3)² = 10² = 100. קודם מחברים בתוך הסוגריים, ורק אז מעלים בריבוע.'},
+     {t:'100 מול 21 — שונים', m:'M1', f:'‏7²+3² הוא 49+9 = 58. ‏21 זה 7·3, וזו פעולה אחרת.'}],
+  sol:['(7+3)² = 10² = 100','7² + 3² = 49 + 9 = 58','ההפרש: 100 − 58 = 42','ו‑42 הוא בדיוק 2·7·3','זו הסיבה שהנוסחה היא a² + 2ab + b²']},
+ {k:'in', q:'רמה 2 · חשבו:', e:'13²', a:169, lvl:2, h:'‏13·13. אפשר 13·10 ועוד 13·3.', chk:['13**2','169'],
+  sol:['13 · 10 = 130','13 · 3 = 39','130 + 39 = 169']},
+ {k:'in', q:'רמה 3 · חשבו (עכשיו בעזרת הנוסחה):', e:'21²', a:441, lvl:3,
+  h:'‏21 = 20+1. אז 400 ועוד 2·20·1 ועוד 1.', chk:['21**2','441'],
+  sol:['(20 + 1)²','20² = 400','2·20·1 = 40','1² = 1','400 + 40 + 1 = 441']},
+ {k:'in', q:'רמה 3 · חשבו:', e:'19²', a:361, lvl:3,
+  h:'‏19 = 20−1. אז 400 פחות 40 ועוד 1.', chk:['19**2','361'],
+  sol:['(20 − 1)²','400 − 2·20·1 + 1','400 − 40 + 1 = 361']}
+]};
+
+/* ---------- שלב מיון: במה מדובר? ---------- */
+const SC = {
+id:'sc', t:'במה מדובר?', s:'המיון — הצעד שקודם לכל פירוק',
+idea:'זה השלב שבו רוב התלמידים מתבלבלים: מתי זה טרינום, מתי נוסחה, ומתי בכלל אי אפשר. הבלבול הזה נפתר בשאלה אחת פשוטה שנשאלת תמיד ראשונה — כמה איברים יש.',
+explore:null,
+rule:{f:'2 איברים → נוסחה או כלום  |  3 איברים → ריבוע שלם או טרינום',
+  note:'ותמיד, לפני הכול: יש גורם משותף? אם כן — מוציאים אותו קודם.',
+  fc:'<span class="cA">2 איברים</span> ← נוסחה או כלום &nbsp;|&nbsp; <span class="cM">3 איברים</span> ← ריבוע שלם או טרינום'},
+mis:{t:'הטעות שגורמת לכל הבלבול', b:'תלמידים מנסים לזהות לפי "איך זה נראה" במקום לספור. ‏x²+49 נראה כמו התחלה של נוסחה — אבל יש בו שני איברים ופלוס באמצע, ולכן הוא פשוט לא מתפרק. ספירה קודמת לזיהוי.'},
+items:[
+ {k:'mc', q:'רמה 1 · במה מדובר?', e:'x² − 36', lvl:1, h:'ספור איברים. שניים. עכשיו הסתכל על הסימן.',
+  o:[{t:'הפרש ריבועים', c:1},
+     {t:'ריבוע שלם', m:'M5', f:'ריבוע שלם הוא שלושה איברים. כאן יש שניים בלבד.'},
+     {t:'טרינום רגיל', m:'M9', f:'טרינום פירושו שלושה איברים. כאן יש שניים.'},
+     {t:'לא ניתן לפירוק', m:'M6', f:'סכום ריבועים לא מתפרק — אבל כאן יש מינוס, וזה בדיוק הפרש ריבועים.'}],
+  sol:['שני איברים','שניהם ריבועים','באמצע מינוס','← הפרש ריבועים: (x+6)(x−6)']},
+ {k:'mc', q:'רמה 1 · במה מדובר?', e:'x² + 36', lvl:1, h:'אותם שני איברים — רק שהסימן התחלף.',
+  o:[{t:'לא ניתן לפירוק', c:1},
+     {t:'הפרש ריבועים', m:'M6', f:'להפרש דרוש מינוס. כאן יש פלוס, וזה סכום ריבועים.'},
+     {t:'ריבוע שלם', m:'M6', f:'ריבוע שלם הוא שלושה איברים, וכאן יש שניים.'},
+     {t:'טרינום רגיל', m:'M9', f:'טרינום הוא שלושה איברים.'}],
+  sol:['שני איברים, ובאמצע פלוס','נניח שכן מתפרק: (x+m)(x+n)','נפתח: x² + (m+n)x + mn','נדרש m+n = 0 וגם mn = 36','מ‑m = −n נובע −n² = 36','אין מספר שריבועו שלילי ← אין פירוק']},
+ {k:'mc', q:'רמה 2 · במה מדובר?', e:'x² + 12x + 36', lvl:2, h:'שלושה איברים. בדוק אם האמצעי שווה בדיוק לפעמיים המכפלה.',
+  o:[{t:'ריבוע שלם', c:1},
+     {t:'טרינום רגיל', m:'M9', f:'נכון שיש שלושה איברים — אבל בדוק: 2·x·6 = 12x, בדיוק האמצעי. זהו ריבוע שלם, וזה קיצור דרך.'},
+     {t:'הפרש ריבועים', m:'M5', f:'הפרש ריבועים הוא שני איברים. כאן שלושה.'},
+     {t:'לא ניתן לפירוק', m:'M6', f:'הוא בהחלט מתפרק: (x+6)².'}],
+  sol:['שלושה איברים','x² = (x)² , 36 = 6²','בדיקת האמצע: 2·x·6 = 12x ✓','← ריבוע שלם: (x+6)²']},
+ {k:'mc', q:'רמה 2 · במה מדובר?', e:'x² + 13x + 36', lvl:2, h:'שוב שלושה איברים — אבל בדוק את האמצע.',
+  o:[{t:'טרינום רגיל', c:1},
+     {t:'ריבוע שלם', m:'M9', f:'בדוק את האמצע: 2·x·6 = 12x, ולא 13x. לכן זה לא ריבוע שלם אלא טרינום רגיל.'},
+     {t:'הפרש ריבועים', m:'M5', f:'שלושה איברים ← לא הפרש ריבועים.'},
+     {t:'לא ניתן לפירוק', m:'M9', f:'הוא מתפרק: מחפשים סכום 13 ומכפלה 36 ← 4 ו‑9.'}],
+  sol:['שלושה איברים','בדיקת האמצע: 2·x·6 = 12x ≠ 13x','← טרינום רגיל','סכום 13, מכפלה 36 ← 4 ו‑9','(x+4)(x+9)']},
+ {k:'mc', q:'רמה 3 · במה מדובר? (שים לב לצעד הראשון)', e:'2x² + 8x', lvl:3, h:'לפני שסופרים ומזהים — תמיד בודקים גורם משותף.',
+  o:[{t:'גורם משותף', c:1},
+     {t:'הפרש ריבועים', m:'M5', f:'‏8x אינו ריבוע, וגם אין כאן מינוס בין שני ריבועים.'},
+     {t:'טרינום רגיל', m:'M9', f:'טרינום הוא שלושה איברים. כאן שניים.'},
+     {t:'לא ניתן לפירוק', m:'M7', f:'יש גורם משותף 2x, ולכן בהחלט מתפרק.'}],
+  sol:['שני איברים','לשניהם משותף 2x','2x² : 2x = x','8x : 2x = 4','← 2x(x + 4)']},
+ {k:'mc', q:'רמה 3 · במה מדובר?', e:'3x² − 27', lvl:3, h:'קודם גורם משותף — ואז תראה מה נשאר.',
+  o:[{t:'גורם משותף, ואחריו הפרש ריבועים', c:1},
+     {t:'הפרש ריבועים בלבד', m:'M4', f:'‏3x² אינו ריבוע שלם של ביטוי פשוט. קודם מוציאים 3 ומקבלים 3(x²−9).'},
+     {t:'גורם משותף בלבד', m:'M7', f:'אחרי הוצאת 3 נשאר x²−9, וזה הפרש ריבועים שאפשר להמשיך לפרק.'},
+     {t:'לא ניתן לפירוק', m:'M7', f:'מתפרק בהחלט: 3(x+3)(x−3).'}],
+  sol:['גורם משותף: 3','3(x² − 9)','x² − 9 = (x+3)(x−3)','← 3(x+3)(x−3)']},
+ {k:'err', q:'רמה 3 · מצאו את הטעות', head:'תלמיד פתר כך. באיזו שורה נכנסה הטעות?',
+  lines:['x² + 49 =','זהו ריבוע שלם, כי 49 = 7² =','(x + 7)²'],
+  bad:1, m:'M6', why:'בשורה 2 הוא קבע שזה ריבוע שלם. אבל ריבוע שלם הוא שלושה איברים, וכאן יש שניים בלבד. אין איבר אמצעי, ולכן אין נוסחה שמתאימה.',
+  fix:'הנכון: x² + 49 אינו ניתן לפירוק'}
+]};
+
+/* ---------- ה"למה" של שני השלבים החדשים ---------- */
+WHY.s0 = {
+ hook:{ q:'שאלה שנשמעת קלה: כמה זה 12 בריבוע? ועכשיו הקשה יותר — כמה זמן לקח לך?',
+        try:'12²', a:144,
+        r:'אם לקח יותר משתי שניות, זה לא חוסר ידע — זה חוסר אוטומציה. וזה בדיוק מה שנתקן כאן, כי בלי זה כל תרגיל אלגברי נעצר באמצע.' },
+ beats:[
+  {t:'למה מתחילים דווקא ממספרים.', b:'האלגברה איננה נושא חדש. היא אותה חשבון בדיוק, רק עם אות במקום מספר. מי שלא בטוח ב‑13², לא יהיה בטוח ב‑(x+3)² — כי הקושי לא היה באות מלכתחילה.'},
+  {t:'"בריבוע" זה שטח, לא כפל בשתיים.', b:'‏5² הוא ריבוע שצלעו 5 — 25 משבצות. זו הסיבה שקוראים לזה "בריבוע". התמונה הזו תחזור בכל שלב ביחידה, ולכן שווה לקבע אותה עכשיו.'},
+  {t:'ועכשיו הניסוי שמסביר את כל היחידה.', b:'חשב 7² ועוד 3². קיבלת 58. עכשיו חשב (7+3)² — קיבלת 100. אותם מספרים בדיוק, תוצאה שונה לגמרי. וההפרש, 42, הוא בדיוק 2·7·3.', show:1},
+  {t:'זה כל הסיפור, במספרים.', b:'ההפרש בין 58 ל‑100 הוא שני המלבנים שראית בתמונה. הם קיימים גם כשהמספרים הופכים לאותיות. מי שהבין את זה על 7 ו‑3, לא יטעה אחר כך על a ו‑b.'},
+  {t:'ורגע של ביסוס לפני שממשיכים.', b:'לפני שעוברים לאותיות, כדאי שהריבועים עד 15 יהיו בראש: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225. אין מה לשנן בכוח — הם יתקבעו מעצמם דרך התרגול כאן.'}
+ ],
+ matters:{ t:'למה זה משתלם', b:'כשריבועי המספרים אוטומטיים, המוח פנוי לחשוב על המבנה של התרגיל במקום על החשבון. זה ההבדל בין תלמיד שרואה "x²−49" ומזהה מיד הפרש ריבועים, לבין תלמיד שעדיין מנסה להיזכר כמה זה 7 כפול 7.' }
+};
+
+WHY.sc = {
+ hook:{ q:'שלוש שאלות שתלמידים נופלים בהן שוב ושוב: האם x²+49 הוא טרינום? האם הוא מתפרק? ואיך יודעים בכלל באיזו נוסחה להשתמש?',
+        r:'התשובה לשלושתן מתחילה באותה פעולה: ספירת איברים. ‏x²+49 הוא שני איברים, ולכן איננו טרינום. ולא, הוא איננו מתפרק — ותכף תראה הוכחה לכך.' },
+ beats:[
+  {t:'שאלה ראשונה, תמיד: כמה איברים?', b:'לא "איך זה נראה", לא "מה למדנו אתמול". פשוט לספור. שני איברים ושלושה איברים מובילים לשני מסלולים שונים לגמרי, ואי אפשר לבחור מסלול לפני שסופרים.'},
+  {t:'שני איברים — יש רק שתי אפשרויות.', b:'אם באמצע מינוס ושניהם ריבועים: הפרש ריבועים, ומתפרק מיד. אם באמצע פלוס: סכום ריבועים, ואיננו מתפרק. אין אפשרות שלישית.'},
+  {t:'ולמה סכום ריבועים באמת לא מתפרק.', b:'נניח לרגע ש‑x²+49 מתפרק ל‑(x+m)(x+n). נפתח: x² + (m+n)x + mn. כדי שיתאים, צריך m+n = 0 וגם mn = 49. מ‑m+n=0 נובע m = −n, ואז המכפלה היא −n². אבל −n² = 49 פירושו n² = −49, ואין מספר שריבועו שלילי. אין פירוק — לא כי לא מצאנו, אלא כי הוא לא קיים.'},
+  {t:'שלושה איברים — גם כאן שתי אפשרויות.', b:'בודקים בדיקה אחת: האם האיבר האמצעי שווה בדיוק לפעמיים מכפלת השורשים? ב‑x²+12x+36 השורשים הם x ו‑6, ופעמיים המכפלה היא 12x — מתאים, ולכן ריבוע שלם. ב‑x²+13x+36 היא 12x ולא 13x — ולכן טרינום רגיל.'},
+  {t:'והצעד שקודם לכל השאר.', b:'לפני שסופרים ומזהים — בודקים גורם משותף. ‏3x²−27 נראה כמו הפרש ריבועים, אבל 3x² אינו ריבוע נקי. מוציאים 3, מקבלים 3(x²−9), ורק אז ממשיכים. מי שמדלג על הצעד הזה נתקע או מסיים בפירוק חלקי.'}
+ ],
+ matters:{ t:'זו המיומנות שנבחנת באמת', b:'במבחן אף אחד לא כותב "השתמש בהפרש ריבועים". נותנים ביטוי, ואת המיון עושה התלמיד. מי ששולט בסדר — גורם משותף, ספירת איברים, בדיקת אמצע — פותר כל שאלה בנושא, גם כזו שלא ראה קודם.' }
+};
+
+/* ---------- שילוב השלבים ביחידה ---------- */
+UNIT.stages.unshift(S0);
+UNIT.stages.splice(UNIT.stages.findIndex(s=>s.id==='s9'), 0, SC);
+
+/* ---------- צבעים לנוסחאות: אותו קוד צבע כמו בתמונה ---------- */
+const RULE_FC = {
+ s0:'<span class="cA">n²</span> = <span class="cA">n · n</span>',
+ s1:'(a+b)(c+d) = <span class="cA">ac</span> + <span class="cM">ad</span> + <span class="cM">bc</span> + <span class="cB">bd</span>',
+ s2:'(a+b)² = <span class="cA">a²</span> + <span class="cM">2ab</span> + <span class="cB">b²</span>',
+ s3:'(a−b)² = <span class="cA">a²</span> − <span class="cM">2ab</span> + <span class="cB">b²</span>',
+ s4:'(a+b)(a−b) = <span class="cA">a²</span> − <span class="cB">b²</span>',
+ s6:'<span class="cA">a</span>b + <span class="cA">a</span>c = <span class="cA">a</span>(b + c)',
+ s7:'<span class="cA">a²</span> − <span class="cB">b²</span> = (a+b)(a−b)<br><span class="cA">a²</span> ± <span class="cM">2ab</span> + <span class="cB">b²</span> = (a ± b)²',
+ s8:'<span class="cA">x²</span> + <span class="cM">bx</span> + <span class="cB">c</span> = (x + m)(x + n)'
+};
+UNIT.stages.forEach(st=>{ if(RULE_FC[st.id]) st.rule.fc = RULE_FC[st.id]; });
+</script>
+<script>
+/* =====================================================================
+   שלב מוקשים + שלב חשיבה מתקדמת (רמת 5 יחידות).
+   כל שאלה מתויגת ברמת חשיבה: ידע · הבנה · יישום · ניתוח · הכללה · הוכחה
+   ===================================================================== */
+
+const SM = {
+id:'sm', t:'מוקשים', s:'שאלות שהתשובה המתבקשת בהן שגויה',
+idea:'בכל השלבים עד כה, מי שהבין את הרעיון ענה נכון. כאן זה לא מספיק. המוקשים הם שאלות שנראות מוכרות — ודווקא בגלל זה נופלים בהן. מי שעובר את השלב הזה, עובר גם את המבחן.',
+explore:null,
+rule:{f:'לפני כל תשובה: מה בדיוק נשאלתי?', note:'רוב הנפילות אינן בחישוב אלא בקריאה — מה בתוך הסוגריים, על מה חל הריבוע, ומה בדיוק צריך למצוא.',
+  fc:'<span class="cM">עצור</span> ← <span class="cA">מה בדיוק נשאלתי?</span> ← ואז לחשב'},
+mis:{t:'איך עוברים מוקש', b:'לפני שבוחרים תשובה — מציבים מספר. אם x=1 נותן תוצאה אחרת בשני האגפים, התשובה שגויה. ההצבה לוקחת חמש שניות ומצילה תרגילים שלמים.'},
+items:[
+ {k:'mc', q:'רמה 1 · מוקש · חשבו:', e:'−3²', lvl:1, tl:'הבנה', trap:1,
+  h:'שאלה של סדר פעולות: מה נעשה קודם — הריבוע או המינוס?',
+  o:[{t:'−9', c:1},
+     {t:'9', m:'M2', f:'‏9 הוא הערך של (−3)², כשהמינוס בתוך הסוגריים. כאן אין סוגריים, ולכן קודם 3² = 9 ורק אז המינוס: −9.'},
+     {t:'6', m:'M4', f:'ריבוע איננו כפל בשתיים. ‏3² = 9.'},
+     {t:'−6', m:'M4', f:'‏3² = 9, לא 6.'}],
+  sol:['ללא סוגריים, הריבוע חל רק על 3','3² = 9','המינוס נשאר בחוץ','−3² = −9','לעומת זאת (−3)² = +9']},
+
+ {k:'mc', q:'רמה 1 · מוקש · פשטו:', e:'(x+5)² − x²', lvl:1, tl:'יישום', trap:1,
+  h:'פתח קודם את הריבוע במלואו, ורק אז חסר.', chk:['(x+5)**2-x**2','10*x+25'],
+  o:[{t:'10x + 25', c:1},
+     {t:'25', m:'M1', f:'זה המוקש. ‏(x+5)² איננו x²+25 — הוא x²+10x+25. אחרי החיסור נשאר 10x+25, ולא רק 25.'},
+     {t:'10x', m:'M1', f:'כמעט. אחרי שמצטמצם x², נשארים גם 10x וגם 25.'},
+     {t:'x² + 25', m:'M1', f:'‏x² מצטמצם לגמרי. בדוק שוב את החיסור.'}],
+  sol:['(x+5)² = x² + 10x + 25','מחסרים x²','x² − x² = 0','← 10x + 25']},
+
+ {k:'mc', q:'רמה 2 · מוקש · פתחו:', e:'2(x+3)²', lvl:2, tl:'ניתוח', trap:1,
+  h:'על מה בדיוק חל הריבוע — על כל הביטוי או רק על הסוגריים?', chk:['2*(x+3)**2','2*x**2+12*x+18'],
+  o:[{t:'2x² + 12x + 18', c:1},
+     {t:'4x² + 24x + 36', m:'M4', f:'זה המוקש: זה הפתרון של (2x+6)². אבל ה‑2 נמצא מחוץ לריבוע ולכן איננו מועלה בריבוע — קודם פותחים את הריבוע, ורק אז מכפילים ב‑2.'},
+     {t:'2x² + 18', m:'M1', f:'חסר האיבר האמצעי: 2·(2·x·3) = 12x.'},
+     {t:'4x² + 12x + 18', m:'M4', f:'ה‑2 מוכפל בכל האיברים אחרי הפתיחה — הוא לא מרובע.'}],
+  sol:['קודם הריבוע: (x+3)² = x² + 6x + 9','ורק אז כופלים ב‑2','2x² + 12x + 18','שים לב: (2x+6)² הוא ביטוי אחר לגמרי']},
+
+ {k:'mc', q:'רמה 2 · מוקש · האם שני הביטויים שווים?', e:'(x−4)²   ו־   (4−x)²', lvl:2, tl:'ניתוח', trap:1,
+  h:'נסה להציב x=1 בשניהם ולראות מה יוצא.', chk:['(x-4)**2','(4-x)**2'],
+  o:[{t:'כן — הם שווים תמיד', c:1},
+     {t:'לא — הסימנים הפוכים', m:'M2', f:'זה המוקש ההפוך: כאן דווקא כן. ‏(4−x) הוא בדיוק המספר הנגדי של (x−4), וריבוע של מספר ושל נגדי שלו שווים תמיד.'},
+     {t:'שווים רק כאשר x = 4', m:'M2', f:'הצב x=1: (1−4)² = 9, וגם (4−1)² = 9. שווים.'},
+     {t:'לא ניתן לדעת', m:'M2', f:'אפשר בהחלט לדעת: (4−x) = −(x−4), וריבוע מבטל את הסימן.'}],
+  sol:['4 − x = −(x − 4)','ריבוע של נגדי שווה לריבוע המקורי','(−k)² = k²','← שני הביטויים שווים תמיד','אבל שים לב: (x−4)³ ו‑(4−x)³ כן שונים']},
+
+ {k:'in', q:'רמה 2 · מוקש · חשבו בראש:', e:'99² − 98²', a:197, lvl:2, tl:'יישום', trap:1,
+  h:'אל תחשב את שני הריבועים. זה הפרש ריבועים.', chk:['99**2-98**2','197'],
+  sol:['(99 + 98)(99 − 98)','= 197 · 1','= 197','מי שחישב 9801 − 9604 הגיע לאותה תוצאה — בעשירית מהמהירות']},
+
+ {k:'mc', q:'רמה 3 · מוקש · פרקו לגורמים במלואם:', e:'x⁴ − 81', lvl:3, tl:'הכללה', trap:1,
+  h:'‏x⁴ הוא (x²)². פרק פעם אחת — ואז בדוק אם אפשר שוב.', chk:['x**4-81','(x**2+9)*(x+3)*(x-3)'],
+  o:[{t:'(x² + 9)(x + 3)(x − 3)', c:1},
+     {t:'(x² + 9)(x² − 9)', m:'M7', f:'צעד ראשון נכון — אבל x²−9 הוא בעצמו הפרש ריבועים וממשיך להתפרק ל‑(x+3)(x−3).'},
+     {t:'(x² − 9)(x² − 9)', m:'M5', f:'להפרש ריבועים דרושים סימנים הפוכים: אחד עם פלוס ואחד עם מינוס.'},
+     {t:'(x + 9)(x − 9)', m:'M4', f:'השורש של x⁴ הוא x², ולא x. בדוק: (x²)² = x⁴.'}],
+  sol:['x⁴ = (x²)² , 81 = 9²','(x² + 9)(x² − 9)','x² + 9 אינו מתפרק — סכום ריבועים','x² − 9 = (x+3)(x−3)','← (x² + 9)(x + 3)(x − 3)']},
+
+ {k:'mc', q:'רמה 3 · מוקש · נתון ש‑x + y = 10 וגם x · y = 21. כמה זה x² + y²?', e:'x² + y² = ?', lvl:3, tl:'ניתוח', trap:1,
+  h:'אתה לא צריך למצוא את x ואת y. פתח את (x+y)² וראה מה מופיע בפנים.',
+  o:[{t:'58', c:1},
+     {t:'100', m:'M1', f:'זה המוקש. ‏(x+y)² = 100, אבל הוא כולל גם 2xy. כדי לקבל x²+y² צריך להוריד את 2xy = 42.'},
+     {t:'79', m:'M3', f:'הורדת xy במקום 2xy. באמצע יש שני איברים, ולכן מורידים 42.'},
+     {t:'142', m:'M2', f:'הוספת 2xy במקום להוריד אותו.'}],
+  sol:['(x + y)² = x² + 2xy + y²','100 = x² + y² + 2·21','100 = x² + y² + 42','x² + y² = 58','לא היה צריך למצוא את x ואת y כלל']},
+
+ {k:'err', q:'רמה 3 · מוקש · מצאו את הטעות', head:'תלמיד פתר כך. באיזו שורה נכנסה הטעות?',
+  lines:['√(9 + 16) =','√9 + √16 =','3 + 4 =','7'],
+  bad:1, m:'M1', why:'בשורה 2 הוא "פיזר" את השורש על החיבור. זו בדיוק אותה טעות כמו (a+b)² = a²+b², רק בכיוון ההפוך — פעולה שאיננה מתחלקת בין המחוברים.',
+  fix:'הנכון: √(9+16) = √25 = 5'}
+]};
+
+const SA = {
+id:'sa', t:'חשיבה מתקדמת', s:'רמת 5 יחידות — פרמטרים, הוכחות והכללות',
+idea:'עד כאן נשאלת "פתח" או "פרק". כאן נשאלת שאלה אחרת לגמרי: לאילו ערכים זה נכון, האם זה נכון תמיד, ומי גדול יותר. אותן נוסחאות בדיוק — רק שעכשיו הן כלי חשיבה ולא פעולה.',
+explore:null,
+rule:{f:'(a+b)² − (a−b)² = 4ab   |   (a+b)² − 2ab = a² + b²',
+  note:'זהויות אינן נוסחאות נוספות לשינון — הן תוצאה של מה שכבר יודעים. אפשר לגזור כל אחת מהן תוך שלוש שורות.',
+  fc:'<span class="cA">(a+b)²</span> − <span class="cM">(a−b)²</span> = <span class="cB">4ab</span><br><span class="cA">(a+b)²</span> − <span class="cM">2ab</span> = <span class="cB">a² + b²</span>'},
+mis:{t:'מה משתנה ברמה הזאת', b:'בשאלות האלה כמעט אף פעם אין צורך למצוא את x. השאלה איננה "כמה x" אלא "מה אפשר להסיק". מי שמנסה לחלץ נעלמים נתקע, ומי שמסתכל על המבנה מסיים בשתי שורות.'},
+items:[
+ {k:'mc', q:'רמה 1 · לאילו ערכי k הביטוי הוא ריבוע שלם?', e:'x² + kx + 25', lvl:1, tl:'ניתוח',
+  h:'ריבוע שלם נראה כך: (x ± 5)². פתח אותו וראה מה חייב להיות באמצע.',
+  o:[{t:'k = 10 או k = −10', c:1},
+     {t:'k = 10 בלבד', m:'M2', f:'גם (x−5)² הוא ריבוע שלם, והוא נותן k = −10. שני הפתרונות תקפים.'},
+     {t:'k = 5', m:'M3', f:'האמצע הוא 2·x·5 = 10x, ולא 5x. שכחת את הכפל ב‑2.'},
+     {t:'k = 25', m:'M3', f:'‏25 הוא האיבר האחרון, לא מקדם האמצע.'}],
+  sol:['ריבוע שלם: (x + m)² = x² + 2mx + m²','m² = 25 ← m = 5 או m = −5','k = 2m','← k = 10 או k = −10']},
+
+ {k:'mc', q:'רמה 1 · מה גדול יותר?', e:'2025²   או   2024 · 2026', lvl:1, tl:'ניתוח',
+  h:'‏2024 ו‑2026 שניהם במרחק 1 מ‑2025. זה הפרש ריבועים.',
+  o:[{t:'‏2025² גדול ב‑1', c:1},
+     {t:'הם שווים', m:'M10', f:'‏2024·2026 = (2025−1)(2025+1) = 2025² − 1. יש הפרש של 1 בדיוק.'},
+     {t:'‏2024·2026 גדול ב‑1', m:'M5', f:'הכיוון הפוך: המכפלה קטנה ב‑1, כי מחסרים 1².'},
+     {t:'‏2025² גדול ב‑2', m:'M5', f:'ההפרש הוא 1² = 1, לא 2.'}],
+  sol:['2024 · 2026 = (2025 − 1)(2025 + 1)','= 2025² − 1²','= 2025² − 1','← הריבוע גדול ב‑1','וזה נכון סביב כל מספר, לא רק 2025']},
+
+ {k:'mc', q:'רמה 2 · פשטו:', e:'(a+b)² − (a−b)²', lvl:2, tl:'הכללה', chk:['(a+b)**2-(a-b)**2','4*a*b'],
+  h:'פתח כל ריבוע בנפרד ושים לב מה מצטמצם ומה מוכפל.',
+  o:[{t:'4ab', c:1},
+     {t:'2ab', m:'M8', f:'שני האמצעים הם +2ab ו‑−2ab. בחיסור: 2ab − (−2ab) = 4ab, לא 2ab.'},
+     {t:'0', m:'M8', f:'הריבועים אינם זהים — הם נבדלים בסימן האמצע, ולכן ההפרש אינו אפס.'},
+     {t:'2a² + 2b²', m:'M1', f:'‏a² ו‑b² מצטמצמים לגמרי בחיסור. מה שנשאר הוא רק האמצע.'}],
+  sol:['(a+b)² = a² + 2ab + b²','(a−b)² = a² − 2ab + b²','בחיסור: a² ו‑b² מצטמצמים','2ab − (−2ab) = 4ab']},
+
+ {k:'in', q:'רמה 2 · נתון a − b = 3 וגם a·b = 10. חשבו את a² + b².', e:'a² + b² = ?', a:29, lvl:2, tl:'ניתוח',
+  h:'פתח את (a−b)² וראה איזה איבר מופיע שם ואיזה חסר.',
+  sol:['(a − b)² = a² − 2ab + b²','9 = a² + b² − 2·10','9 = a² + b² − 20','a² + b² = 29']},
+
+ {k:'mc', q:'רמה 3 · הוכחה · ההפרש בין ריבועיהם של שני מספרים עוקבים שווה לסכומם. איזה מעבר מוכיח זאת?', e:'(n+1)² − n² = ?', lvl:3, tl:'הוכחה',
+  h:'פתח את (n+1)² וצמצם. אחר כך שאל מה הסכום של שני המספרים.', chk:['(n+1)**2-n**2','2*n+1'],
+  o:[{t:'‏= 2n + 1 , וזה בדיוק n + (n+1)', c:1},
+     {t:'‏= 1 , כי ההפרש בין עוקבים הוא 1', m:'M1', f:'ההפרש בין המספרים הוא 1, אבל ההפרש בין הריבועים שלהם גדל: 4−1=3, 9−4=5, 16−9=7.'},
+     {t:'‏= n² + 1', m:'M1', f:'פתח את (n+1)² במלואו: n²+2n+1. אחרי חיסור n² נשאר 2n+1.'},
+     {t:'‏= 2n , והסכום הוא 2n', m:'M3', f:'אחרי החיסור נשאר 2n+1, וגם הסכום n+(n+1) שווה 2n+1. שניהם כוללים את ה‑1.'}],
+  sol:['(n+1)² = n² + 2n + 1','מחסרים n²  ←  2n + 1','והסכום: n + (n+1) = 2n + 1','שני האגפים זהים ← הוכחנו','בדיקה: 8² − 7² = 15 = 8 + 7']},
+
+ {k:'mc', q:'רמה 3 · פרקו לגורמים במלואם:', e:'x⁴ − 16', lvl:3, tl:'הכללה', chk:['x**4-16','(x**2+4)*(x+2)*(x-2)'],
+  h:'פרק פעם אחת, ואז בדוק כל גורם בנפרד: האם הוא ממשיך להתפרק?',
+  o:[{t:'(x² + 4)(x + 2)(x − 2)', c:1},
+     {t:'(x² + 4)(x² − 4)', m:'M7', f:'לא גמור: x²−4 הוא הפרש ריבועים וממשיך להתפרק.'},
+     {t:'(x² + 4)²', m:'M5', f:'פתח בחזרה ותקבל x⁴+8x²+16 — לא מתאים.'},
+     {t:'(x + 4)(x − 4)', m:'M4', f:'השורש של x⁴ הוא x², לא x.'}],
+  sol:['x⁴ − 16 = (x²)² − 4²','= (x² + 4)(x² − 4)','x² + 4 — סכום ריבועים, עוצר','x² − 4 = (x+2)(x−2)','← (x² + 4)(x + 2)(x − 2)']},
+
+ {k:'mc', q:'רמה 3 · הוכחה · מדוע n² + n הוא מספר זוגי עבור כל מספר שלם n?', e:'n² + n', lvl:3, tl:'הוכחה',
+  h:'פרק לגורמים. מה בדיוק מוכפל במה?', chk:['n**2+n','n*(n+1)'],
+  o:[{t:'כי n² + n = n(n+1) — מכפלת שני מספרים עוקבים, ואחד מהם תמיד זוגי', c:1},
+     {t:'כי n² תמיד זוגי', m:'M9', f:'לא נכון: 3² = 9, אי‑זוגי. הטיעון חייב להישען על הפירוק.'},
+     {t:'כי סכום של שני איברים תמיד זוגי', m:'M9', f:'לא נכון: 3 + 4 = 7. הנימוק חייב להיות ספציפי לביטוי הזה.'},
+     {t:'זה איננו נכון תמיד', m:'M9', f:'בדוק: n=3 נותן 12, n=4 נותן 20, n=5 נותן 30. תמיד זוגי — ויש לכך סיבה.'}],
+  sol:['n² + n = n(n + 1)','n ו‑n+1 הם מספרים עוקבים','מבין שני עוקבים, אחד תמיד זוגי','מכפלה שיש בה גורם זוגי היא זוגית','← n² + n זוגי תמיד']},
+
+ {k:'in', q:'רמה 3 · חשבו בראש:', e:'1002² − 998²', a:8000, lvl:3, tl:'יישום', chk:['1002**2-998**2','8000'],
+  h:'הפרש ריבועים: הסכום כפול ההפרש.',
+  sol:['(1002 + 998)(1002 − 998)','= 2000 · 4','= 8000']},
+
+ {k:'mc', q:'רמה 3 · לאילו ערכי m הביטוי הוא ריבוע שלם?', e:'x² − mx + 36', lvl:3, tl:'ניתוח',
+  h:'ריבוע שלם: (x ± 6)². פתח את שניהם וראה מה יוצא במקום mx.',
+  o:[{t:'m = 12 או m = −12', c:1},
+     {t:'m = 12 בלבד', m:'M2', f:'גם (x+6)² מתאים: הוא נותן +12x, כלומר −m = 12, כלומר m = −12.'},
+     {t:'m = 6', m:'M3', f:'האמצע הוא 2·x·6 = 12x. שכחת את הכפל ב‑2.'},
+     {t:'m = 36', m:'M3', f:'‏36 הוא האיבר האחרון, לא מקדם האמצע.'}],
+  sol:['(x + k)² = x² + 2kx + k²','k² = 36 ← k = 6 או k = −6','2k = −m','k = −6 ← m = 12','k = 6 ← m = −12']}
+]};
+
+/* ---------- ה"למה" ---------- */
+WHY.sm = {
+ hook:{ q:'שאלה קצרה שנראית קלה: כמה זה −3² ? רוב התלמידים עונים 9. חשוב לפני שאתה בוחר.',
+        try:'−3²', a:-9,
+        r:'התשובה היא −9. בלי סוגריים, הריבוע חל רק על ה‑3: קודם 3²=9, ורק אז המינוס. ‏(−3)² לעומת זאת שווה +9. הבדל של סוגריים אחד — והבדל של 18 בתשובה.' },
+ beats:[
+  {t:'למה שלב שלם של מוקשים.', b:'במבחן אף אחד לא נכשל כי לא ידע את הנוסחה. נכשלים בגלל שאלה שנראתה כמו שאלה אחרת. השלב הזה מאמן בדיוק את הרגע שלפני החישוב — הרגע שבו קוראים.'},
+  {t:'שלושת המוקשים החוזרים.', b:'ראשון: על מה חל הריבוע — על הכול או רק על חלק. שני: פעולה שאיננה מתחלקת בין מחוברים, כמו ריבוע או שורש. שלישי: מה בדיוק נשאלת — הביטוי כולו או רק חלק ממנו.'},
+  {t:'ויש כלי בדיקה שעובד תמיד.', b:'הצבת מספר. אם אתה מהסס בין שתי תשובות, הצב x=1 או x=2 בשני האגפים. אם התוצאות שונות, האפשרות פסולה. זו בדיקה ודאית שלוקחת חמש שניות, והיא חוקית לגמרי גם במבחן.'},
+  {t:'ולא כל מוקש הוא מלכודת.', b:'לפעמים דווקא התשובה המפתיעה נכונה — למשל (x−4)² שווה בדיוק ל‑(4−x)². מוקש איננו "התשובה ההפוכה תמיד". הוא סימן לעצור ולבדוק, לא לנחש הפוך.'}
+ ],
+ matters:{ t:'מה זה בונה', b:'זהירות מתמטית. תלמיד שעובר את השלב הזה מפסיק לענות במהירות ומתחיל לקרוא — וזו המיומנות שמפרידה בין ציון 80 לציון 100, הרבה יותר מאשר ידיעת נוסחה נוספת.' }
+};
+
+WHY.sa = {
+ hook:{ q:'נתון: x + y = 10, וגם x · y = 21. השאלה: כמה זה x² + y² ? שים לב — לא ביקשו למצוא את x ואת y.',
+        try:'x² + y²', a:58,
+        r:'‏58. הדרך: (x+y)² = x² + 2xy + y², כלומר 100 = x² + y² + 42, ולכן x² + y² = 58. שתי שורות, בלי לחלץ אף נעלם. זו החשיבה של רמת 5 יחידות.' },
+ beats:[
+  {t:'מה באמת שונה כאן.', b:'עד כה כל שאלה ביקשה לבצע פעולה. מכאן השאלות מבקשות להסיק: לאילו ערכים זה מתקיים, האם זה נכון תמיד, מי גדול יותר. הכלים זהים לחלוטין — רק השאלה השתנתה.'},
+  {t:'הרעיון המרכזי: זהויות.', b:'‏(a+b)² − 2ab = a² + b². זו איננה נוסחה חדשה לשנן — היא נובעת ישירות ממה שכבר יודעים. וברגע שרואים אותה, שאלות שנראו בלתי אפשריות נפתרות בשתי שורות.'},
+  {t:'שאלות פרמטר: הפוך את הכיוון.', b:'"לאילו ערכי k הביטוי x²+kx+25 הוא ריבוע שלם?" — כתוב איך ריבוע שלם נראה, (x+m)², פתח אותו, והשווה מקדמים. ‏m²=25 נותן m=±5, ולכן k=±10. שים לב שיש שני פתרונות, ולא אחד. זו הטעות הנפוצה בשאלות פרמטר.'},
+  {t:'שאלות הוכחה: מפרקים, ואז מסתכלים.', b:'להוכיח ש‑n²+n זוגי תמיד נראה קשה — עד שמפרקים ל‑n(n+1). עכשיו רואים מכפלת שני מספרים עוקבים, ואחד מהם בהכרח זוגי. הפירוק לא שינה את הביטוי, אבל הוא חשף את התכונה.'},
+  {t:'וזה בדיוק מה שמתמטיקאים עושים.', b:'לא פותרים — משנים צורה עד שהתשובה נראית לעין. ‏2024·2026 נראה כמו חישוב ארוך, עד שכותבים אותו כ‑(2025−1)(2025+1). אותו מספר בדיוק, וכעת התשובה מיידית: 2025²−1.'}
+ ],
+ matters:{ t:'לאן זה לוקח אותך', b:'הזהויות האלה חוזרות במשפט וייטה, בנוסחת השורשים, בסדרות, ובכל שאלת חקירה. מי ששולט בהן בכיתה ט׳ נכנס לחטיבה העליונה עם יתרון אמיתי — לא כי למד קדימה, אלא כי למד לעומק.' }
+};
+
+/* ---------- שילוב: מוקשים אחרי המיון, מתקדם בסוף ---------- */
+UNIT.stages.splice(UNIT.stages.findIndex(s=>s.id==='s9'), 0, SM);
+UNIT.stages.push(SA);
+</script>
+<script>
+/* =====================================================================
+   שכבת ביסוס: אני מדגים ← נעשה יחד ← אתה לבד.
+   נכנסת אחרי הגילוי והכלל, לפני התרגול העצמאי.
+   ===================================================================== */
+const GUIDE = {
+
+s0:{ worked:{ e:'14²', steps:[
+   ['פירוק','14 = 10 + 4'],['a²','10² = 100'],['2ab','2 · 10 · 4 = 80'],['b²','4² = 16'],['סכום','100 + 80 + 16 = 196']]},
+ together:{ e:'16²', steps:[
+   {q:'לאיזה פירוק נוח לשבור את 16?', o:['16 = 10 + 6','16 = 8 + 8','16 = 4 · 4'], f:'שוברים תמיד לעשרת עגולה ועוד שארית קטנה: 10 + 6.'},
+   {q:'כמה זה a² ?', o:['100','10','20'], f:'a = 10, ולכן a² = 100.'},
+   {q:'כמה זה 2ab ?', o:['120','60','16'], f:'2 · 10 · 6 = 120. אל תשכח את הכפל ב‑2.'},
+   {q:'כמה זה b² ?', o:['36','12','6'], f:'b = 6, ולכן b² = 36.'},
+   {q:'ועכשיו מחברים הכול:', o:['256','196','136'], f:'100 + 120 + 36 = 256.'}]}},
+
+s1:{ worked:{ e:'(x+2)(x+6)', steps:[
+   ['ראשון · ראשון','x · x = x²'],['ראשון · אחרון','x · 6 = 6x'],['אחרון · ראשון','2 · x = 2x'],
+   ['אחרון · אחרון','2 · 6 = 12'],['אוספים','x² + 8x + 12']]},
+ together:{ e:'(x+3)(x+4)', steps:[
+   {q:'כמה מכפלות אנחנו מצפים לקבל?', o:['ארבע','שתיים','שלוש'], f:'כל איבר בסוגריים הראשונים פוגש כל איבר בשניים — ארבע מכפלות.'},
+   {q:'כמה זה x · x ?', o:['x²','2x','x'], f:'כפל של אות בעצמה נותן ריבוע.'},
+   {q:'שני האיברים האמצעיים יחד:', o:['7x','12x','x'], f:'4x + 3x = 7x — זה הסכום של שני המספרים.'},
+   {q:'והמכפלה של שני המספרים:', o:['12','7','34'], f:'3 · 4 = 12.'},
+   {q:'התוצאה המלאה:', o:['x² + 7x + 12','x² + 12x + 7','x² + 12'], f:'האמצע הוא הסכום, הסוף הוא המכפלה.'}]}},
+
+s2:{ worked:{ e:'(x+4)²', steps:[
+   ['מזהים','a = x , b = 4'],['a²','x²'],['2ab','2 · x · 4 = 8x'],['b²','4² = 16'],['מרכיבים','x² + 8x + 16']]},
+ together:{ e:'(x+7)²', steps:[
+   {q:'מי a ומי b ?', o:['a = x , b = 7','a = x , b = 49','a = x² , b = 7'], f:'b הוא המספר שבתוך הסוגריים — 7. ה‑49 יופיע רק בסוף.'},
+   {q:'כמה זה a² ?', o:['x²','2x','x'], f:'a = x, ולכן a² = x · x = x².'},
+   {q:'כמה זה 2ab ?', o:['14x','7x','49x'], f:'2 · x · 7 = 14x. יש שני מלבנים, ולכן כפול 2.'},
+   {q:'כמה זה b² ?', o:['49','14','7'], f:'7² = 49.'},
+   {q:'מרכיבים את שלושת החלקים:', o:['x² + 14x + 49','x² + 49','x² + 7x + 49'], f:'a² ועוד 2ab ועוד b².'}]}},
+
+s3:{ worked:{ e:'(x−3)²', steps:[
+   ['מזהים','a = x , b = 3'],['a²','x²'],['−2ab','−2 · x · 3 = −6x'],['+b²','+3² = +9'],['מרכיבים','x² − 6x + 9']]},
+ together:{ e:'(x−5)²', steps:[
+   {q:'מי b ?', o:['b = 5','b = −5','b = 25'], f:'b הוא 5. המינוס כבר מטופל בתוך הנוסחה עצמה.'},
+   {q:'כמה זה a² ?', o:['x²','2x','x'], f:'a = x.'},
+   {q:'האיבר האמצעי:', o:['−10x','+10x','−5x'], f:'−2 · x · 5 = −10x. בחיסור האמצע שלילי.'},
+   {q:'האיבר האחרון:', o:['+25','−25','+10'], f:'(−5)² = +25. הוא תמיד חיובי — מינוס כפול מינוס.'},
+   {q:'מרכיבים:', o:['x² − 10x + 25','x² − 10x − 25','x² + 10x + 25'], f:'רק האמצע שלילי.'}]}},
+
+s4:{ worked:{ e:'(x+6)(x−6)', steps:[
+   ['מזהים','a = x , b = 6'],['האמצע','−6x + 6x = 0'],['a²','x²'],['−b²','−36'],['התוצאה','x² − 36']]},
+ together:{ e:'(x+9)(x−9)', steps:[
+   {q:'מי a ומי b ?', o:['a = x , b = 9','a = 9 , b = x','a = x , b = 81'], f:'a הוא האיבר שמופיע באותו סימן בשני הסוגריים.'},
+   {q:'מה קורה לשני האיברים האמצעיים?', o:['מצטמצמים לאפס','מתחברים ל‑18x','נותנים −18x'], f:'−9x + 9x = 0. זה כל הקסם של הנוסחה הזאת.'},
+   {q:'ולכן התוצאה:', o:['x² − 81','x² + 81','x² − 18x − 81'], f:'a² − b², בלי איבר אמצעי כלל.'}]}},
+
+s5:{ worked:{ e:'104²', steps:[
+   ['פירוק','104 = 100 + 4'],['a²','100² = 10000'],['2ab','2 · 100 · 4 = 800'],['b²','4² = 16'],['סכום','10000 + 800 + 16 = 10816']]},
+ together:{ e:'96²', steps:[
+   {q:'איזה פירוק נוח כאן?', o:['96 = 100 − 4','96 = 90 + 6','96 = 8 · 12'], f:'תמיד לכיוון המספר העגול הקרוב, גם אם צריך לחסר.'},
+   {q:'כמה זה a² ?', o:['10000','9000','100'], f:'100² = 10000.'},
+   {q:'האיבר האמצעי:', o:['−800','+800','−400'], f:'−2 · 100 · 4 = −800. בחיסור הוא שלילי.'},
+   {q:'האיבר האחרון:', o:['+16','−16','+8'], f:'(−4)² = +16.'},
+   {q:'הסכום הסופי:', o:['9216','9184','10816'], f:'10000 − 800 + 16 = 9216.'}]}},
+
+s6:{ worked:{ e:'18x + 24', steps:[
+   ['משותף למספרים','6'],['משותף לאותיות','אין — ל‑24 אין x'],['18x : 6','3x'],['24 : 6','4'],['התוצאה','6(3x + 4)']]},
+ together:{ e:'20x³ − 15x²', steps:[
+   {q:'הגורם המשותף למספרים:', o:['5','4','20'], f:'המספר הגדול ביותר שמחלק גם את 20 וגם את 15.'},
+   {q:'הגורם המשותף לאותיות:', o:['x²','x³','x'], f:'לוקחים תמיד את החזקה הנמוכה ביותר.'},
+   {q:'כמה זה 20x³ : 5x² ?', o:['4x','4x²','15x'], f:'20:5 = 4, ו‑x³:x² = x.'},
+   {q:'כמה זה −15x² : 5x² ?', o:['−3','−3x','+3'], f:'האותיות מצטמצמות לגמרי ונשאר מספר.'},
+   {q:'הפירוק המלא:', o:['5x²(4x − 3)','5x(4x² − 3x)','5x²(4x + 3)'], f:'פתח בחזרה ובדוק שחזרת לתרגיל המקורי.'}]}},
+
+s7:{ worked:{ e:'x² − 25', steps:[
+   ['כמה איברים','שניים'],['בדיקה','x² = (x)² , 25 = 5²'],['הסימן','מינוס ← הפרש ריבועים'],['הנוסחה','a² − b² = (a+b)(a−b)'],['התוצאה','(x + 5)(x − 5)']]},
+ together:{ e:'49x² − 4', steps:[
+   {q:'כמה איברים יש כאן?', o:['שניים','שלושה','אחד'], f:'שני איברים ← המסלול הוא נוסחה או כלום.'},
+   {q:'מה השורש של 49x² ?', o:['7x','49x','7x²'], f:'(7x)² = 49x². הריבוע חל גם על המספר וגם על האות.'},
+   {q:'מה השורש של 4 ?', o:['2','4','16'], f:'2² = 4.'},
+   {q:'הפירוק:', o:['(7x + 2)(7x − 2)','(7x − 2)(7x − 2)','(49x + 2)(49x − 2)'], f:'סוגר אחד עם פלוס ואחד עם מינוס.'}]}},
+
+s8:{ worked:{ e:'x² + 9x + 20', steps:[
+   ['מה מחפשים','מכפלה 20 , סכום 9'],['אפשרויות למכפלה','1·20 , 2·10 , 4·5'],['בודקים סכום','4 + 5 = 9 ✓'],['התוצאה','(x + 4)(x + 5)']]},
+ together:{ e:'x² − 9x + 14', steps:[
+   {q:'מה המכפלה ומה הסכום שאנחנו מחפשים?', o:['מכפלה 14 , סכום −9','מכפלה −14 , סכום 9','מכפלה 9 , סכום 14'], f:'האיבר האחרון הוא המכפלה, ומקדם האמצע הוא הסכום.'},
+   {q:'איזה סימן יהיה לשני המספרים?', o:['שניהם שליליים','שניהם חיוביים','אחד מכל סוג'], f:'המכפלה חיובית ← אותו סימן. הסכום שלילי ← שניהם שליליים.'},
+   {q:'איזה זוג מתאים?', o:['−2 ו‑−7','−1 ו‑−14','2 ו‑7'], f:'(−2)·(−7) = 14 ✓ וגם (−2)+(−7) = −9 ✓'},
+   {q:'הפירוק:', o:['(x − 2)(x − 7)','(x + 2)(x + 7)','(x − 1)(x − 14)'], f:'שני התנאים מתקיימים יחד.'}]}},
+
+sc:{ worked:{ e:'x² + 20x + 100', steps:[
+   ['גורם משותף?','אין'],['כמה איברים','שלושה'],['השורשים','x ו‑10'],['בדיקת האמצע','2 · x · 10 = 20x ✓'],['המסקנה','ריבוע שלם ← (x + 10)²']]},
+ together:{ e:'x² + 25x + 100', steps:[
+   {q:'יש גורם משותף?', o:['לא','כן, x','כן, 10'], f:'ל‑x² אין מקדם משותף עם 100 מלבד 1.'},
+   {q:'כמה איברים?', o:['שלושה','שניים','ארבעה'], f:'שלושה איברים ← ריבוע שלם או טרינום רגיל.'},
+   {q:'בדיקת האמצע: כמה זה 2 · x · 10 ?', o:['20x — ואינו שווה ל‑25x','25x — מתאים','10x'], f:'הבדיקה נכשלה, ולכן זה איננו ריבוע שלם.'},
+   {q:'המסקנה:', o:['טרינום רגיל','ריבוע שלם','הפרש ריבועים'], f:'שלושה איברים שאינם ריבוע שלם ← טרינום רגיל: (x+5)(x+20).'}]}}
+
+};
+</script>
+<script>
+/* =====================================================================
+   טריקים — קצר, ויזואלי, בשניות. לכל טריק יש גם "למה זה עובד",
+   כי טריק בלי הסבר הוא קסם, וטריק עם הסבר הוא מתמטיקה.
+   ===================================================================== */
+const TRICKS = [
+
+{id:'t5', tag:'חישוב', t:'כל מספר שמסתיים ב‑5', hook:'‏35² בשתי שניות, בעל פה',
+ demo:{k:'steps', e:'35²', steps:[
+   ['3','קח את הספרה הראשונה'],
+   ['3 · 4 = 12','הכפל אותה במספר הבא אחריה'],
+   ['12 | 25','הצמד 25 בסוף'],
+   ['1225','זהו. זו התשובה.']]},
+ why:['כל מספר כזה הוא 10a + 5','(10a+5)² = 100a² + 100a + 25','= 100 · a(a+1) + 25','ולכן: a(a+1) בהתחלה, ו‑25 בסוף — תמיד'],
+ tries:[{q:'65²', a:4225, h:'6 · 7 = 42, ואז 25'},{q:'85²', a:7225, h:'8 · 9 = 72, ואז 25'}]},
+
+{id:'t100', tag:'חישוב', t:'כל מספר ליד 100', hook:'‏97² בלי מחשבון',
+ demo:{k:'steps', e:'97²', steps:[
+   ['97 = 100 − 3','שובר לכיוון המספר העגול'],
+   ['100² = 10000','a²'],
+   ['−2 · 100 · 3 = −600','האמצע'],
+   ['+3² = +9','והפינה'],
+   ['9409','10000 − 600 + 9']]},
+ why:['זו בדיוק נוסחת (a−b)²','a = 100 הוא מספר שקל להעלות בריבוע','b קטן, ולכן b² זעיר','ככל שהשארית קטנה — החישוב מהיר יותר'],
+ tries:[{q:'103²', a:10609, h:'10000 + 600 + 9'},{q:'96²', a:9216, h:'10000 − 800 + 16'}]},
+
+{id:'t50', tag:'חישוב', t:'כל מספר ליד 50', hook:'‏47² בשלוש שניות',
+ demo:{k:'steps', e:'47²', steps:[
+   ['47 = 50 − 3','המרחק מ‑50 הוא 3'],
+   ['25 − 3 = 22','קח 25 והורד את המרחק'],
+   ['3² = 09','ריבוע המרחק, בשתי ספרות'],
+   ['2209','מצמידים: 22 ואז 09']]},
+ why:['(50 − b)² = 2500 − 100b + b²','= 100 · (25 − b) + b²','לכן 25−b הוא "מאות", ו‑b² הוא שתי הספרות האחרונות','ואם המספר גדול מ‑50 — פשוט מוסיפים במקום להוריד'],
+ tries:[{q:'53²', a:2809, h:'25 + 3 = 28, ואז 09'},{q:'46²', a:2116, h:'25 − 4 = 21, ואז 16'}]},
+
+{id:'tmul', tag:'חישוב', t:'שני מספרים סביב מספר עגול', hook:'‏104 · 96 בראש',
+ demo:{k:'steps', e:'104 · 96', steps:[
+   ['שניהם במרחק 4 מ‑100','זה הסימן לזהות הפרש ריבועים'],
+   ['(100+4)(100−4)','כותבים מחדש'],
+   ['100² − 4²','הנוסחה'],
+   ['10000 − 16','מחשבים'],
+   ['9984','זהו']]},
+ why:['(a+b)(a−b) = a² − b²','האיברים האמצעיים מבטלים זה את זה','ולכן נשאר רק ריבוע פחות ריבוע','עובד סביב כל מספר עגול: 50, 100, 200'],
+ tries:[{q:'62 · 58', a:3596, h:'3600 − 4'},{q:'107 · 93', a:9951, h:'10000 − 49'}]},
+
+{id:'tseq', tag:'חישוב', t:'הפרש ריבועים של שני עוקבים', hook:'‏99² − 98² = הסכום שלהם',
+ demo:{k:'steps', e:'99² − 98²', steps:[
+   ['(99+98)(99−98)','הפרש ריבועים'],
+   ['ההפרש הוא 1','כי הם עוקבים'],
+   ['ולכן נשאר רק הסכום','197'],
+   ['197','בלי לחשב אף ריבוע']]},
+ why:['(n+1)² − n² = 2n + 1','וגם n + (n+1) = 2n + 1','שני האגפים זהים','ולכן ההפרש בין ריבועי עוקבים הוא תמיד הסכום שלהם'],
+ tries:[{q:'76² − 75²', a:151, h:'76 + 75'},{q:'41² − 40²', a:81, h:'41 + 40'}]},
+
+{id:'tx', tag:'פירוק', t:'שיטת ה‑X', hook:'פירוק טרינום בלי לנחש',
+ demo:{k:'x', e:'x² + 7x + 12', c:12, b:7, m:3, n:4, res:'(x + 3)(x + 4)'},
+ why:['(x + m)(x + n) = x² + (m+n)x + m·n','למעלה ב‑X: המכפלה — האיבר האחרון','למטה ב‑X: הסכום — מקדם האמצע','בצדדים: שני המספרים שמקיימים את שניהם','מתחילים תמיד מהמכפלה, כי היא מצמצמת אפשרויות'],
+ tries:[{q:'x² + 9x + 18  ←  איזה זוג?', a:null, mc:['3 ו‑6','2 ו‑9','1 ו‑18'], h:'מכפלה 18, סכום 9'},
+        {q:'x² − 10x + 21  ←  איזה זוג?', a:null, mc:['−3 ו‑−7','3 ו‑7','−1 ו‑−21'], h:'מכפלה 21 חיובית, סכום שלילי ← שניהם שליליים'}]},
+
+{id:'tbox', tag:'פירוק · כפל', t:'שיטת הקופסה', hook:'טבלה אחת שעושה גם כפל וגם פירוק',
+ demo:{k:'box', e:'(x + 2)(x + 5)', top:['x','2'], side:['x','5'],
+   cells:[['x²','2x'],['5x','10']], mid:'2x + 5x = 7x', res:'x² + 7x + 10',
+   caps:['בונים טבלה: מה שבסוגריים הראשונים למעלה',
+         'ומה שבסוגריים השניים בצד',
+         'ממלאים כל תא: שורה כפול עמודה',
+         'ועוד תא, ועוד תא — ארבעה בסך הכול',
+         'שני התאים באלכסון הם האיברים הדומים',
+         'מחברים אותם, ומקבלים את התוצאה']},
+ why:['כל תא בטבלה הוא מלבן אחד מתוך הארבעה','זו בדיוק אותה תמונת שטח שראית בשלב 2','הטבלה רק מסדרת את ארבע המכפלות כך שאי אפשר לשכוח אחת','ולכן היא בטוחה יותר מלפתוח בראש'],
+ tries:[{q:'‏(x+3)(x+4) — מה יופיע בתא של מכפלת שני המספרים?', a:12, h:'התא הזה הוא תמיד המכפלה: 3 · 4'},
+        {q:'‏(x+3)(x+4) — מה מקדם האמצע?', a:7, h:'האלכסון: 3x + 4x'}]},
+
+{id:'tboxb', tag:'פירוק · 5 יחידות', t:'הקופסה בכיוון ההפוך', hook:'ממלאים טבלה — ומקבלים את הסוגריים',
+ demo:{k:'box', e:'x² + 7x + 10', top:['x','2'], side:['x','5'],
+   cells:[['x²','2x'],['5x','10']], mid:'7x = 2x + 5x', res:'(x + 2)(x + 5)',
+   back:1,
+   caps:['מתחילים מהסוף: שמים x² בתא אחד ו‑10 בתא הנגדי',
+         'מפצלים את האמצע לשני מספרים שמכפלתם 10 וסכומם 7',
+         'ממלאים אותם בשני התאים שנשארו',
+         'עכשיו שואלים: מה מחלק את השורה הזאת?',
+         'וכך משלימים את הקצוות',
+         'הקצוות הם הסוגריים — סיימנו']},
+ why:['הטבלה עובדת בשני הכיוונים כי היא רק מסדרת שטחים','בכיוון הפירוק הקצוות הם הנעלמים','וכל קצה נמצא על ידי חלוקה: תא חלקי הקצה שכבר ידוע','זו גם השיטה שעובדת כשיש מקדם לפני x², למשל 2x²+7x+3'],
+ tries:[{q:'‏x² + 8x + 15 — לאילו שניים מפצלים את 8x ?', a:null, mc:['3x ו‑5x','2x ו‑6x','1x ו‑7x'], h:'מכפלה 15, סכום 8'},
+        {q:'‏x² + 8x + 15 — מה הפירוק?', a:null, mc:['(x+3)(x+5)','(x+1)(x+15)','(x+2)(x+6)'], h:'הקצוות של הטבלה הם 3 ו‑5'}]},
+
+{id:'tac', tag:'פירוק · 5 יחידות', t:'שיטת ה‑X המורחבת', hook:'כשיש מקדם לפני x² — שיטת a·c',
+ demo:{k:'steps', e:'2x² + 7x + 3', steps:[
+   ['a · c = 2 · 3 = 6','מכפילים את הקצוות'],
+   ['מכפלה 6 , סכום 7  ←  6 ו‑1','אותה שיטת X בדיוק'],
+   ['2x² + 6x + x + 3','מפצלים את האמצע לשניים'],
+   ['2x(x + 3) + 1(x + 3)','גורם משותף מכל זוג'],
+   ['(x + 3)(2x + 1)','והסוגר החוזר הוא הפירוק']]},
+ why:['השיטה עובדת כי אחרי הפיצול תמיד נוצר גורם משותף זהה','זו איננה תחבולה — זו הוצאת גורם משותף בשני שלבים','וזו השיטה שמלמדים בחטיבה העליונה לטרינום עם מקדם','היא עובדת תמיד, גם כשהמספרים מכוערים'],
+ tries:[{q:'3x² + 10x + 3  ←  מה a·c ?', a:9, h:'3 · 3'},{q:'5x² + 11x + 2  ←  מה a·c ?', a:10, h:'5 · 2'}]},
+
+{id:'tsum', tag:'5 יחידות', t:'סכום ומכפלה בלי נעלמים', hook:'נתון x+y ו‑xy — ומוצאים x²+y²',
+ demo:{k:'steps', e:'x + y = 10 ,  xy = 21', steps:[
+   ['(x + y)² = x² + 2xy + y²','פותחים את מה שנתון'],
+   ['100 = x² + y² + 2 · 21','מציבים'],
+   ['100 = x² + y² + 42','מחשבים'],
+   ['x² + y² = 58','ומעבירים אגף']]},
+ why:['לא חיפשנו את x ואת y בכלל','הנוסחה מקשרת בין הסכום, המכפלה וסכום הריבועים','זו החשיבה של שאלות 5 יחידות: להסיק מהמבנה','אותו רעיון עובד גם עם (x−y)² כשנתון ההפרש'],
+ tries:[{q:'a+b = 7 , ab = 10  ←  a²+b² ?', a:29, h:'49 − 20'},{q:'a−b = 4 , ab = 5  ←  a²+b² ?', a:26, h:'16 + 10'}]},
+
+{id:'t11', tag:'חישוב', t:'כפל ב‑11', hook:'‏34 · 11 בשנייה אחת',
+ demo:{k:'steps', e:'34 · 11', steps:[
+   ['3 _ 4','מפרידים בין הספרות'],
+   ['3 + 4 = 7','מחברים אותן'],
+   ['שמים באמצע','3 · 7 · 4'],
+   ['374','זהו']]},
+ why:['34 · 11 = 34 · 10 + 34 · 1','= 340 + 34','החיבור של הספרות הוא בדיוק מה שקורה באמצע','ואם הסכום גדול מ‑9 — מעבירים ספרה שמאלה'],
+ tries:[{q:'52 · 11', a:572, h:'5 + 2 = 7 באמצע'},{q:'63 · 11', a:693, h:'6 + 3 = 9 באמצע'}]}
+
+];
+</script>
+<script>
+/* =====================================================================
+   המנוע. אינו יודע דבר על התוכן — הוא מריץ כל יחידה שנבנתה במבנה של UNIT.
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const KEY = 'km_v1';
+let S = null;            // רשומת התלמיד הפעילה
+let view = 'home';
+let cur = {stage:0, item:0, tries:0, streak:0, beat:0};
+
+/* ---------- אחסון ---------- */
+function loadAll(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
+function saveAll(o){ try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){} }
+function saveS(){ if(!S) return; const all = loadAll(); S.last = Date.now();
+  S.days = S.days||[]; const t = today(); if(S.days[S.days.length-1] !== t) S.days.push(t);
+  all[S.name] = S; saveAll(all); }
+function newRec(name){ return {name, started:Date.now(), last:Date.now(), sec:0, res:{}, mis:{},
+  quiz:{tries:0, best:0, first:null, mis:{}}, xp:0, days:[], help:{}}; }
+function today(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function streakOf(r){
+  const days = (r.days||[]).slice(); if(!days.length) return 0;
+  const set = new Set(days); let n=0; const d = new Date();
+  for(let i=0;i<400;i++){ const k = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    if(set.has(k)) n++; else if(i>0) break; else { d.setDate(d.getDate()-1); continue; }
+    d.setDate(d.getDate()-1); }
+  return n;
+}
+function starsOf(r, st){
+  const rr = (r.res||{})[st.id]||{}; let d=0,f=0;
+  st.items.forEach((_,i)=>{ if(rr[i]&&rr[i].ok){d++; if(rr[i].first)f++;} });
+  if(d<st.items.length) return 0;
+  const p = f/st.items.length;
+  return p>=0.8? 3 : p>=0.5? 2 : 1;
+}
+const STAR = (on)=> `<svg viewBox="0 0 24 24"><path class="${on?'f':'e'}" d="M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.45L12 17.45 6.2 20.5l1.1-6.45L2.6 9.45l6.5-.95z"/></svg>`;
+const STARS = n => `<span class="stars">${[1,2,3].map(i=>STAR(i<=n)).join('')}</span>`;
+function buzz(ok){ try{ if(navigator.vibrate) navigator.vibrate(ok? 14 : [22,50,22]); }catch(e){} }
+function QZ(r){ r.quiz = r.quiz || {tries:0, best:0, first:null, mis:{}}; return r.quiz; }
+
+/* res[stageId][itemIdx] = {ok:bool, first:bool, tries:n} */
+function rec(sid, idx){ S.res[sid] = S.res[sid]||{}; S.res[sid][idx] = S.res[sid][idx]||{ok:false, first:false, tries:0}; return S.res[sid][idx]; }
+function stageStat(st){
+  const r = S && S.res[st.id] || {}; let done=0, first=0;
+  st.items.forEach((_,i)=>{ if(r[i]&&r[i].ok){done++; if(r[i].first) first++;} });
+  return {done, first, total:st.items.length, pct: Math.round(done/st.items.length*100)};
+}
+function unitPct(){
+  if(!S) return 0;
+  let d=0,t=0; UNIT.stages.forEach(st=>{ const s=stageStat(st); d+=s.done; t+=s.total; });
+  return t? Math.round(d/t*100):0;
+}
+function topMis(r){
+  return Object.entries(r.mis||{}).sort((a,b)=>b[1]-a[1]).filter(x=>x[1]>0);
+}
+
+/* ---------- עזרי תצוגה ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const X  = s => '<span class="x">'+s+'</span>';
+const XB = s => '<span class="x xb">'+s+'</span>';
+
+/* MT — עוטף אוטומטית כל קטע מתמטי בתוך משפט עברי, כדי שלא יתהפך.
+   בלי זה "(a+b)²" מוצג הפוך בעברית. חובה על כל טקסט חופשי שיש בו מתמטיקה. */
+function MT(s){
+  return String(s).replace(/[A-Za-z0-9()²³·+\-−=:^\/ ]+/g, m=>{
+    const lead = m.match(/^[ :]*/)[0], tail = m.match(/[ :]*$/)[0];
+    const core = m.slice(lead.length, m.length - tail.length);
+    if(!/[A-Za-z0-9]/.test(core)) return m;
+    if(core.length===1 && /[0-9]/.test(core)) return m;
+    return lead + '<span class="x">' + core + '</span>' + tail;
+  });
+}
+
+const TITLES = {home:'כפל מקוצר', map:'מפת היחידה', tricks:'טריקים', trick:'טריק', quiz:'מבדק היחידה', quizdone:'תוצאות המבדק',
+  report:'הדוח שלי', teacher:'מסך מורה', done:'סיום שלב'};
+function setBar(){
+  const p = unitPct();
+  $('#pbar').style.width = p+'%'; $('#ppct').textContent = p+'%';
+  const st = UNIT.stages[cur.stage];
+  $('#ttl').textContent = (view==='stage'||view==='practice')? (st? st.t : 'שלב') : (TITLES[view]||UNIT.title);
+  const bk = $('#back');
+  bk.style.display = (S && view!=='map' && view!=='home')? 'grid':'none';
+  bk.onclick = ()=>{ if(view==='quiz'||view==='quizdone'){ QUIZ=null; } go(view==='trick'? 'tricks' : (S? 'map':'home')); };
+  const show = !!S;
+  $('#av').style.display = show? 'grid':'none';
+  $('#xp').style.display = show? 'block':'none';
+  if(show){
+    $('#av').textContent = S.name.trim().charAt(0);
+    $('#xpn').textContent = S.xp||0;
+    const sk = streakOf(S);
+    const el = $('#streak');
+    el.style.display = sk>1? 'flex':'none';
+    if(sk>1) el.innerHTML = '<svg viewBox="0 0 24 24"><path d="M13 2s1 3.5-1.5 6.5S8 13 8 15a4 4 0 008 0c0-1.5-1-3-1-3s3 1.2 3 4.5A6.5 6.5 0 1112 3z"/></svg>'+sk;
+  }
+}
+
+/* =====================================================================
+   מסך פתיחה
+   ===================================================================== */
+function vHome(){
+  const all = loadAll(); const names = Object.keys(all);
+  app.innerHTML = `
+  <section class="hero fade">
+    <div class="hero-grid">
+      <div class="hero-txt">
+        <div class="eyebrow">${UNIT.grade} · יחידת לימוד</div>
+        <h1>${UNIT.title}</h1>
+        <p>לא עוד דף תרגילים. כאן רואים <b style="color:#F0B44E">למה</b> הנוסחאות נכונות — ואז הן כבר לא צריכות שינון.</p>
+      </div>
+      <div class="hero-art">
+        <svg viewBox="0 0 120 120">
+          <rect class="ha-f" x="10" y="10" width="60" height="60" fill="#1D5F63" style="animation-delay:1.35s"/>
+          <rect class="ha-f" x="70" y="10" width="40" height="60" fill="#7A5A1C" style="animation-delay:1.5s"/>
+          <rect class="ha-f" x="10" y="70" width="60" height="40" fill="#7A5A1C" style="animation-delay:1.65s"/>
+          <rect class="ha-f" x="70" y="70" width="40" height="40" fill="#63324F" style="animation-delay:1.8s"/>
+          <path class="ha-in" d="M70 10 V110 M10 70 H110"/>
+          <rect class="ha-line" x="10" y="10" width="100" height="100"/>
+          <text class="ha-f" x="40" y="43" fill="#EAF4F6" font-size="13" font-family="monospace" text-anchor="middle" style="animation-delay:1.95s">a²</text>
+          <text class="ha-f" x="90" y="92" fill="#EAF4F6" font-size="11" font-family="monospace" text-anchor="middle" style="animation-delay:1.95s">b²</text>
+        </svg>
+      </div>
+    </div>
+    <div class="hook">
+      <div class="q">102² = ?</div>
+      <div class="s">בראש, בלי מחשבון, תוך שלוש שניות. בסוף היחידה תדע.</div>
+      <button id="peek">איך?</button>
+    </div>
+  </section>
+
+  <div class="card fade">
+    <label style="font-weight:600;display:block;margin-bottom:10px">איך קוראים לך?</label>
+    <div class="row">
+      <input id="nm" class="numin" style="width:210px;direction:rtl;font-family:inherit;font-size:17px;text-align:right" placeholder="שם התלמיד/ה" autocomplete="off">
+      <button class="btn" id="go">מתחילים</button>
+    </div>
+    ${names.length? `<div class="sep"></div><div class="eyebrow">ממשיכים מאיפה שעצרנו</div>
+      <div class="row">${names.map(n=>`<button class="btn ghost pick" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>`:''}
+  </div>
+
+  <div class="card fade">
+    <div class="eyebrow">${UNIT.stages.length} שלבים</div>
+    <div class="maplist">
+      ${UNIT.stages.map((st,i)=>`<div class="stagerow" style="pointer-events:none"><div class="num">${i+1}</div>
+        <div class="t"><b>${st.t}</b><small>${X(st.s)}</small></div></div>`).join('')}
+    </div>
+    <div class="sep"></div>
+    <div class="row" style="justify-content:center"><button class="btn ghost" id="tch">כניסת מורה</button></div>
+  </div>`;
+  const start = n => { n=(n||'').trim(); if(!n) return; const all=loadAll(); S = all[n]||newRec(n); saveS(); setBar(); go('map'); };
+  $('#go').onclick = ()=> start($('#nm').value);
+  $('#nm').onkeydown = e => { if(e.key==='Enter') start($('#nm').value); };
+  $('#tch').onclick = ()=> go('teacher');
+  $('#peek').onclick = e => { e.target.outerHTML =
+    '<div class="s" style="flex:1 1 100%;color:#F0B44E">' + MT('102² = (100+2)² = 10000 + 400 + 4 = 10404') + '</div>'; };
+  document.querySelectorAll('.pick').forEach(b=> b.onclick = ()=> start(b.dataset.n));
+}
+
+/* =====================================================================
+   מפת היחידה
+   ===================================================================== */
+function ring(pct){
+  const r=25, c=2*Math.PI*r;
+  return `<div class="ring"><svg width="56" height="56" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="${r}" fill="none" stroke="var(--line)" stroke-width="5"/>
+    <circle cx="28" cy="28" r="${r}" fill="none" stroke="var(--teal)" stroke-width="5" stroke-linecap="round"
+      stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct/100)}"/></svg><b>${pct}%</b></div>`;
+}
+function vMap(){
+  const totStars = UNIT.stages.reduce((a,st)=>a+starsOf(S,st),0);
+  const firstOpen = UNIT.stages.findIndex(st=> stageStat(st).done < st.items.length);
+  app.innerHTML = `
+  <div class="card fade">
+    <div class="dash">
+      <div class="big">${esc(S.name.trim().charAt(0))}</div>
+      <div class="who"><b>${esc(S.name)}</b><small>${UNIT.title}</small></div>
+      ${ring(unitPct())}
+    </div>
+    <div class="pills">
+      <div class="pill"><b>${S.xp||0}</b><small>נקודות</small></div>
+      <div class="pill"><b style="color:var(--amber)">${totStars}<span style="font-size:13px;color:var(--ink-3)">/${UNIT.stages.length*3}</span></b><small>כוכבים</small></div>
+      <div class="pill"><b>${streakOf(S)}</b><small>ימים ברצף</small></div>
+    </div>
+  </div>
+
+  <div class="card fade" style="padding:16px 10px">
+    <div class="path">
+    ${UNIT.stages.map((st,i)=>{
+       const sstat = stageStat(st), nst = starsOf(S, st);
+       const cls = nst? 'done' : (sstat.done>0? 'part' : (i===firstOpen? 'now':'future'));
+       const off = Math.round(Math.sin(i*0.9)*44);
+       return `<button class="node ${cls}" data-i="${i}" style="transform:translateX(${off}px)">
+         ${i===firstOpen && !nst? '<span class="flag">כאן עצרת</span>':''}
+         <span class="circ">${nst? '✓' : i+1}</span>
+         <span class="lbl">${st.t}</span>
+         ${nst? STARS(nst) : `<span class="chip" style="font-size:11px">${sstat.done? sstat.done+'/'+sstat.total : st.items.length+' שאלות'}</span>`}
+       </button>`;
+    }).join('')}
+    </div>
+  </div>
+
+  <div class="card fade" style="border:2px solid var(--amber)">
+    <div class="eyebrow" style="color:var(--amber)">מבדק היחידה</div>
+    <h2 style="font-size:22px">עשר שאלות. הציון על 100.</h2>
+    <p class="lead" style="font-size:15px">אם לא קיבלת 100 — תראה בדיוק על מה נפלת, תתקן, ותיגש שוב עם שאלות חדשות.</p>
+    ${QZ(S).tries? `<div class="pills"><div class="pill"><b style="color:var(--amber)">${QZ(S).best}</b><small>השיא שלך</small></div>
+      <div class="pill"><b>${QZ(S).first}</b><small>ציון ראשון</small></div>
+      <div class="pill"><b>${QZ(S).tries}</b><small>ניגשת</small></div></div>`:''}
+    <div class="row" style="margin-top:14px"><button class="btn amber wide" id="qz">${QZ(S).tries? 'מבדק חוזר — שאלות חדשות':'התחל מבדק'}</button></div>
+  </div>
+  ${installHTML()}
+  <div class="card fade" style="text-align:center">
+    <button class="btn ghost wide" id="rep">הפקת דוח למורה</button>
+  </div>`;
+  document.querySelectorAll('.node').forEach(b=> b.onclick = ()=>{ cur={stage:+b.dataset.i,item:0,tries:0,streak:0,beat:0}; go('stage'); });
+  $('#rep').onclick = ()=> go('report');
+  $('#qz').onclick = ()=> startQuiz();
+  const ni = $('#noinst'); if(ni) ni.onclick = ()=>{ try{ localStorage.setItem('km_inst','1'); }catch(e){} vMap(); };
+}
+
+function installHTML(){
+  let hide=false; try{ hide = localStorage.getItem('km_inst')==='1'; }catch(e){}
+  if(hide) return '';
+  const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  return `<div class="card fade"><div class="install">
+    <div style="flex:none;font-size:22px;line-height:1">▣</div>
+    <div style="flex:1">
+      <b>שים את האפליקציה על מסך הבית</b>
+      <p class="lead" style="font-size:14.5px;margin-top:2px">כך היא תיפתח כמו כל אפליקציה אחרת, במסך מלא ובלי לחפש קישורים.</p>
+      <ol>${ios
+        ? '<li>לחץ על כפתור השיתוף בתחתית הדפדפן</li><li>גלול ובחר "הוספה למסך הבית"</li><li>לחץ "הוסף"</li>'
+        : '<li>לחץ על שלוש הנקודות בפינת הדפדפן</li><li>בחר "הוספה למסך הבית"</li><li>לחץ "הוסף"</li>'}</ol>
+      <div class="row" style="margin-top:10px"><button class="btn ghost" id="noinst" style="padding:7px 14px;font-size:14px">לא עכשיו</button></div>
+    </div></div></div>`;
+}
+
+/* =====================================================================
+   מודלים חזותיים (SVG)
+   ===================================================================== */
+const C = {t:['var(--teal-soft)','var(--teal-line)','var(--teal)'],
+           a:['var(--amber-soft)','var(--amber-line)','var(--amber)'],
+           p:['var(--plum-soft)','var(--plum-line)','var(--plum)'],
+           n:['var(--card)','var(--ink-3)','var(--ink-2)']};
+function tile(x,y,w,h,c,label,k){
+  const f = C[c];
+  const fs = Math.max(11, Math.min(19, Math.min(w,h)*0.42));
+  return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f[0]}" stroke="${f[1]}" stroke-width="1.5" rx="2"/>`
+       + (Math.min(w,h)>22? `<text class="tile-t" x="${x+w/2}" y="${y+h/2}" font-size="${fs}" fill="${f[2]}">${label}</text>`:'')+`</g>`;
+}
+function svgBox(inner, W, H){
+  return `<svg viewBox="0 0 ${W+2} ${H+2}" width="${Math.min(W+2,330)}" style="max-width:100%;height:auto" role="img"><g transform="translate(1,1)">${inner}</g></svg>`;
+}
+
+function drawExplore(type, v){
+  const U = 300;
+  if(type==='rect4'){
+    const {a,b,c,d} = v, W=a+b, H=c+d, k=U/Math.max(W,H);
+    const A=a*k,B=b*k,Cc=c*k,D=d*k;
+    return {svg: svgBox(
+      tile(0,0,A,Cc,'t','ac')+tile(A,0,B,Cc,'a','bc')+tile(0,Cc,A,D,'p','ad')+tile(A,Cc,B,D,'n','bd'), A+B, Cc+D),
+      alg:`<span class="trm t1">ac</span> + <span class="trm t2">bc</span> + <span class="trm t3">ad</span> + <span class="trm">bd</span>`,
+      cap:`מלבן שאורכו <span class="x">a+b = ${a+b}</span> ורוחבו <span class="x">c+d = ${c+d}</span>. השטח הכולל הוא <span class="x">${(a+b)*(c+d)}</span> — בדיוק סכום ארבעת החלקים.`};
+  }
+  if(type==='square'){
+    const {a,b} = v, k=U/(a+b), A=a*k, B=b*k;
+    return {svg: svgBox(
+      tile(0,0,A,A,'t','a²')+tile(A,0,B,A,'a','ab')+tile(0,A,A,B,'a','ab')+tile(A,A,B,B,'p','b²'), A+B, A+B),
+      alg:`<span class="trm t1">a²</span> + <span class="trm t2">ab</span> + <span class="trm t2">ab</span> + <span class="trm t3">b²</span>`,
+      cap:`שני המלבנים הכתומים זהים לחלוטין — ולכן <span class="x">ab + ab = 2ab</span>. עם <span class="x">a=${a}, b=${b}</span>: השטח הוא <span class="x">${(a+b)**2}</span>.`};
+  }
+  if(type==='minus'){
+    const {a,b} = v, k=U/a, A=a*k, B=b*k, R=(a-b)*k;
+    return {svg: svgBox(
+      tile(0,0,R,R,'t','(a−b)²')
+      + `<rect x="${R}" y="0" width="${B}" height="${A}" fill="var(--amber-soft)" stroke="var(--amber-line)" stroke-width="1.5" opacity=".85"/>`
+      + `<rect x="0" y="${R}" width="${A}" height="${B}" fill="var(--amber-soft)" stroke="var(--amber-line)" stroke-width="1.5" opacity=".85"/>`
+      + `<rect x="${R}" y="${R}" width="${B}" height="${B}" fill="var(--plum-soft)" stroke="var(--plum)" stroke-width="2"/>`
+      + `<rect x="0" y="0" width="${A}" height="${A}" fill="none" stroke="var(--ink-2)" stroke-width="2"/>`
+      + (B>22?`<text class="tile-t" x="${R+B/2}" y="${R+B/2}" font-size="13" fill="var(--plum)">b²</text>`:''), A, A),
+      alg:`<span class="trm t1">a²</span> − <span class="trm t2">ab</span> − <span class="trm t2">ab</span> + <span class="trm t3">b²</span>`,
+      cap:`מהריבוע הגדול <span class="x">a²</span> מורידים שתי רצועות <span class="x">ab</span>. הפינה הסגולה הורדה <b>פעמיים</b> — לכן מחזירים אותה: <span class="x">+b²</span>. זו הסיבה שהאיבר האחרון חיובי.`};
+  }
+  if(type==='diff'){
+    const {a,b,flip} = v, k=U/(a+b), A=a*k, B=b*k, R=(a-b)*k;
+    if(!flip) return {svg: svgBox(
+      tile(0,0,A,R,'t','1')+tile(0,R,R,B,'a','2')
+      + `<rect x="${R}" y="${R}" width="${B}" height="${B}" fill="none" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="4 3"/>`
+      + `<text class="tile-t" x="${R+B/2}" y="${R+B/2}" font-size="12" fill="var(--ink-3)">b²</text>`
+      + `<rect x="0" y="0" width="${A}" height="${A}" fill="none" stroke="var(--ink-2)" stroke-width="2"/>`, A, A),
+      alg:`<span class="trm t1">a²</span> − <span class="trm t3">b²</span>`,
+      cap:`ריבוע בשטח <span class="x">a² = ${a*a}</span> שממנו הוצא ריבוע קטן <span class="x">b² = ${b*b}</span>. השטח שנשאר: <span class="x">${a*a-b*b}</span>.`};
+    return {svg: svgBox(
+      tile(0,0,A,R,'t','1')+tile(A,0,B,R,'a','2'), A+B, R),
+      alg:`<span class="trm t1">(a+b)</span> · <span class="trm t2">(a−b)</span>`,
+      cap:`אותם שני חלקים בדיוק, מסודרים כמלבן: אורך <span class="x">a+b = ${a+b}</span>, רוחב <span class="x">a−b = ${a-b}</span>. שטח: <span class="x">${(a+b)*(a-b)} = ${a*a-b*b}</span> — זהה. זו ההוכחה.`};
+  }
+}
+
+function exploreBlock(st){
+  if(!st.explore) return '';
+  const t = st.explore.type;
+  const sl = t==='rect4'
+    ? [['a',1,7,3],['b',1,7,2],['c',1,7,4],['d',1,7,1]]
+    : t==='square' ? [['a',1,8,4],['b',1,8,2]]
+    : [['a',3,9,6],['b',1,5,2]];
+  return `<div class="explore">
+    <div class="eyebrow">חקירה — הזז וראה</div>
+    <div class="sliders">${sl.map(([n,mn,mx,d])=>`<div class="sl">
+      <label for="sl_${n}"><span><span class="x">${n}</span> = <output id="out_${n}">${d}</output></span></label>
+      <input type="range" id="sl_${n}" min="${mn}" max="${mx}" value="${d}" step="1"></div>`).join('')}</div>
+    ${t==='diff'?'<div class="row" style="justify-content:center;margin-bottom:10px"><button class="btn ghost" id="flip">סדר מחדש את החלקים</button></div>':''}
+    <div class="svgwrap" id="svgw"></div>
+    <div class="assemble" id="algw"></div>
+    <p class="lead" style="text-align:center;font-size:15px;margin-top:10px" id="capw"></p>
+  </div>`;
+}
+function wireExplore(st){
+  if(!st.explore) return;
+  const t = st.explore.type; let flip=false;
+  const val = ()=>{ const g=n=>{const e=$('#sl_'+n); return e? +e.value : 0;};
+    let v={a:g('a'),b:g('b'),c:g('c'),d:g('d'),flip};
+    if((t==='minus'||t==='diff') && v.b>=v.a){ v.b=v.a-1; const e=$('#sl_b'); if(e) e.value=v.b; }
+    return v; };
+  const paint = ()=>{ const v=val(); ['a','b','c','d'].forEach(n=>{const o=$('#out_'+n); if(o)o.textContent=v[n];});
+    const r = drawExplore(t,v); $('#svgw').innerHTML=r.svg; $('#algw').innerHTML=r.alg; $('#capw').innerHTML=r.cap; };
+  document.querySelectorAll('.explore input[type=range]').forEach(i=> i.oninput = paint);
+  const f = $('#flip'); if(f) f.onclick = ()=>{ flip=!flip; paint(); f.textContent = flip? 'חזור לריבוע':'סדר מחדש את החלקים'; };
+  paint();
+}
+
+/* =====================================================================
+   מסך שלב — לימוד
+   ===================================================================== */
+function beatHTML(bt, i, last){
+  return `<div class="card fade"><div class="beat ${last?'last':''}">
+    <h3>${MT(bt.t)}</h3><p>${MT(bt.b)}</p></div>
+    ${bt.show? exploreBlock(UNIT.stages[cur.stage]) : ''}</div>`;
+}
+function ruleHTML(st){
+  const legend = st.explore? `<div class="legend">
+    <span><i style="background:var(--teal)"></i>a²</span>
+    <span><i style="background:var(--amber)"></i>המלבנים · 2ab</span>
+    <span><i style="background:var(--plum)"></i>b²</span></div>`:'';
+  return `<div class="card fade">
+    <div class="rule"><div class="lbl">הכלל</div>
+      <div class="f">${X(st.rule.fc || st.rule.f)}</div>
+      <p style="font-size:15px;color:var(--ink-2);margin-top:10px">${MT(st.rule.note)}</p>${legend}</div>
+    <div class="mis"><b>${MT(st.mis.t)}</b><div style="margin-top:4px">${MT(st.mis.b)}</div></div>
+  </div>`;
+}
+function mattersHTML(m){
+  if(!m) return '';
+  return `<div class="card fade" style="border-right:4px solid var(--amber)">
+    <div class="eyebrow" style="color:var(--amber)">${MT(m.t)}</div>
+    <p style="color:var(--ink-2)">${MT(m.b)}</p></div>`;
+}
+function stepBtn(id, label){ return `<div class="stepbtn" id="sb"><button class="btn wide" id="${id}">${label}</button></div>`; }
+
+function vStage(){
+  const st = UNIT.stages[cur.stage];
+  const w = WHY[st.id] || {beats:[]};
+  const h = w.hook;
+  let hookBox = '';
+  if(h){
+    hookBox = `<div class="hookbox"><div class="qq">${MT(h.q)}</div>`;
+    if(h.try) hookBox += `<div class="row" style="margin-top:14px">
+        <input class="numin" id="hin" inputmode="numeric" placeholder="${h.try}" style="width:150px">
+        <button class="btn ghost" id="hgo">בדוק</button></div>`;
+    if(h.calc) hookBox += `<div class="calcrow">${h.calc.map((c,i)=>
+        `<button class="calccard" data-i="${i}"><div class="e">${c.e}</div><div class="a" id="ca_${i}">?</div></button>`).join('')}
+        <p class="lead" style="flex:1 1 100%;font-size:14.5px;margin-top:8px">לחץ על כל תרגיל כדי לגלות את התוצאה.</p>`;
+    hookBox += `<div id="hrev"></div></div>`;
+  }
+  app.innerHTML = `
+  <div class="card fade">
+    <div class="row" style="justify-content:space-between">
+      <div class="eyebrow" style="margin:0">שלב ${cur.stage+1} מתוך ${UNIT.stages.length}</div>
+      <button class="btn ghost" style="padding:6px 12px;font-size:14px" id="skip">דלג לתרגול</button>
+    </div>
+    <h2 style="font-size:27px;margin-top:8px">${st.t}</h2>
+    <p style="font-size:19px;color:var(--ink-2);margin-top:2px">${X(st.s)}</p>
+    <p class="lead" style="margin-top:14px">${MT(st.idea)}</p>
+    ${hookBox}
+  </div>
+  <div id="story"></div>`;
+  $('#skip').onclick = ()=>{ cur.item=0; cur.tries=0; go('practice'); };
+
+  const openStory = ()=>{ cur.beat = 0; $('#story').innerHTML = stepBtn('nb','בוא נראה למה'); $('#nb').onclick = nextBeat; };
+
+  if(!h){ openStory(); return; }
+  const revealHook = ()=>{
+    $('#hrev').innerHTML = `<div class="reveal fade">${MT(h.r)}</div>`;
+    openStory(); window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
+  };
+  if(h.try){
+    const f = ()=>{ const v = parseInt(String($('#hin').value).replace(/[^\d\-]/g,''),10);
+      $('#hin').disabled = true; $('#hgo').disabled = true;
+      const ok = v===h.a;
+      $('#hrev').innerHTML = `<div class="reveal fade"><b style="color:${ok?'var(--good)':'var(--ink)'}">${ok?'נכון. '+h.a+'.':'התשובה היא '+h.a+'.'}</b><br>${MT(h.r)}</div>`;
+      openStory(); };
+    $('#hgo').onclick = f; $('#hin').onkeydown = e=>{ if(e.key==='Enter') f(); };
+  } else if(h.calc){
+    let n = 0;
+    document.querySelectorAll('.calccard').forEach(b=> b.onclick = ()=>{
+      if(b.classList.contains('shown')) return;
+      b.classList.add('shown'); $('#ca_'+b.dataset.i).textContent = h.calc[+b.dataset.i].a;
+      if(++n === h.calc.length) revealHook(); });
+  } else {
+    $('#hrev').innerHTML = stepBtn('hr','אז מה עושים?');
+    $('#hr').onclick = revealHook;
+  }
+}
+function nextBeat(){
+  const st = UNIT.stages[cur.stage], w = WHY[st.id] || {beats:[]};
+  const sb = $('#sb'); if(sb) sb.remove();
+  const bt = w.beats[cur.beat];
+  if(bt){
+    const last = cur.beat === w.beats.length-1;
+    $('#story').insertAdjacentHTML('beforeend', beatHTML(bt, cur.beat, last));
+    if(bt.show) wireExplore(st);
+    cur.beat++;
+    $('#story').insertAdjacentHTML('beforeend', stepBtn('nb', cur.beat<w.beats.length? 'המשך':'ומה הכלל?'));
+    $('#nb').onclick = nextBeat;
+  } else {
+    $('#story').insertAdjacentHTML('beforeend', ruleHTML(st) + mattersHTML(w.matters));
+    showWorked();
+  }
+  const t = $('#sb') || $('#story').lastElementChild;
+  if(t) t.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+/* --- שאלת בדיקה עצמית: מכוונת את התלמיד לבדוק את עצמו לפני התשובה --- */
+function selfQ(st, it){
+  if(it.k==='err') return 'עבור שורה־שורה ושאל על כל אחת: האם המעבר הזה נכון? הטעות נמצאת במעבר, לא בשורה עצמה.';
+  if(it.k==='in')  return 'שאל את עצמך: מה המספר העגול הקרוב ביותר? כמה רחוק ממנו המספר שבתרגיל?';
+  const id = st.id;
+  if(id==='sc') return 'שאל את עצמך שתי שאלות לפי הסדר: יש גורם משותף? וכמה איברים יש כאן?';
+  if(id==='sm'||id==='sa') return 'קרא את השאלה שוב לאט: על מה בדיוק חלה הפעולה, ומה בדיוק מבקשים למצוא? ואז הצב מספר קטן ובדוק את עצמך.';
+  if(id==='s6'||id==='s7'||id==='s8'||id==='s9')
+    return 'שאל את עצמך: התשובה אמורה להיראות כמו מכפלת סוגריים. כמה סוגריים אתה מצפה לקבל?';
+  return 'שאל את עצמך לפני שאתה מסתכל בתשובות: כמה איברים אמורים להיות בתוצאה, ומה הסימן של כל אחד?';
+}
+const HELP_OPTS = [
+ {k:'q', t:'לא הבנתי מה השאלה מבקשת ממני'},
+ {k:'f', t:'לא זוכר את הנוסחה'},
+ {k:'s', t:'יודע את הנוסחה, לא יודע איך להתחיל'},
+ {k:'m', t:'התחלתי ונתקעתי באמצע'}
+];
+function helpAnswer(kind, st, it){
+  if(kind==='q'){
+    const q = (it.q||'') + ' ' + (it.e||'');
+    const want = (it.k==='err') ? 'צריך רק לזהות באיזו שורה נכנסה הטעות — לא לפתור מחדש.'
+      : /לאילו ערכי/.test(q) ? 'צריך למצוא את כל ערכי הפרמטר שמקיימים את התנאי. שים לב: לרוב יש יותר מערך אחד.'
+      : /מה גדול/.test(q) ? 'צריך רק להכריע מי משני הביטויים גדול יותר, ובכמה. לא צריך לחשב אותם במלואם.'
+      : /האם/.test(q) ? 'צריך להכריע אם הטענה נכונה, ולדעת לנמק לעצמך למה.'
+      : /מדוע|הוכיח|מוכיח/.test(q) ? 'צריך נימוק, לא חישוב. השאלה היא למה זה נכון תמיד.'
+      : (it.k==='in') ? 'צריך לכתוב מספר אחד, התוצאה של החישוב.'
+      : (st.id==='sc') ? 'צריך רק לומר באיזה סוג מדובר, בלי לפרק בפועל.'
+      : /פרק/.test(q) ? 'צריך לכתוב את הביטוי כמכפלה של סוגריים — לא לפתוח אותו.'
+      : /פשט/.test(q) ? 'צריך לפתוח הכול, לאסוף איברים דומים, ולהגיע לביטוי הקצר ביותר.'
+      : !/[a-zA-Z]/.test(it.e||'') ? 'זה תרגיל חישוב במספרים. צריך רק את התוצאה — ולשים לב לסדר הפעולות.'
+      : 'צריך לפתוח את הסוגריים ולכתוב ביטוי בלי סוגריים כלל.';
+    return '<b>מה מבקשים ממך:</b><br>'+MT(want)+'<br><br>'+MT(selfQ(st,it));
+  }
+  if(kind==='f') return '<b>הנוסחה של השלב:</b><div style="font-size:20px;margin:10px 0">'+X(st.rule.fc||st.rule.f)+'</div>'+MT(st.rule.note);
+  if(kind==='s') return '<b>הצעד הראשון בלבד:</b><div class="steps" style="margin-top:8px"><div>'+X(it.sol[0])+'</div></div><div style="margin-top:8px">עכשיו נסה להמשיך לבד.</div>';
+  return '<b>שני הצעדים הראשונים:</b><div class="steps" style="margin-top:8px">'+it.sol.slice(0,2).map(x=>'<div>'+X(x)+'</div>').join('')+'</div><div style="margin-top:8px">מכאן זה כבר חישוב. נסה לסיים.</div>';
+}
+
+
+/* ---------- שכבת ביסוס: אני מדגים ← נעשה יחד ← אתה לבד ---------- */
+function showStart(){
+  const st = UNIT.stages[cur.stage];
+  $('#story').insertAdjacentHTML('beforeend',
+    `<div class="card fade" style="text-align:center">
+      <div class="eyebrow" style="color:var(--teal)">שלב ג · עכשיו לבד</div>
+      <p class="lead" style="margin:6px 0 14px">ראית איך זה עובד, ועשית את זה יחד איתי. עכשיו תורך.</p>
+      <button class="btn wide" id="start">לתרגול · ${st.items.length} שאלות מדורגות</button></div>`);
+  $('#start').onclick = ()=>{ cur.item=0; cur.tries=0; go('practice'); };
+  const el = $('#start'); if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function showWorked(){
+  const st = UNIT.stages[cur.stage], g = GUIDE[st.id];
+  if(!g){ return showStart(); }
+  $('#story').insertAdjacentHTML('beforeend', `<div class="card fade">
+    <div class="eyebrow" style="color:var(--amber)">שלב א · אני מדגים</div>
+    <h3 style="font-size:20px">דוגמה פתורה, שורה אחר שורה</h3>
+    <div class="qbig">${XB(g.worked.e)}</div>
+    <div id="wsteps"></div>
+    <div class="row" style="margin-top:16px"><button class="btn wide" id="wnext">הצעד הראשון</button></div>
+  </div>`);
+  let i = 0;
+  const adv = ()=>{
+    if(i < g.worked.steps.length){
+      const [t,b] = g.worked.steps[i];
+      $('#wsteps').insertAdjacentHTML('beforeend',
+        `<div class="fade" style="display:flex;gap:12px;align-items:baseline;padding:11px 0;${i?'border-top:1px solid var(--line)':''}">
+          <span style="flex:none;font-size:13px;color:var(--ink-3);min-width:88px">${MT(t)}</span>
+          <span class="x" style="font-size:18.5px">${b}</span></div>`);
+      i++;
+      $('#wnext').textContent = i < g.worked.steps.length? 'הצעד הבא' : 'הבנתי — עכשיו נעשה יחד';
+      $('#wsteps').lastElementChild.scrollIntoView({behavior:'smooth', block:'center'});
+    } else { $('#wnext').closest('.row').remove(); showTogether(); }
+  };
+  $('#wnext').onclick = adv;
+  $('#wnext').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function showTogether(){
+  const st = UNIT.stages[cur.stage], g = GUIDE[st.id];
+  if(!g || !g.together) return showStart();
+  cur.tg = 0;
+  $('#story').insertAdjacentHTML('beforeend', `<div class="card fade" id="tgcard">
+    <div class="eyebrow" style="color:var(--teal)">שלב ב · נעשה יחד</div>
+    <h3 style="font-size:20px">עכשיו אתה מוביל. אני רק שואל.</h3>
+    <div class="qbig">${XB(g.together.e)}</div>
+    <div id="tgdone"></div><div id="tgnow"></div></div>`);
+  renderTg();
+  $('#tgcard').scrollIntoView({behavior:'smooth', block:'center'});
+}
+function renderTg(){
+  const st = UNIT.stages[cur.stage], g = GUIDE[st.id];
+  const s = g.together.steps[cur.tg];
+  if(!s){
+    $('#tgnow').innerHTML = `<div class="fb ok fade"><b>יפה מאוד. הרכבת את זה בעצמך.</b>
+      <div>עברת את כל השלבים בלי לדלג על אף אחד. זה בדיוק הסדר שתעשה לבד עוד רגע.</div></div>`;
+    return showStart();
+  }
+  const idx = s.o.map((t,i)=>({t, ok:i===0}));
+  for(let i=idx.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idx[i],idx[j]]=[idx[j],idx[i]]; }
+  $('#tgnow').innerHTML = `<div class="fade" style="padding-top:14px;border-top:1px solid var(--line)">
+    <div style="font-weight:600;font-size:17px">${MT(s.q)}</div>
+    <div class="opts">${idx.map((o,i)=>`<button class="opt tgo" data-i="${i}"><span class="x">${o.t}</span></button>`).join('')}</div>
+    <div id="tgfb"></div></div>`;
+  document.querySelectorAll('.tgo').forEach(b=> b.onclick = ()=>{
+    const o = idx[+b.dataset.i];
+    if(o.ok){
+      buzz(true);
+      document.querySelectorAll('.tgo').forEach(x=>{ x.disabled=true; });
+      b.classList.add('right');
+      $('#tgdone').insertAdjacentHTML('beforeend',
+        `<div style="display:flex;gap:12px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line)">
+          <span style="flex:none;font-size:13px;color:var(--ink-3);min-width:88px">${MT(s.q).replace(/[?:]$/,'')}</span>
+          <span class="x" style="font-size:17.5px;color:var(--good)">${o.t}</span></div>`);
+      cur.tg++;
+      setTimeout(()=>{ renderTg(); $('#tgnow').scrollIntoView({behavior:'smooth', block:'center'}); }, 260);
+    } else {
+      buzz(false);
+      b.classList.add('wrong'); b.disabled = true;
+      $('#tgfb').innerHTML = `<div class="fb no fade" style="margin-top:10px"><b>עוד לא. הנה למה.</b><div>${MT(s.f)}</div>
+        <div style="margin-top:8px">נסה שוב — האפשרות הנכונה עדיין כאן.</div></div>`;
+    }
+  });
+}
+
+/* =====================================================================
+   תרגול
+   ===================================================================== */
+const qText = q => String(q||'').replace(/^רמה\s*\d+\s*·\s*/,'').replace(/^מוקש\s*·\s*/,'').replace(/^הוכחה\s*·\s*/,'');
+function vPractice(){
+  const st = UNIT.stages[cur.stage];
+  if(cur.item >= st.items.length) return go('done');
+  const it = st.items[cur.item];
+  const dots = st.items.map((_,i)=>{
+    const r = (S.res[st.id]||{})[i];
+    const col = i===cur.item? 'var(--teal)' : (r&&r.ok? 'var(--good)':'var(--line)');
+    return `<span style="width:9px;height:9px;border-radius:99px;background:${col};display:inline-block"></span>`;
+  }).join('');
+
+  let body = '';
+  if(it.k==='mc'){
+    body = `<div class="qtext">${MT(qText(it.q))}</div><div class="qbig">${XB(it.e)}</div>
+      <div class="opts">${it.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${'אבגד'[i]}</span><span class="x">${o.t}</span></button>`).join('')}</div>`;
+  } else if(it.k==='in'){
+    body = `<div class="qtext">${MT(qText(it.q))}</div><div class="qbig">${XB(it.e)}</div>
+      <div class="row" style="justify-content:center;margin-top:8px">
+        <input class="numin" id="ans" inputmode="numeric" autocomplete="off" placeholder="?">
+        <button class="btn" id="chk">בדיקה</button></div>`;
+  } else {
+    body = `<div class="qtext">${MT(qText(it.head))}</div>
+      <div class="lines">${it.lines.map((l,i)=>`<button class="line" data-i="${i}"><span class="n">${i+1}</span><span class="x">${l}</span></button>`).join('')}</div>`;
+  }
+
+  app.innerHTML = `
+  <div class="card fade">
+    <div class="qhead">
+      <span class="qnum">${it.lvl? `<span class="lvlchip">רמה ${it.lvl}</span> `:''}${it.tl? `<span class="lvlchip" style="background:var(--teal-soft);color:var(--teal);border-color:var(--teal-line)">${it.tl}</span> `:''}${it.trap? `<span class="lvlchip" style="background:var(--warn-soft);color:var(--warn);border-color:var(--warn-line)">מוקש</span> `:''}שאלה ${cur.item+1} מתוך ${st.items.length}</span>
+      <span style="display:flex;gap:5px;align-items:center">${dots}</span>
+    </div>
+    ${body}
+    <div id="fb"></div>
+    <div class="row" style="margin-top:18px;flex-wrap:nowrap;gap:8px">
+      ${it.h? '<button class="btn ghost" id="hint" style="flex:1;padding:10px 8px;font-size:14.5px;min-height:44px">רמז</button>':''}
+      <button class="btn ghost" id="idk" style="flex:1.5;padding:10px 8px;font-size:14.5px;min-height:44px">אני לא מבין</button>
+      <button class="btn ghost" id="quit" style="flex:1;padding:10px 8px;font-size:14.5px;min-height:44px">למפה</button>
+    </div>
+  </div>`;
+
+  if(it.h) $('#hint').onclick = e => {
+    if(!$('#hintbox')){
+      $('#fb').insertAdjacentHTML('beforebegin',
+        `<div class="hint" id="hintbox"><b>רמז ראשון — בדוק את עצמך:</b> ${MT(selfQ(st,it))}
+         <div class="row" style="margin-top:10px"><button class="btn ghost" id="hint2" style="padding:7px 14px;font-size:14px">עדיין תקוע — רמז נוסף</button></div>
+         <div id="hint2box"></div></div>`);
+      $('#hint2').onclick = ev => { $('#hint2box').innerHTML = `<div style="margin-top:10px"><b>רמז שני:</b> ${MT(it.h)}</div>`; ev.target.remove(); };
+    }
+    e.target.disabled = true;
+  };
+  $('#idk').onclick = e => {
+    e.target.disabled = true;
+    if($('#idkbox')) return;
+    $('#fb').insertAdjacentHTML('beforebegin', `<div class="hint" id="idkbox" style="background:var(--card-2);border-style:solid">
+      <b>לפני שאני עוזר — איפה בדיוק אתה תקוע?</b>
+      <p class="lead" style="font-size:14.5px;margin-top:2px">התשובה הזו חשובה יותר מהפתרון עצמו. היא מראה לך מה בדיוק חסר.</p>
+      <div class="opts" style="margin-top:12px">${HELP_OPTS.map(o=>`<button class="opt" data-k="${o.k}">${o.t}</button>`).join('')}</div>
+      <div id="idkans"></div></div>`);
+    document.querySelectorAll('#idkbox .opt').forEach(b=> b.onclick = ()=>{
+      const k = b.dataset.k;
+      S.help = S.help||{}; S.help[k] = (S.help[k]||0)+1; saveS();
+      document.querySelectorAll('#idkbox .opts').forEach(x=>x.remove());
+      $('#idkans').innerHTML = `<div class="fade" style="background:var(--card);border:1px solid var(--teal-line);border-radius:10px;padding:13px 15px">${helpAnswer(k, st, it)}</div>`;
+    });
+  };
+  $('#quit').onclick = ()=> go('map');
+
+  if(it.k==='mc') document.querySelectorAll('.opt').forEach(b=> b.onclick = ()=> answerMC(+b.dataset.i));
+  if(it.k==='err') document.querySelectorAll('.line').forEach(b=> b.onclick = ()=> answerERR(+b.dataset.i));
+  if(it.k==='in'){
+    const go2 = ()=> answerIN($('#ans').value);
+    $('#chk').onclick = go2; $('#ans').onkeydown = e=>{ if(e.key==='Enter') go2(); }; $('#ans').focus();
+  }
+}
+
+/* --- שלושת החלקים של המשוב: במה טעית / מה חסר לך / איך מתקנים --- */
+function fbWrong(specific, misCode, sol){
+  const m = MIS[misCode];
+  return `<div class="fb no fade">
+    <b>כמעט. בוא נראה מה קרה כאן.</b>
+    <div style="margin-bottom:10px">${MT(specific)}</div>
+    ${m? `<div style="background:var(--card);border:1px solid var(--warn-line);border-radius:9px;padding:11px 13px;margin-bottom:10px">
+      <div style="font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn)">הידע שחסר לך כאן</div>
+      <div style="font-weight:600;margin-top:3px">${MT(m.n)}</div>
+      <div style="color:var(--ink-2);font-size:15px">${MT(m.d)}</div></div>`:''}
+    <div class="row"><button class="btn" id="retry">נסה שוב</button>
+      <button class="btn ghost" id="show">הראה לי איך פותרים</button></div>
+    <div id="solbox"></div></div>`;
+}
+function fbRight(sol, msg){
+  return `<div class="fb ok fade"><b>${msg||'נכון!'}</b>
+    <div class="steps">${sol.map(s=>`<div>${X(s)}</div>`).join('')}</div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="next">השאלה הבאה</button></div></div>`;
+}
+function showSol(sol, fix){
+  $('#solbox').innerHTML = `<div class="steps fade">${sol.map(s=>`<div>${X(s)}</div>`).join('')}
+    ${fix? `<div style="margin-top:9px;font-weight:600;color:var(--good)">${X(fix)}</div>`:''}</div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="next">הבנתי, לשאלה הבאה</button></div>`;
+  $('#next').onclick = nextItem;
+}
+function wireWrong(sol, fix){
+  $('#retry').onclick = vPractice;
+  $('#show').onclick = ()=>{ const r=rec(UNIT.stages[cur.stage].id, cur.item); r.ok=true; saveS(); showSol(sol, fix); };
+}
+function mark(ok, mis){
+  const st = UNIT.stages[cur.stage], r = rec(st.id, cur.item);
+  r.tries++;
+  if(ok){ if(r.tries===1 && cur.tries===0) r.first=true; r.ok=true; cur.streak++;
+          S.xp = (S.xp||0) + (r.first? 10 : 4); }
+  else { cur.streak=0; if(mis){ S.mis[mis]=(S.mis[mis]||0)+1; } }
+  buzz(ok);
+  cur.tries = ok?0:cur.tries+1;
+  saveS(); setBar();
+}
+function answerMC(i){
+  const it = UNIT.stages[cur.stage].items[cur.item];
+  const opt = it.o[i];
+  document.querySelectorAll('.opt').forEach((b,j)=>{ b.disabled=true;
+    if(j===i) b.classList.add(opt.c?'right':'wrong'); else if(opt.c && it.o[j].c) b.classList.add('right'); else b.classList.add('dim'); });
+  if(opt.c){ mark(true); $('#fb').innerHTML = fbRight(it.sol, praise()); $('#next').onclick = nextItem; }
+  else { mark(false, opt.m); $('#fb').innerHTML = fbWrong(opt.f, opt.m, it.sol); wireWrong(it.sol); }
+}
+function answerIN(v){
+  const it = UNIT.stages[cur.stage].items[cur.item];
+  const n = parseInt(String(v).replace(/[^\d\-]/g,''),10);
+  if(isNaN(n)) return;
+  if(n===it.a){ mark(true); $('#fb').innerHTML = fbRight(it.sol, praise()); $('#next').onclick = nextItem; }
+  else{
+    mark(false,'M1');
+    const diff = `קיבלת <span class="x">${n}</span> במקום <span class="x">${it.a}</span>.`;
+    $('#fb').innerHTML = `<div class="fb no fade"><b>עוד לא. בוא נראה מה קרה.</b>
+      <div style="margin-bottom:10px">${diff} כאן אין נוסחה שגויה — יש חישוב שצריך לפרק לשלבים. נסה שוב עם הרמז, ואם עדיין לא — אראה לך את כל הדרך.</div>
+      <div class="row"><button class="btn" id="retry">נסה שוב</button>
+        <button class="btn ghost" id="show">הראה לי את הדרך</button></div><div id="solbox"></div></div>`;
+    wireWrong(it.sol);
+  }
+}
+function answerERR(i){
+  const it = UNIT.stages[cur.stage].items[cur.item];
+  document.querySelectorAll('.line').forEach((b,j)=>{ b.disabled=true;
+    if(j===it.bad) b.classList.add('right'); else b.classList.add('wrong'); });
+  if(i===it.bad){
+    mark(true);
+    $('#fb').innerHTML = `<div class="fb ok fade"><b>מצאת אותה. עין חדה.</b>
+      <div>${MT(it.why)}</div><div class="steps" style="margin-top:10px"><div>${X(it.fix)}</div></div>
+      <div class="row" style="margin-top:14px"><button class="btn" id="next">השאלה הבאה</button></div></div>`;
+    $('#next').onclick = nextItem;
+  } else {
+    mark(false, it.m);
+    $('#fb').innerHTML = fbWrong(`השורה שסימנת עדיין נכונה. הטעות נכנסה בשורה ${it.bad+1}: ${it.why}`, it.m, [it.fix]);
+    wireWrong([it.why], it.fix);
+  }
+}
+const PRAISE = ['נכון!','בדיוק.','יפה מאוד.','זהו בדיוק הרעיון.','מצוין.'];
+function praise(){ return cur.streak>=3? 'שלוש ברצף. אתה בתוך זה.' : PRAISE[Math.min(cur.streak,4)]; }
+
+function nextItem(){
+  const st = UNIT.stages[cur.stage];
+  const prev = st.items[cur.item];
+  cur.item++; cur.tries=0;
+  const nx = st.items[cur.item];
+  if(nx){
+    const lvlUp = prev && nx.lvl && prev.lvl && nx.lvl > prev.lvl;
+    if(lvlUp || (!nx.lvl && cur.item%3===0)) return vBreak(lvlUp? nx.lvl : 0);
+  }
+  vPractice(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function vBreak(lvl){
+  const st = UNIT.stages[cur.stage];
+  app.innerHTML = `<div class="card fade">
+    <div class="consol">
+      <div class="eyebrow" style="color:var(--teal)">${lvl? 'רגע לבסס · עולים לרמה '+lvl : 'רגע של אוויר'}</div>
+      <h2 style="font-size:22px">${lvl? 'לפני שממשיכים — נזכיר את הכלל' : 'עצור לרגע'}</h2>
+      ${lvl? `<div style="font-size:21px;margin:14px 0">${X(st.rule.fc || st.rule.f)}</div>
+              <p class="lead" style="max-width:400px;margin:0 auto">${MT(st.rule.note)}</p>`
+            : `<p class="lead" style="max-width:380px;margin:10px auto 0">שלוש שאלות מאחוריך. הרם את המבט מהמסך לעשר שניות — המוח קולט טוב יותר אחרי הפסקה קצרה.</p>`}
+      <div class="row" style="justify-content:center;margin-top:20px">
+        <button class="btn" id="cont">${lvl? 'קדימה, רמה '+lvl : 'ממשיכים'}</button>
+        <button class="btn ghost" id="stop">מספיק להיום</button></div>
+    </div></div>`;
+  $('#cont').onclick = ()=>{ vPractice(); window.scrollTo({top:0}); };
+  $('#stop').onclick = ()=> go('map');
+}
+
+/* =====================================================================
+   סיום שלב
+   ===================================================================== */
+function vDone(){
+  const st = UNIT.stages[cur.stage], s = stageStat(st);
+  const gaps = topMis(S).slice(0,3);
+  const nxt = cur.stage+1 < UNIT.stages.length;
+  app.innerHTML = `
+  <div class="card fade" style="text-align:center">
+    <div class="bigstars">${[1,2,3].map(i=>STAR(i<=starsOf(S,st))).join('')}</div>
+    <h2 style="font-size:26px;margin-top:6px">סיימת את ${st.t}</h2>
+    <p class="lead">ענית נכון מהפעם הראשונה על <b>${s.first}</b> מתוך ${s.total} שאלות.${starsOf(S,st)<3? ' חזרה על השלב יכולה להעלות אותך לשלושה כוכבים.':''}</p>
+    <div class="stat">
+      <div><b>${s.total}</b><small>שאלות בשלב</small></div>
+      <div><b>${s.first}</b><small>נכון בניסיון ראשון</small></div>
+      <div><b>${unitPct()}%</b><small>מהיחידה כולה</small></div>
+    </div>
+    ${gaps.length? `<div style="text-align:right" class="mis"><b>הפערים שעלו עד כה</b>
+      ${gaps.map(([k,v])=>`<div style="margin-top:6px">• <b style="color:var(--ink)">${MT(MIS[k].n)}</b> — ${v} פעמים. ${MT(MIS[k].d)}</div>`).join('')}</div>`
+      : `<p class="lead">לא נרשם אף פער חוזר. יפה.</p>`}
+    <div class="row" style="justify-content:center;margin-top:20px">
+      ${nxt? `<button class="btn" id="nx">לשלב הבא: ${UNIT.stages[cur.stage+1].t}</button>`:''}
+      <button class="btn ghost" id="mp">חזרה למפה</button>
+      <button class="btn ghost" id="rp">דוח למורה</button>
+    </div>
+  </div>`;
+  if(nxt) $('#nx').onclick = ()=>{ cur={stage:cur.stage+1,item:0,tries:0,streak:0}; go('stage'); };
+  $('#mp').onclick = ()=> go('map'); $('#rp').onclick = ()=> go('report');
+}
+
+
+/* =====================================================================
+   טריקים
+   ===================================================================== */
+let curTrick = 0;
+function vTricks(){
+  app.innerHTML = `
+  <div class="card fade">
+    <div class="eyebrow" style="color:var(--amber)">טריקים</div>
+    <h2 style="font-size:24px">מה שנראה כמו קסם — הוא בעצם נוסחה</h2>
+    <p class="lead">כל טריק כאן לוקח שניות, וכל אחד מהם מגיע עם ההסבר למה הוא עובד. בלי ההסבר זה קסם מסיבות. איתו זו מתמטיקה.</p>
+  </div>
+  <div class="fade">
+  ${TRICKS.map((tr,i)=>`<button class="trick" data-i="${i}">
+     <span class="bolt">⚡</span>
+     <span class="tt"><span class="tagchip">${tr.tag}</span><b>${tr.t}</b><small>${MT(tr.hook)}</small></span>
+     <span class="go">›</span></button>`).join('')}
+  </div>`;
+  document.querySelectorAll('.trick').forEach(b=> b.onclick = ()=>{ curTrick = +b.dataset.i; go('trick'); });
+}
+
+function xSvg(d, show){
+  const T = (x,y,txt,col,sz)=> show>=arguments[5]? '' : '';
+  return `<svg class="xsvg" viewBox="0 0 230 200" width="230" style="max-width:100%">
+    <line x1="60" y1="52" x2="170" y2="150" stroke="rgba(234,244,246,.35)" stroke-width="2.5"/>
+    <line x1="170" y1="52" x2="60" y2="150" stroke="rgba(234,244,246,.35)" stroke-width="2.5"/>
+    ${show>=1? `<text x="115" y="26" font-size="26" fill="#F0B44E">${d.c}</text>
+       <text x="115" y="48" font-size="11" fill="#9FC0C8">מכפלה</text>`:''}
+    ${show>=2? `<text x="115" y="176" font-size="26" fill="#7FD8D6">${d.b}</text>
+       <text x="115" y="154" font-size="11" fill="#9FC0C8">סכום</text>`:''}
+    ${show>=3? `<text x="30" y="101" font-size="27" fill="#EAF4F6">${d.m}</text>
+       <text x="200" y="101" font-size="27" fill="#EAF4F6">${d.n}</text>`:''}
+  </svg>`;
+}
+
+function vTrick(){
+  const tr = TRICKS[curTrick];
+  app.innerHTML = `
+  <div class="card fade" style="padding:14px">
+    <div class="reel" id="reel">
+      <div class="tagchip" style="background:rgba(240,180,78,.18);color:#F0B44E">${tr.tag}</div>
+      <h2 style="color:#F4FAFB;font-size:22px;margin:4px 0 12px">${tr.t}</h2>
+      <div class="rx" id="rexpr">${tr.demo.e}</div>
+      <div id="rbody"></div>
+    </div>
+    <div class="row" style="margin-top:14px"><button class="btn wide" id="rnext">הראה לי</button></div>
+  </div>
+  <div id="tafter"></div>`;
+  let i = 0;
+  const total = tr.demo.k==='x'? 4 : tr.demo.k==='box'? tr.demo.caps.length : tr.demo.steps.length;
+  const adv = ()=>{
+    i++;
+    if(tr.demo.k==='x'){
+      const d = tr.demo;
+      const cap = ['','המכפלה למעלה — האיבר האחרון','הסכום למטה — מקדם האמצע','שני המספרים שמקיימים את שניהם','זהו הפירוק'][i];
+      $('#rbody').innerHTML = `<div style="margin-top:10px">${xSvg(d, Math.min(i,3))}</div>
+        <div class="rstep ${i>=4?'final':''}">${i>=4? `<div class="big">${d.res}</div>`:''}
+          <div class="sub">${cap}</div></div>`;
+    } else if(tr.demo.k==='box'){
+      const d = tr.demo;
+      /* סדר החשיפה: כפל — קצוות ואז תאים | פירוק — תאים ואז קצוות */
+      const seq = d.back
+        ? [['c11','c22'],['mid'],['c12','c21'],['t1','s1'],['t2','s2'],['res']]
+        : [['t1','t2'],['s1','s2'],['c11'],['c12','c21'],['mid'],['res']];
+      const on = new Set(); for(let k=0;k<i;k++) (seq[k]||[]).forEach(x=>on.add(x));
+      const cl = id => on.has(id)? 'on' : 'hid';
+      $('#rbody').innerHTML = `<table class="boxm"><tr>
+          <td class="h"></td><td class="h ${cl('t1')}">${d.top[0]}</td><td class="h ${cl('t2')}">${d.top[1]}</td></tr>
+        <tr><td class="h ${cl('s1')}">${d.side[0]}</td><td class="c ${cl('c11')}">${d.cells[0][0]}</td><td class="c ${cl('c12')}">${d.cells[0][1]}</td></tr>
+        <tr><td class="h ${cl('s2')}">${d.side[1]}</td><td class="c ${cl('c21')}">${d.cells[1][0]}</td><td class="c ${cl('c22')}">${d.cells[1][1]}</td></tr></table>
+        ${on.has('mid')? `<div class="rstep"><div class="big">${d.mid}</div></div>`:''}
+        ${on.has('res')? `<div class="rstep final"><div class="big">${d.res}</div></div>`:''}
+        <div class="rstep" style="border:none;padding-top:6px;margin-top:6px"><div class="sub">${d.caps[i-1]||''}</div></div>`;
+    } else {
+      const [big, sub] = tr.demo.steps[i-1];
+      $('#rbody').insertAdjacentHTML('beforeend',
+        `<div class="rstep ${i===total?'final':''}"><div class="big">${big}</div><div class="sub">${sub}</div></div>`);
+    }
+    if(i>=total){ $('#rnext').closest('.row').remove(); showTrickAfter(tr); }
+    else $('#rnext').textContent = 'הלאה';
+  };
+  $('#rnext').onclick = adv;
+}
+
+function showTrickAfter(tr){
+  $('#tafter').innerHTML = `
+  <div class="card fade">
+    <div class="eyebrow" style="color:var(--teal)">למה זה עובד</div>
+    <div class="whybox">${tr.why.map(w=>`<div>${MT(w)}</div>`).join('')}</div>
+  </div>
+  <div class="card fade">
+    <div class="eyebrow">עכשיו אתה</div>
+    <div id="tryzone"></div>
+  </div>
+  <div class="card fade" style="text-align:center">
+    <button class="btn ghost wide" id="backtr">לכל הטריקים</button>
+  </div>`;
+  let k = 0;
+  const renderTry = ()=>{
+    const t = tr.tries[k];
+    if(!t){ $('#tryzone').innerHTML = `<div class="fb ok"><b>שני התרגילים נפתרו. הטריק שלך.</b></div>`; return; }
+    $('#tryzone').innerHTML = `<div class="fade">
+      <div style="font-size:18px;font-weight:500">${MT(t.q)}</div>
+      ${t.mc
+        ? `<div class="opts">${t.mc.map((o,i)=>`<button class="opt tryo" data-i="${i}"><span class="x">${o}</span></button>`).join('')}</div>`
+        : `<div class="row" style="margin-top:12px"><input class="numin" id="tin" inputmode="numeric" placeholder="?" style="width:150px">
+           <button class="btn" id="tgo">בדיקה</button></div>`}
+      <div id="tfb"></div></div>`;
+    const ok = ()=>{ buzz(true); $('#tfb').innerHTML = `<div class="fb ok fade"><b>בדיוק.</b><div>${MT(t.h)}</div>
+        <div class="row" style="margin-top:12px"><button class="btn" id="tn">הבא</button></div></div>`;
+      $('#tn').onclick = ()=>{ k++; renderTry(); }; };
+    const no = ()=>{ buzz(false); $('#tfb').innerHTML = `<div class="fb no fade"><b>עוד לא.</b><div>${MT(t.h)}</div>
+        <div style="margin-top:6px">נסה שוב.</div></div>`; };
+    if(t.mc) document.querySelectorAll('.tryo').forEach((b,i)=> b.onclick = ()=>{
+        if(i===0){ b.classList.add('right'); document.querySelectorAll('.tryo').forEach(x=>x.disabled=true); ok(); }
+        else { b.classList.add('wrong'); b.disabled=true; no(); } });
+    else { const f = ()=>{ const v=parseInt(String($('#tin').value).replace(/[^\d\-]/g,''),10);
+             if(isNaN(v)) return; v===t.a? ok() : no(); };
+           $('#tgo').onclick=f; $('#tin').onkeydown=e=>{ if(e.key==='Enter') f(); }; }
+  };
+  renderTry();
+  $('#backtr').onclick = ()=> go('tricks');
+  $('#tafter').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* =====================================================================
+   דוח תלמיד → קוד למורה
+   ===================================================================== */
+function code(r){
+  const min = {n:r.name, s:r.started, l:r.last, r:r.res, m:r.mis, u:UNIT.id};
+  try{ return btoa(unescape(encodeURIComponent(JSON.stringify(min)))); }catch(e){ return ''; }
+}
+function decode(c){
+  try{ const o = JSON.parse(decodeURIComponent(escape(atob(c.trim()))));
+       return {name:o.n, started:o.s, last:o.l, res:o.r||{}, mis:o.m||{}}; }catch(e){ return null; }
+}
+function vReport(){
+  const c = code(S);
+  const gaps = topMis(S);
+  app.innerHTML = `
+  <div class="card fade">
+    <div class="eyebrow">דוח אישי</div>
+    <h2 style="font-size:25px">${esc(S.name)}</h2>
+    <div class="stat">
+      <div><b>${unitPct()}%</b><small>מהיחידה</small></div>
+      <div><b>${UNIT.stages.filter(st=>stageStat(st).done===st.items.length).length}</b><small>שלבים שהושלמו</small></div>
+      <div><b>${Object.values(S.mis).reduce((a,b)=>a+b,0)}</b><small>טעויות שנרשמו</small></div>
+    </div>
+    ${gaps.length? `<div class="sep"></div><div class="eyebrow">הפערים שלך, לפי סדר</div>
+      ${gaps.map(([k,v])=>`<div class="mrow"><div class="mh"><span>${MT(MIS[k].n)}</span><span class="x">${v}</span></div>
+        <div class="mt"><i style="width:${Math.min(100,v*20)}%"></i></div></div>`).join('')}`:''}
+    <div class="sep"></div>
+    <div class="eyebrow">שליחה למורה</div>
+    <p class="lead" style="font-size:15px">העתק את הקוד ושלח אותו למורה בוואטסאפ. הקוד מכיל את כל ההתקדמות שלך.</p>
+    <textarea id="cd" readonly>${c}</textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="cp">העתקת הקוד</button>
+      <button class="btn ghost" id="bk">חזרה</button></div>
+  </div>`;
+  $('#cp').onclick = ()=>{ const t=$('#cd'); t.select();
+    try{ navigator.clipboard.writeText(t.value); }catch(e){ document.execCommand('copy'); }
+    $('#cp').textContent='הועתק ✓'; };
+  $('#bk').onclick = ()=> go('map');
+}
+
+/* =====================================================================
+   מסך מורה
+   ===================================================================== */
+let tTab = 'list', tImported = null;
+function reportFor(r){
+  let d=0,t=0,f=0;
+  UNIT.stages.forEach(st=>{ const rr=r.res[st.id]||{}; st.items.forEach((_,i)=>{ t++; if(rr[i]&&rr[i].ok){d++; if(rr[i].first)f++;} }); });
+  return {d,t,f,pct:Math.round(d/t*100), acc: d? Math.round(f/d*100):0};
+}
+function stageTable(r){
+  return `<table><thead><tr><th>שלב</th><th>הושלם</th><th>ניסיון ראשון</th><th>מצב</th></tr></thead><tbody>
+  ${UNIT.stages.map(st=>{ const rr=r.res[st.id]||{}; let d=0,f=0;
+    st.items.forEach((_,i)=>{ if(rr[i]&&rr[i].ok){d++; if(rr[i].first)f++;} });
+    const stat = d===0? '<span class="chip">לא התחיל</span>'
+      : d<st.items.length? '<span class="chip warn">באמצע</span>'
+      : (f/d>=.8? '<span class="chip good">שולט</span>':'<span class="chip warn">צריך חיזוק</span>');
+    return `<tr><td>${st.t}</td><td class="n">${d}/${st.items.length}</td><td class="n">${f}</td><td>${stat}</td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+function teacherCard(r){
+  const s = reportFor(r), gaps = topMis(r);
+  const days = Math.round((Date.now()-r.last)/864e5);
+  return `<div class="card fade">
+    <div class="row" style="justify-content:space-between">
+      <h2 style="font-size:23px">${esc(r.name)}</h2>
+      <span class="chip ${days<=1?'good':(days<=7?'warn':'')}">${days<=0?'תרגל היום':(days===1?'אתמול':'לפני '+days+' ימים')}</span>
+    </div>
+    <div class="stat">
+      <div><b>${s.pct}%</b><small>מהיחידה</small></div>
+      <div><b>${s.d}/${s.t}</b><small>שאלות שנפתרו</small></div>
+      <div><b>${s.acc}%</b><small>נכון בניסיון ראשון</small></div>
+      ${QZ(r).tries? `<div><b>${QZ(r).best}</b><small>מבדק — שיא (ראשון: ${QZ(r).first}, ${QZ(r).tries} נגישות)</small></div>`
+        : `<div><b>—</b><small>טרם ניגש למבדק</small></div>`}
+    </div>
+    ${gaps.length? `<div class="eyebrow" style="margin-top:16px">הפערים המדויקים</div>
+      ${gaps.map(([k,v])=>`<div class="mrow"><div class="mh"><b>${MT(MIS[k].n)}</b><span class="x">${v}</span></div>
+        <div class="mt"><i style="width:${Math.min(100,v*20)}%"></i></div>
+        <div style="font-size:14px;color:var(--ink-2)">${MT(MIS[k].d)}</div></div>`).join('')}
+      <div class="mis" style="margin-top:14px"><b>מה ללמד בשיעור הבא</b>
+        <div style="margin-top:4px">${MT(MIS[gaps[0][0]].n)} — זו הטעות החוזרת ביותר של ${esc(r.name)}.</div></div>`
+      : `<p class="lead" style="margin-top:12px">לא נרשמו טעויות חוזרות.</p>`}
+    ${helpProfile(r)}
+    <div class="sep"></div>${stageTable(r)}</div>`;
+}
+const HELP_LABEL = {q:'לא הבין מה השאלה מבקשת', f:'לא זכר את הנוסחה', s:'לא ידע איך להתחיל', m:'נתקע באמצע הפתרון'};
+function helpProfile(r){
+  const h = r.help||{}; const ks = Object.keys(h).filter(k=>h[k]>0).sort((a,b)=>h[b]-h[a]);
+  if(!ks.length) return '';
+  return `<div class="sep"></div><div class="eyebrow">איפה ביקש עזרה — לפי דיווח עצמי</div>
+    ${ks.map(k=>`<div class="mrow"><div class="mh"><b>${HELP_LABEL[k]}</b><span class="x">${h[k]}</span></div>
+      <div class="mt"><i style="width:${Math.min(100,h[k]*20)}%;background:var(--teal)"></i></div></div>`).join('')}
+    <p class="lead" style="font-size:14.5px">${ks[0]==='q'? 'הקושי המרכזי הוא בהבנת הנשאל — כדאי לעבוד על קריאת שאלות לפני על תוכן.'
+      : ks[0]==='f'? 'הנוסחאות עדיין לא מקובעות. כדאי חזרה על שלב הגילוי לפני תרגול נוסף.'
+      : ks[0]==='s'? 'יודע את החומר אך מתקשה בהתחלה — כדאי לתרגל זיהוי סוג התרגיל.'
+      : 'מתחיל נכון ונשבר באמצע — כדאי לעבור יחד על פתרונות מלאים שלב אחר שלב.'}</p>`;
+}
+function vTeacher(){
+  const all = loadAll(); const names = Object.keys(all);
+  app.innerHTML = `
+  <div class="card fade">
+    <div class="eyebrow">בקרה</div>
+    <h2 style="font-size:25px">מסך מורה</h2>
+    <p class="lead">מה נעשה, מתי, ובאיזה ידע בדיוק התלמיד נתקע.</p>
+    <div class="tabs" style="margin-top:16px">
+      <button class="${tTab==='list'?'on':''}" data-t="list">תלמידים במכשיר הזה (${names.length})</button>
+      <button class="${tTab==='imp'?'on':''}" data-t="imp">קוד מתלמיד</button>
+    </div>
+    <div id="tbody"></div>
+  </div>
+  <div id="tcards"></div>`;
+  document.querySelectorAll('.tabs button').forEach(b=> b.onclick = ()=>{ tTab=b.dataset.t; vTeacher(); });
+  if(tTab==='list'){
+    $('#tbody').innerHTML = names.length? '' : '<p class="lead">אף תלמיד לא תרגל עדיין במכשיר הזה.</p>';
+    $('#tcards').innerHTML = names.map(n=> teacherCard(all[n])).join('');
+  } else {
+    $('#tbody').innerHTML = `<p class="lead" style="font-size:15px">התלמיד מפיק קוד מתוך האפליקציה ושולח לך בוואטסאפ. הדבק אותו כאן.</p>
+      <textarea id="imp" placeholder="הדבק כאן את הקוד"></textarea>
+      <div class="row" style="margin-top:10px"><button class="btn" id="ld">הצג דוח</button></div>`;
+    $('#ld').onclick = ()=>{ const r = decode($('#imp').value);
+      $('#tcards').innerHTML = r? teacherCard(r)
+        : '<div class="card"><div class="fb no"><b>הקוד לא נקרא</b><div>ודא שהועתק במלואו, בלי רווחים או שורות חסרות.</div></div></div>'; };
+    $('#tcards').innerHTML = '';
+  }
+}
+
+/* =====================================================================
+   ניתוב
+   ===================================================================== */
+function setNav(){
+  const n = $('#nav'); if(!n) return;
+  if(!S){ n.classList.remove('on'); return; }
+  n.classList.add('on');
+  const grp = {stage:'map', practice:'map', done:'map', map:'map', quiz:'quiz', quizdone:'quiz',
+               tricks:'tricks', trick:'tricks', report:'report', teacher:'teacher'}[view] || '';
+  n.querySelectorAll('button').forEach(b=> b.classList.toggle('on', b.dataset.v===grp));
+}
+function go(v){
+  view = v;
+  if(v!=='teacher' && v!=='home' && !S) v='home';
+  ({home:vHome, map:vMap, stage:vStage, practice:vPractice, done:vDone, report:vReport, teacher:vTeacher,
+    quiz:vQuiz, quizdone:vQuizDone, tricks:vTricks, trick:vTrick}[v])();
+  if(v!=='practice') window.scrollTo({top:0});
+  setBar(); setNav();
+}
+document.querySelectorAll('#nav button').forEach(b=> b.onclick = ()=>{
+  const v = b.dataset.v;
+  if(v==='quiz') return startQuiz();
+  go(v);
+});
+</script>
+<script>
+/* =====================================================================
+   מחולל שאלות + מבדק. השאלות נוצרות מחדש בכל ניגשה — אפשר לחזור עד 100.
+   ===================================================================== */
+const RI = (a,b)=> a + Math.floor(Math.random()*(b-a+1));
+const PK = a => a[RI(0,a.length-1)];
+const pw = e => e===1?'x' : e===2?'x²' : 'x³';
+
+function poly(A,B,Cc){
+  let s='';
+  if(A) s += (A===1?'':A===-1?'−':(A<0?'−'+Math.abs(A):A))+'x²';
+  if(B){ const ab=Math.abs(B); s += (s? (B<0?' − ':' + ') : (B<0?'−':'')) + (ab===1?'':ab) + 'x'; }
+  if(Cc){ s += (s? (Cc<0?' − ':' + ') : (Cc<0?'−':'')) + Math.abs(Cc); }
+  return s || '0';
+}
+function bin(k,p,v){ v=v||'x';
+  const a = (k===1?'':k===-1?'−':k)+v;
+  return a + (p<0? ' − '+Math.abs(p) : ' + '+p); }
+function par(s){ return '('+s+')'; }
+
+/* בונה פריט רב-ברירה ומוודא שכל ההיסחים שונים מהתשובה וזה מזה */
+function mkMC(q,e,correct,ds,sol,h,stage){
+  const seen = new Set([correct]); const out=[{t:correct,c:1}];
+  ds.forEach(d=>{ if(d && d.t && !seen.has(d.t)){ seen.add(d.t); out.push(d); } });
+  const four = out.slice(0,4);
+  for(let i=four.length-1;i>0;i--){ const j=RI(0,i); [four[i],four[j]]=[four[j],four[i]]; }
+  return {k:'mc', q, e, o:four, sol, h, st:stage};
+}
+
+/* ---- 1. חוק הפילוג ---- */
+function g1(){
+  let p,q;
+  do{ p=PK([-9,-8,-7,-6,-5,-4,-3,-2,2,3,4,5,6,7,8,9]); q=PK([-9,-7,-6,-5,-4,-3,-2,2,3,4,5,6,7,9]); }
+  while(p+q===0 || p===q || p*q===p+q);
+  const c = poly(1,p+q,p*q);
+  return mkMC('פתחו את הסוגריים:', par(bin(1,p))+par(bin(1,q)), c,
+    [{t:poly(1,0,p*q), m:'M11', f:'הכפלת רק ראשון בראשון ואחרון באחרון. חסרות שתי המכפלות האמצעיות, שנותנות '+poly(1,p+q,0)+'.'},
+     {t:poly(1,p+q,p+q), m:'M11', f:'האמצע נכון, אבל האיבר האחרון הוא המכפלה '+p+'·'+q+' = '+(p*q)+', לא הסכום.'},
+     {t:poly(1,p*q,p+q), m:'M11', f:'החלפת בין הסכום למכפלה: האמצע הוא הסכום ('+(p+q)+'), והאחרון הוא המכפלה ('+(p*q)+').'},
+     {t:poly(1,p+q,-p*q), m:'M8', f:'טעות סימן באיבר האחרון: '+p+'·'+q+' = '+(p*q)+'.'}],
+    ['x·x = x²','הסכום באמצע: '+p+' + ('+q+') = '+(p+q),'המכפלה בסוף: '+p+'·'+q+' = '+(p*q), c],
+    'ארבע מכפלות. האמצע הוא סכום שני המספרים, הסוף הוא המכפלה שלהם.', 1);
+}
+/* ---- 2. ריבוע של סכום ---- */
+function g2(){
+  const k=PK([1,1,2,3]), p=RI(2,9), c=poly(k*k,2*k*p,p*p);
+  return mkMC('פתחו:', par(bin(k,p))+'²', c,
+    [{t:poly(k*k,0,p*p), m:'M1', f:'זו הטעות הנפוצה ביותר ביחידה. חסר האיבר האמצעי 2ab = '+(2*k*p)+'x. הצב x=1 ותראה שהמספרים לא מסתדרים.'},
+     {t:poly(k*k,k*p,p*p), m:'M3', f:'יש שני מלבנים זהים ולא אחד: האמצע הוא 2·'+(k===1?'x':k+'x')+'·'+p+' = '+(2*k*p)+'x.'},
+     {t:k>1? poly(k,2*k*p,p*p) : poly(k*k,2*k*p,p), m:k>1?'M4':'M3',
+      f:k>1? '('+k+'x)² פירושו '+k+'x·'+k+'x = '+(k*k)+'x². הריבוע חל גם על המקדם.'
+           : 'האיבר האחרון הוא '+p+'² = '+(p*p)+', לא '+p+'.'},
+     {t:poly(k*k,2*k*p,-p*p), m:'M2', f:'‏b² תמיד חיובי כאן — בסוגריים יש פלוס.'}],
+    ['a = '+(k===1?'x':k+'x')+' , b = '+p, 'a² = '+poly(k*k,0,0), '2ab = '+(2*k*p)+'x', 'b² = '+(p*p), c],
+    'a² ועוד פעמיים המכפלה ועוד b².', 2);
+}
+/* ---- 3. ריבוע של הפרש ---- */
+function g3(){
+  const k=PK([1,1,2,3]), p=RI(2,9), c=poly(k*k,-2*k*p,p*p);
+  return mkMC('פתחו:', par(bin(k,-p))+'²', c,
+    [{t:poly(k*k,-2*k*p,-p*p), m:'M2', f:'האיבר האחרון הוא (−'+p+')·(−'+p+') = +'+(p*p)+'. מינוס כפול מינוס הוא פלוס.'},
+     {t:poly(k*k,0,p*p), m:'M1', f:'חסר האיבר האמצעי −'+(2*k*p)+'x.'},
+     {t:poly(k*k,-k*p,p*p), m:'M3', f:'שכחת את הכפל ב‑2: האמצע הוא −2·'+(k===1?'x':k+'x')+'·'+p+' = −'+(2*k*p)+'x.'},
+     {t:poly(k*k,2*k*p,p*p), m:'M2', f:'זו הפתיחה של ריבוע של סכום. כאן בסוגריים יש מינוס, אז האמצע שלילי.'}],
+    ['a = '+(k===1?'x':k+'x')+' , b = '+p, 'a² = '+poly(k*k,0,0), '−2ab = −'+(2*k*p)+'x', '+b² = +'+(p*p), c],
+    'רק האמצע שלילי. האחרון תמיד חיובי.', 3);
+}
+/* ---- 4. הפרש ריבועים (פתיחה) ---- */
+function g4(){
+  const k=PK([1,1,2,3]), p=RI(2,9), c=poly(k*k,0,-p*p);
+  return mkMC('פתחו:', par(bin(k,p))+par(bin(k,-p)), c,
+    [{t:poly(k*k,0,p*p), m:'M5', f:'המכפלה האחרונה היא '+p+'·(−'+p+') = −'+(p*p)+'. שלילית.'},
+     {t:poly(k*k,-2*k*p,-p*p), m:'M10', f:'שני האיברים האמצעיים מבטלים זה את זה: −'+(k*p)+'x + '+(k*p)+'x = 0. אין איבר אמצעי.'},
+     {t:k>1? poly(k,0,-p*p) : poly(1,-p*p,0), m:k>1?'M4':'M10',
+      f:k>1? '('+k+'x)² = '+(k*k)+'x², לא '+k+'x².' : 'האיבר האחרון הוא מספר, בלי x: −'+(p*p)+'.'},
+     {t:poly(k*k,2*k*p,-p*p), m:'M10', f:'האמצע מצטמצם לאפס — הוא לא מתחבר.'}],
+    ['a = '+(k===1?'x':k+'x')+' , b = '+p, 'האמצע מצטמצם: 0', 'a² − b²', c],
+    'אותם איברים, סימן הפוך. האמצע נעלם.', 4);
+}
+/* ---- 5. חישוב מהיר בראש ---- */
+function g5(){
+  const mode = RI(0,2);
+  if(mode===0){ const base=PK([100,50,20,30]), d=RI(1,base>=50?4:3), n=base+d;
+    return {k:'in', q:'חשבו בראש, בלי מחשבון:', e:n+'²', a:n*n, st:5,
+      h:'‏'+n+' = '+base+' + '+d+'. השתמש בנוסחת ריבוע של סכום.',
+      sol:['('+base+' + '+d+')²', base+'² = '+(base*base), '2·'+base+'·'+d+' = '+(2*base*d), d+'² = '+(d*d), (base*base)+' + '+(2*base*d)+' + '+(d*d)+' = '+(n*n)]}; }
+  if(mode===1){ const base=PK([100,50,20,30,40]), d=RI(1,base>=50?4:3), n=base-d;
+    return {k:'in', q:'חשבו בראש:', e:n+'²', a:n*n, st:5,
+      h:'‏'+n+' = '+base+' − '+d+'. השתמש בנוסחת ריבוע של הפרש.',
+      sol:['('+base+' − '+d+')²', base+'² = '+(base*base), '−2·'+base+'·'+d+' = −'+(2*base*d), '+'+d+'² = +'+(d*d), (base*base)+' − '+(2*base*d)+' + '+(d*d)+' = '+(n*n)]}; }
+  const base=PK([100,50,20,30,60,70]), d=RI(1,5);
+  return {k:'in', q:'חשבו בראש:', e:(base+d)+' · '+(base-d), a:(base+d)*(base-d), st:5,
+    h:'שני המספרים במרחק '+d+' מ‑'+base+'. זה בדיוק (a+b)(a−b).',
+    sol:['('+base+' + '+d+')('+base+' − '+d+')', '= '+base+'² − '+d+'²', '= '+(base*base)+' − '+(d*d), '= '+((base+d)*(base-d))]};
+}
+/* ---- 6. הוצאת גורם משותף (מאגר מאומת) ---- */
+const POOL6 = [
+ {e:'8x + 12',      c:'4(2x + 3)',    d:[['4(2x + 12)','M12','חילקת רק את האיבר הראשון. 12 : 4 = 3.'],['2(4x + 6)','M7','נכון אבל לא מלא — בסוגריים נשאר גורם 2.'],['8(x + 12)','M12','‏12 אינו מתחלק ב‑8.']], s:['הגורם המשותף: 4','8x : 4 = 2x','12 : 4 = 3','4(2x + 3)']},
+ {e:'x² + 7x',      c:'x(x + 7)',     d:[['x(x² + 7)','M12','‏x² : x = x, לא x².'],['7x(x + 1)','M12','‏7 אינו גורם של x².'],['x²(1 + 7)','M12','‏7x אינו מתחלק ב‑x².']], s:['הגורם המשותף: x','x² : x = x','7x : x = 7','x(x + 7)']},
+ {e:'15x³ − 10x²',  c:'5x²(3x − 2)',  d:[['5x(3x² − 2x)','M7','נכון אבל לא מלא — נשאר x בסוגריים.'],['5x²(3x + 2)','M8','שים לב לסימן: −10x² : 5x² = −2.'],['5x²(3x − 10)','M12','חילקת רק איבר אחד.']], s:['מספרים: 5','אותיות: x²','15x³ : 5x² = 3x','−10x² : 5x² = −2','5x²(3x − 2)']},
+ {e:'9x + 6',       c:'3(3x + 2)',    d:[['3(3x + 6)','M12','‏6 : 3 = 2.'],['9(x + 6)','M12','‏6 אינו מתחלק ב‑9.'],['3(6x + 2)','M12','‏9x : 3 = 3x.']], s:['הגורם המשותף: 3','9x : 3 = 3x','6 : 3 = 2','3(3x + 2)']},
+ {e:'4x³ + 6x²',    c:'2x²(2x + 3)',  d:[['2x(2x² + 3x)','M7','נכון אבל לא מלא — נשאר x בסוגריים.'],['2x²(2x + 6)','M12','‏6x² : 2x² = 3.'],['x²(4x + 6)','M7','נכון אבל לא מלא — נשאר גורם 2.']], s:['מספרים: 2','אותיות: x²','4x³ : 2x² = 2x','6x² : 2x² = 3','2x²(2x + 3)']},
+ {e:'20x² − 25x',   c:'5x(4x − 5)',   d:[['5x(4x − 25)','M12','‏25x : 5x = 5.'],['5(4x² − 5x)','M7','נכון אבל לא מלא — נשאר x בסוגריים.'],['5x(4x + 5)','M8','שים לב לסימן.']], s:['מספרים: 5','אותיות: x','20x² : 5x = 4x','−25x : 5x = −5','5x(4x − 5)']}
+];
+function g6(){ const it=PK(POOL6);
+  return mkMC('פרקו לגורמים במלואם:', it.e, it.c, it.d.map(([t,m,f])=>({t,m,f})), it.s,
+    'קודם המספרים: מה המשותף הגדול ביותר. אחר כך האותיות: החזקה הנמוכה ביותר.', 6); }
+/* ---- 7. פירוק לפי נוסחה ---- */
+function g7(){
+  if(RI(0,3)===0){ const p=RI(2,9), c='לא ניתן לפירוק';
+    return mkMC('פרקו לגורמים:', poly(1,0,p*p), c,
+      [{t:par(bin(1,p))+par(bin(1,-p)), m:'M6', f:'פתח בחזרה ותקבל x² − '+(p*p)+', עם מינוס. סכום ריבועים אינו מתפרק.'},
+       {t:par(bin(1,p))+'²', m:'M6', f:'פתח בחזרה: '+poly(1,2*p,p*p)+'. יש איבר אמצעי שלא קיים בתרגיל.'},
+       {t:par(bin(1,-p))+'²', m:'M6', f:'פתח בחזרה: '+poly(1,-2*p,p*p)+'. לא מתאים.'}],
+      ['הנוסחה קיימת רק להפרש ריבועים','a² − b² מתפרק','a² + b² אינו מתפרק','לא ניתן לפירוק'],
+      'שאלת מלכודת. בדוק את הסימן באמצע.', 7); }
+  const k=PK([1,1,2,3]), p=RI(2,10), c=par(bin(k,p))+par(bin(k,-p));
+  return mkMC('פרקו לגורמים:', poly(k*k,0,-p*p), c,
+    [{t:par(bin(k,-p))+par(bin(k,-p)), m:'M5', f:'שני סוגריים זהים נותנים ריבוע שלם, ולא הפרש ריבועים. צריך אחד עם פלוס ואחד עם מינוס.'},
+     {t:par(bin(k,p))+par(bin(k,p)), m:'M5', f:'פתח בחזרה ותקבל '+poly(k*k,2*k*p,p*p)+'. צריך סימנים הפוכים.'},
+     {t:k>1? par(bin(k*k,p))+par(bin(k*k,-p)) : par(bin(1,p*p))+par(bin(1,-1)), m:k>1?'M4':'M5',
+      f:k>1? 'השורש של '+(k*k)+'x² הוא '+k+'x, לא '+(k*k)+'x.' : 'פתח בחזרה ותראה שזה לא חוזר לתרגיל.'},
+     {t:par(bin(k,p))+'²', m:'M5', f:'ריבוע נותן שלושה איברים. כאן יש רק שניים.'}],
+    [poly(k*k,0,0)+' = ('+(k===1?'x':k+'x')+')²', (p*p)+' = '+p+'²', 'a² − b² = (a+b)(a−b)', c],
+    'שני איברים בלבד, ובאמצע מינוס — זה הפרש ריבועים.', 7);
+}
+/* ---- 8. טרינום ---- */
+function g8(){
+  let m,n;
+  do{ m=PK([-9,-8,-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7,8,9]); n=PK([-9,-8,-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7,8,9]); }
+  while(m===n || m+n===0 || Math.abs(m*n)>60);
+  const S1=m+n, P=m*n, c=par(bin(1,m))+par(bin(1,n));
+  /* זוג עם אותה מכפלה אך סכום שונה */
+  let alt=null;
+  for(let d=1; d<=Math.abs(P); d++){ if(P%d===0){ const a=d, b=P/d;
+      if(a+b!==S1 && a!==m && a!==n){ alt=[a,b]; break; } } }
+  if(!alt){ for(let d=1; d<=Math.abs(P); d++){ if(P%d===0){ const a=-d, b=P/(-d);
+      if(a+b!==S1){ alt=[a,b]; break; } } } }
+  const ds=[{t:par(bin(1,-m))+par(bin(1,-n)), m:'M9', f:'הפכת את שני הסימנים. כך תקבל '+poly(1,-S1,P)+' — האמצע יוצא הפוך.'}];
+  if(alt) ds.push({t:par(bin(1,alt[0]))+par(bin(1,alt[1])), m:'M9',
+    f:'המכפלה נכונה ('+alt[0]+'·'+alt[1]+' = '+P+') אבל הסכום הוא '+(alt[0]+alt[1])+' ולא '+S1+'. צריך שגם המכפלה וגם הסכום יתאימו.'});
+  ds.push({t:par(bin(1,S1))+par(bin(1,0===P?1:1)), m:'M9', f:'בדוק במכפלה: כאן היא לא יוצאת '+P+'.'});
+  ds.push({t:par(bin(1,m))+par(bin(1,-n)), m:'M9', f:'הפכת סימן אחד. המכפלה יוצאת '+(-P)+' במקום '+P+'.'});
+  return mkMC('פרקו לגורמים:', poly(1,S1,P), c, ds,
+    ['מחפשים שני מספרים: מכפלה '+P+' , סכום '+S1, m+'·'+n+' = '+P+' ✓', m+' + ('+n+') = '+S1+' ✓', c],
+    'קודם המכפלה — היא מצמצמת אפשרויות. אחר כך בודקים סכום.', 8);
+}
+
+/* ---- 9. מיון: במה מדובר? ---- */
+const POOLC = [
+ {e:'x² − 64', c:'הפרש ריבועים', d:[['ריבוע שלם','M5','ריבוע שלם הוא שלושה איברים. כאן שניים.'],['טרינום רגיל','M9','טרינום הוא שלושה איברים.'],['לא ניתן לפירוק','M6','באמצע מינוס ← זה בדיוק הפרש ריבועים: (x+8)(x−8).']], s:['שני איברים','שניהם ריבועים','באמצע מינוס','← הפרש ריבועים']},
+ {e:'x² + 64', c:'לא ניתן לפירוק', d:[['הפרש ריבועים','M6','להפרש דרוש מינוס. כאן פלוס.'],['ריבוע שלם','M6','ריבוע שלם הוא שלושה איברים.'],['טרינום רגיל','M9','טרינום הוא שלושה איברים.']], s:['שני איברים, באמצע פלוס','סכום ריבועים','נדרש m+n=0 ו‑mn=64 ← בלתי אפשרי','← לא מתפרק']},
+ {e:'x² + 16x + 64', c:'ריבוע שלם', d:[['טרינום רגיל','M9','בדוק את האמצע: 2·x·8 = 16x בדיוק. זהו ריבוע שלם.'],['הפרש ריבועים','M5','הפרש ריבועים הוא שני איברים.'],['לא ניתן לפירוק','M6','מתפרק: (x+8)².']], s:['שלושה איברים','64 = 8²','2·x·8 = 16x ✓','← ריבוע שלם: (x+8)²']},
+ {e:'x² + 17x + 16', c:'טרינום רגיל', d:[['ריבוע שלם','M9','בדיקת האמצע: 2·x·4 = 8x, ולא 17x.'],['הפרש ריבועים','M5','שלושה איברים ← לא הפרש ריבועים.'],['לא ניתן לפירוק','M9','מתפרק: סכום 17, מכפלה 16 ← 1 ו‑16.']], s:['שלושה איברים','2·x·4 = 8x ≠ 17x','← טרינום רגיל','(x+1)(x+16)']},
+ {e:'5x² + 20x', c:'גורם משותף', d:[['הפרש ריבועים','M5','אין כאן שני ריבועים ואין מינוס.'],['טרינום רגיל','M9','טרינום הוא שלושה איברים.'],['לא ניתן לפירוק','M7','יש גורם משותף 5x.']], s:['שני איברים','משותף: 5x','← 5x(x + 4)']},
+ {e:'x² − 10x + 25', c:'ריבוע שלם', d:[['טרינום רגיל','M9','האמצע הוא בדיוק 2·x·5 = 10x ← ריבוע שלם, וזה קיצור דרך.'],['הפרש ריבועים','M5','שלושה איברים.'],['לא ניתן לפירוק','M6','מתפרק: (x−5)².']], s:['שלושה איברים','25 = 5²','2·x·5 = 10x ✓ , האמצע שלילי','← (x−5)²']},
+ {e:'x² + 8x + 15', c:'טרינום רגיל', d:[['ריבוע שלם','M9','‏15 אינו ריבוע של מספר שלם, ולכן זה לא ריבוע שלם.'],['הפרש ריבועים','M5','שלושה איברים.'],['לא ניתן לפירוק','M9','מתפרק: סכום 8, מכפלה 15 ← 3 ו‑5.']], s:['שלושה איברים','15 אינו ריבוע','← טרינום רגיל','(x+3)(x+5)']},
+ {e:'2x² − 50', c:'גורם משותף, ואחריו הפרש ריבועים', d:[['הפרש ריבועים בלבד','M4','‏2x² אינו ריבוע נקי. קודם מוציאים 2.'],['גורם משותף בלבד','M7','אחרי הוצאת 2 נשאר x²−25, שמתפרק גם הוא.'],['לא ניתן לפירוק','M7','מתפרק: 2(x+5)(x−5).']], s:['גורם משותף: 2','2(x² − 25)','← 2(x+5)(x−5)']}
+];
+function gC(){ const it=PK(POOLC);
+  return mkMC('במה מדובר? (מיון בלבד — בלי לפרק)', it.e, it.c, it.d.map(([t,m,f])=>({t,m,f})), it.s,
+    'ספור איברים קודם. ולפני הכול — בדוק גורם משותף.', 9); }
+
+/* =====================================================================
+   מבדק
+   ===================================================================== */
+let QUIZ = null;
+function buildQuiz(){ return [g1(),g2(),g3(),g4(),g5(),g6(),g7(),g8(),gC(),gC()]; }
+function startQuiz(){ QUIZ = {items:buildQuiz(), ans:new Array(10).fill(null), i:0}; go('quiz'); }
+
+function vQuiz(){
+  if(!QUIZ) return startQuiz();
+  if(QUIZ.i >= QUIZ.items.length) return finishQuiz();
+  const it = QUIZ.items[QUIZ.i], n = QUIZ.items.length;
+  const dots = QUIZ.items.map((_,i)=>{
+    const col = i===QUIZ.i? 'var(--amber)' : (QUIZ.ans[i]!==null? 'var(--teal)':'var(--line)');
+    return `<span style="width:9px;height:9px;border-radius:99px;background:${col};display:inline-block"></span>`;}).join('');
+  const body = it.k==='mc'
+    ? `<div class="qtext">${MT(qText(it.q))}</div><div class="qbig">${XB(it.e)}</div>
+       <div class="opts">${it.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${'אבגד'[i]}</span><span class="x">${o.t}</span></button>`).join('')}</div>`
+    : `<div class="qtext">${MT(qText(it.q))}</div><div class="qbig">${XB(it.e)}</div>
+       <div class="row" style="justify-content:center;margin-top:8px">
+         <input class="numin" id="ans" inputmode="numeric" autocomplete="off" placeholder="?">
+         <button class="btn amber" id="chk">אישור</button></div>`;
+  app.innerHTML = `<div class="card fade" style="border-top:4px solid var(--amber)">
+    <div class="qhead"><span class="qnum">מבדק · שאלה ${QUIZ.i+1} מתוך ${n} · ${(QUIZ.i)*10} נקודות עד כה אפשריות</span>
+      <span style="display:flex;gap:5px;align-items:center">${dots}</span></div>
+    ${body}
+    <p class="lead" style="font-size:14.5px;margin-top:16px">במבדק אין משוב מיידי — הכול יופיע בסוף, שאלה־שאלה.</p>
+    <div class="row" style="margin-top:12px"><button class="btn ghost" id="ab">יציאה מהמבדק</button></div>
+  </div>`;
+  const submit = v => { QUIZ.ans[QUIZ.i]=v; QUIZ.i++; vQuiz(); window.scrollTo({top:0}); };
+  if(it.k==='mc') document.querySelectorAll('.opt').forEach(b=> b.onclick = ()=> submit(+b.dataset.i));
+  else { const f=()=>{ const v=parseInt(String($('#ans').value).replace(/[^\d\-]/g,''),10); if(!isNaN(v)) submit(v); };
+    $('#chk').onclick=f; $('#ans').onkeydown=e=>{if(e.key==='Enter')f();}; $('#ans').focus(); }
+  $('#ab').onclick = ()=>{ QUIZ=null; go('map'); };
+}
+function quizScore(){
+  let n=0; QUIZ.items.forEach((it,i)=>{ const a=QUIZ.ans[i];
+    if(it.k==='mc'){ if(a!==null && it.o[a] && it.o[a].c) n++; } else if(a===it.a) n++; });
+  return n*10;
+}
+function finishQuiz(){
+  const sc = quizScore(), q = QZ(S);
+  q.tries++; if(q.first===null) q.first=sc; q.best=Math.max(q.best,sc);
+  QUIZ.items.forEach((it,i)=>{ const a=QUIZ.ans[i];
+    if(it.k==='mc' && a!==null && it.o[a] && !it.o[a].c && it.o[a].m){
+      const m=it.o[a].m; q.mis[m]=(q.mis[m]||0)+1; S.mis[m]=(S.mis[m]||0)+1; } });
+  saveS(); go('quizdone');
+}
+function vQuizDone(){
+  const sc = quizScore(), q = QZ(S);
+  const wrong = [];
+  QUIZ.items.forEach((it,i)=>{ const a=QUIZ.ans[i];
+    const ok = it.k==='mc' ? (a!==null && it.o[a] && it.o[a].c) : (a===it.a);
+    if(!ok) wrong.push({it,a,i}); });
+  const perfect = sc===100;
+  const gaps = {}; wrong.forEach(w=>{ if(w.it.k==='mc' && w.a!==null && w.it.o[w.a] && w.it.o[w.a].m){
+    const m=w.it.o[w.a].m; gaps[m]=(gaps[m]||0)+1; } });
+  const gk = Object.keys(gaps).sort((a,b)=>gaps[b]-gaps[a]);
+
+  app.innerHTML = `
+  <div class="card fade" style="text-align:center;border:2px solid ${perfect?'var(--good)':'var(--amber)'}">
+    <div class="eyebrow">${perfect?'מבדק היחידה':'מבדק היחידה · ניסיון '+q.tries}</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:74px;font-weight:600;line-height:1;color:${perfect?'var(--good)':'var(--ink)'}">${sc}</div>
+    <h2 style="font-size:24px;margin-top:8px">${perfect? 'מאה. ולא במקרה.'
+      : sc>=80? 'קרוב מאוד.' : sc>=50? 'יש בסיס. חסרים כמה דברים מדויקים.' : 'עוד לא. וזה בסדר גמור.'}</h2>
+    <p class="lead" style="max-width:430px;margin:10px auto 0">${perfect
+      ? 'ענית נכון על כל עשר השאלות — כולל אלה שבנויות בדיוק על הטעויות הנפוצות. אתה שולט ביחידה.'
+      : 'המבדק הזה נבנה מחדש בכל פעם עם מספרים חדשים. עבור על ' + wrong.length + ' השאלות שלמטה, תקן את מה שחסר, וגש שוב. אין הגבלה על מספר הניסיונות — 100 זה יעד שאפשר להגיע אליו.'}</p>
+    ${q.tries>1? `<div class="stat"><div><b>${sc}</b><small>עכשיו</small></div><div><b>${q.best}</b><small>השיא שלך</small></div>
+      <div><b>${q.first}</b><small>ניסיון ראשון</small></div></div>`:''}
+  </div>
+
+  ${gk.length? `<div class="card fade"><div class="eyebrow">מה בדיוק לתקן לפני שאתה ניגש שוב</div>
+    ${gk.map(k=>`<div class="mis" style="margin:12px 0"><b>${MT(MIS[k].n)}</b>
+      <div style="margin-top:3px">${MT(MIS[k].d)}</div>
+      <div style="margin-top:8px"><button class="btn ghost jump" data-s="${stageOf(k)}">לתרגול השלב הרלוונטי</button></div></div>`).join('')}
+    </div>`:''}
+
+  ${wrong.length? `<div class="card fade"><div class="eyebrow">שאלה־שאלה</div>
+    ${wrong.map(w=>{ const it=w.it;
+      const yours = it.k==='mc' ? (w.a===null?'לא ענית':it.o[w.a].t) : (w.a===null?'לא ענית':w.a);
+      const right = it.k==='mc' ? it.o.find(o=>o.c).t : it.a;
+      const why   = it.k==='mc' && w.a!==null && it.o[w.a].f ? it.o[w.a].f : 'כדאי לעבור על הפתרון המלא שלמטה.';
+      const mc    = it.k==='mc' && w.a!==null ? it.o[w.a].m : null;
+      return `<div style="border-top:1px solid var(--line);padding-top:16px;margin-top:16px">
+        <div class="qbig" style="font-size:22px;padding:4px 0">${XB(it.e)}</div>
+        <div class="row" style="justify-content:center;gap:16px;margin:8px 0">
+          <span style="color:var(--warn)">שלך: ${X(String(yours))}</span>
+          <span style="color:var(--good)">נכון: ${X(String(right))}</span></div>
+        <div style="background:var(--warn-soft);border-radius:10px;padding:12px 14px">
+          <div style="font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn)">במה טעית</div>
+          <div>${MT(why)}</div>
+          ${mc? `<div style="font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn);margin-top:9px">הידע שחסר לך</div>
+            <div><b>${MT(MIS[mc].n)}</b> — ${MT(MIS[mc].d)}</div>`:''}
+        </div>
+        <div class="steps">${it.sol.map(s=>`<div>${X(s)}</div>`).join('')}</div></div>`;
+    }).join('')}</div>`:''}
+
+  <div class="card fade" style="text-align:center">
+    <div class="row" style="justify-content:center">
+      <button class="btn amber" id="again">${perfect?'מבדק נוסף':'מבדק חוזר — שאלות חדשות'}</button>
+      <button class="btn ghost" id="mp">חזרה למפה</button>
+      <button class="btn ghost" id="rp">שליחת דוח למורה</button>
+    </div>
+  </div>`;
+  document.querySelectorAll('.jump').forEach(b=> b.onclick = ()=>{ QUIZ=null; cur={stage:+b.dataset.s,item:0,tries:0,streak:0}; go('stage'); });
+  $('#again').onclick = ()=> startQuiz();
+  $('#mp').onclick = ()=>{ QUIZ=null; go('map'); };
+  $('#rp').onclick = ()=>{ QUIZ=null; go('report'); };
+}
+/* איזה שלב מטפל בפער */
+function stageOf(m){
+  const map = {M1:2,M2:3,M3:2,M4:2,M5:7,M6:9,M7:7,M8:1,M9:8,M10:4,M11:1,M12:6};
+  return map[m]===undefined? 0 : map[m];
+}
+
+/* הפעלה — אחרי שכל החלקים נטענו */
+go('home');
+</script>
+
+
+</body>
+</html>
