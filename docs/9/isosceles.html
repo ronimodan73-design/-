@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>משולש שווה שוקיים · כיתה ט׳</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#1f2937;--mute:#6b7280;--acc:#4f46e5;--acc2:#eef2ff;--ok:#15803d;--okbg:#ecfdf5;--bad:#b91c1c;--badbg:#fef2f2;--hint:#92400e;--hintbg:#fffbeb;--line:#e5e7eb}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:19px;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:10px 14px 50px}
+.m{direction:ltr;unicode-bidi:isolate;display:inline-block;font-weight:600}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 10px}
+header h1{font-size:21px;margin:0}
+.ib{border:0;background:var(--card);border-radius:12px;padding:8px 11px;font-size:18px;box-shadow:0 1px 3px #0001;cursor:pointer}
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 2px 10px #0000000d;margin:12px 0;animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px 16px;font-size:19px;font-family:inherit;cursor:pointer;background:var(--acc);color:#fff;font-weight:600;margin-top:10px}
+.btn.sec{background:var(--acc2);color:var(--acc)}
+.btn:active{transform:scale(.98)}
+.lvl{display:flex;align-items:center;gap:12px;text-align:right;background:var(--card);color:var(--ink);border:2px solid var(--line);font-weight:400}
+.lvl .e{font-size:30px}
+.lvl b{display:block;font-size:19px}
+.lvl small{color:var(--mute);font-size:15px}
+.lvl .sc{margin-inline-start:auto;font-weight:700;color:var(--acc);white-space:nowrap}
+.top{display:flex;justify-content:space-between;color:var(--mute);font-size:16px}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:linear-gradient(270deg,#818cf8,#4f46e5);border-radius:9px;transition:width .4s;margin-inline-start:0}
+.qt{font-size:20px;font-weight:600}
+.opts{display:grid;gap:9px;margin-top:12px}
+.op{border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px;font-size:18px;font-family:inherit;text-align:right;cursor:pointer;color:var(--ink)}
+.op:disabled{opacity:.45}
+.op.pick{border-color:var(--acc);background:var(--acc2);opacity:1}
+.op.good{border-color:var(--ok);background:var(--okbg);opacity:1}
+.op.wrong{border-color:var(--bad);background:var(--badbg);animation:sh .3s}
+@keyframes sh{25%{transform:translateX(6px)}75%{transform:translateX(-6px)}}
+.num{display:flex;gap:8px;margin-top:12px}
+.num input{flex:1;font-size:22px;padding:10px;border:2px solid var(--line);border-radius:14px;text-align:center;font-family:inherit;direction:ltr;min-width:0}
+.num .btn{width:auto;margin:0;padding:0 22px}
+.fb{border-radius:14px;padding:12px 14px;margin-top:12px;animation:up .3s}
+.fb.ok{background:var(--okbg);color:#064e3b}
+.fb.hi{background:var(--hintbg);color:var(--hint)}
+.fb.no{background:var(--badbg);color:#7f1d1d}
+.fb .sol{color:var(--ink);margin-top:6px;font-size:17px}
+.link{background:none;border:0;color:var(--acc);text-decoration:underline;font-size:16px;font-family:inherit;cursor:pointer;padding:4px 0}
+.fig{width:100%;max-width:340px;max-height:240px;display:block;margin:8px auto 0;direction:ltr}
+.fig .pl{fill:#eef2ff;stroke:#334155;stroke-width:2.6;stroke-linejoin:round}
+.fig .ln{stroke:#334155;stroke-width:2.6;stroke-linecap:round}
+.fig .sg{stroke:#0891b2;stroke-width:2.6}
+.fig .ex{stroke:#334155;stroke-width:2.2;stroke-dasharray:7 5}
+.fig .tk{stroke:#334155;stroke-width:2.4}
+.fig .mk,.fig .ar{fill:none;stroke:#e11d48;stroke-width:2}
+.fig text{font-family:Arial,sans-serif;text-anchor:middle;dominant-baseline:middle}
+.fig .an{fill:#be123c;font-size:16em;font-weight:700}
+.fig .sd{fill:#0f766e;font-size:16em;font-weight:700}
+.fig .nm{fill:#111827;font-size:18em;font-weight:700}
+.fig line,.fig polygon,.fig path{stroke-dasharray:1400;stroke-dashoffset:1400;animation:dr .9s ease forwards}
+.fig .ex{stroke-dasharray:7 5;stroke-dashoffset:0;animation:fd .5s forwards}
+.fig text,.fig .tk,.fig .mk,.fig .ar{opacity:0;animation:fd .4s .7s forwards;stroke-dasharray:none;stroke-dashoffset:0}
+@keyframes dr{to{stroke-dashoffset:0}}
+@keyframes fd{to{opacity:1}}
+.row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.row>div{flex:1;min-width:95px;text-align:center;font-size:15px;color:var(--mute)}
+.row .fig{max-height:140px}
+.did{background:#f0fdf4;border-inline-start:4px solid #22c55e;border-radius:10px;padding:8px 12px;margin-top:10px;font-size:17px}
+.did b{color:#15803d}
+.steps div{opacity:0;animation:up .4s forwards;padding:6px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;gap:10px}
+.steps small{color:#15803d;font-size:15px}
+.dots{display:flex;justify-content:center;gap:6px;margin:8px 0}
+.dots i{width:9px;height:9px;border-radius:9px;background:var(--line)}
+.dots i.on{background:var(--acc);width:22px}
+.nav{display:flex;gap:8px}.nav .btn{flex:1;padding:13px 6px;font-size:17px;white-space:nowrap}
+.big{font-size:58px;font-weight:800;text-align:center;color:var(--acc);line-height:1.1}
+.stars{text-align:center;font-size:34px;letter-spacing:4px}
+.center{text-align:center}
+table{width:100%;border-collapse:collapse;font-size:17px}
+td,th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
+.pill{display:inline-block;background:var(--acc2);color:var(--acc);border-radius:20px;padding:2px 12px;margin:3px;font-size:16px}
+.name{width:100%;font-size:19px;padding:10px;border:2px solid var(--line);border-radius:12px;font-family:inherit}
+.burst{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+.burst span{position:absolute;top:-30px;font-size:26px;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(300deg);opacity:.2}}
+footer{text-align:center;color:var(--mute);font-size:14px;margin-top:20px}
+@media print{header .ib,.btn,.link,footer{display:none!important}body{background:#fff}.card{box-shadow:none;border:1px solid #ccc}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div><h1>📐 משולש שווה שוקיים</h1><div style="font-size:14px;color:var(--mute)">שחקים · ערכה: רוני מודן</div></div><div><button class="ib" onclick="go('home')" title="בית">🏠</button> <button class="ib" onclick="fs()" title="מסך מלא">⛶</button></div></header>
+<main id="app"></main>
+<footer>ערכה: רוני מודן · שחקים · כיתה ט׳</footer>
+</div>
+<div class="burst" id="burst"></div>
+<script>
+// ---------- כלים ----------
+const $=s=>document.querySelector(s);
+const ri=(a,b,s=1)=>a+s*Math.floor(Math.random()*(Math.floor((b-a)/s)+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const M=s=>`<span class="m">${s}</span>`;
+const dg=n=>M(n+'°');
+function ex(k,c,v='x'){let s=k===0?'':(k===1?v:k+v);if(c){s=s?s+(c>0?' + '+c:' − '+(-c)):String(c)}return s||'0'}
+function mc(right,wrongs){const o=shuffle([{h:right,r:1},...wrongs.map(h=>({h,r:0}))]);return{type:'mc',opts:o.map(x=>x.h),ans:o.findIndex(x=>x.r)}}
+// גאומטריה
+const V=(a,b)=>[b[0]-a[0],b[1]-a[1]],Ln=v=>Math.hypot(v[0],v[1]),N=v=>{const l=Ln(v)||1;return[v[0]/l,v[1]/l]},add=(a,v,k=1)=>[a[0]+v[0]*k,a[1]+v[1]*k],mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
+const R=Math.PI/180;
+function isoP(apex=60,n=['A','B','C']){const a=Math.min(150,Math.max(36,apex)),h=120/Math.tan(a*R/2);return{[n[0]]:[120,200-h],[n[1]]:[0,200],[n[2]]:[240,200]}}
+function angP(b,c,n=['A','B','C']){const AB=240*Math.sin(c*R)/Math.sin((b+c)*R);return{[n[0]]:[AB*Math.cos(b*R),200-AB*Math.sin(b*R)],[n[1]]:[0,200],[n[2]]:[240,200]}}
+function sideP(ab,ac,bc){const k=240/bc;ab*=k;ac*=k;const x=(ab*ab-ac*ac+240*240)/480,y=Math.sqrt(Math.max(0,ab*ab-x*x));return{A:[x,200-y],B:[0,200],C:[240,200]}}
+function lineP(t){const O=[150,150];return{L:[10,150],R:[290,150],O,X:add(O,[Math.cos(t*R),-Math.sin(t*R)],115)}}
+function fig(P,o={}){
+ const ks=Object.keys(P),pts=ks.map(k=>P[k]),xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),K=Math.max(1,(Math.max(...xs)-Math.min(...xs))/300,(Math.max(...ys)-Math.min(...ys))/230),pad=(o.pad||38)*K;
+ const x0=Math.min(...xs)-pad,y0=Math.min(...ys)-pad,w=Math.max(...xs)-Math.min(...xs)+2*pad,h=Math.max(...ys)-Math.min(...ys)+2*pad;
+ const cp=o.poly||ks,cen=[cp.reduce((s,k)=>s+P[k][0],0)/cp.length,cp.reduce((s,k)=>s+P[k][1],0)/cp.length];
+ const f=n=>n.toFixed(1);let g='';
+ if(o.poly)g+=`<polygon class="pl" points="${o.poly.map(k=>P[k].map(f).join(',')).join(' ')}"/>`;
+ for(const[a,b,c]of(o.segs||[]))g+=`<line class="${c||'sg'}" x1="${f(P[a][0])}" y1="${f(P[a][1])}" x2="${f(P[b][0])}" y2="${f(P[b][1])}"/>`;
+ for(const[v,a,b]of(o.right||[])){const u1=N(V(P[v],P[a])),u2=N(V(P[v],P[b])),s=13*K,p1=add(P[v],u1,s),p2=add(p1,u2,s),p3=add(P[v],u2,s);g+=`<path class="mk" d="M${f(p1[0])} ${f(p1[1])}L${f(p2[0])} ${f(p2[1])}L${f(p3[0])} ${f(p3[1])}"/>`}
+ for(const[v,a,b,cnt]of(o.arcs||[])){const u1=N(V(P[v],P[a])),u2=N(V(P[v],P[b])),sw=(u1[0]*u2[1]-u1[1]*u2[0])>0?1:0;for(let i=0;i<(cnt||1);i++){const r=(22+i*5)*K,s=add(P[v],u1,r),e=add(P[v],u2,r);g+=`<path class="ar" d="M${f(s[0])} ${f(s[1])}A${r.toFixed(1)} ${r.toFixed(1)} 0 0 ${sw} ${f(e[0])} ${f(e[1])}"/>`}}
+ for(const[a,b,cnt]of(o.ticks||[])){const d=N(V(P[a],P[b])),n=[-d[1],d[0]],m=mid(P[a],P[b]);for(let i=0;i<cnt;i++){const c=add(m,d,(i-(cnt-1)/2)*7*K),p=add(c,n,8*K),q=add(c,n,-8*K);g+=`<line class="tk" x1="${f(p[0])}" y1="${f(p[1])}" x2="${f(q[0])}" y2="${f(q[1])}"/>`}}
+ for(const[a,b,t]of(o.sides||[])){const d=N(V(P[a],P[b]));let n=[-d[1],d[0]];const m=mid(P[a],P[b]);if((m[0]-cen[0])*n[0]+(m[1]-cen[1])*n[1]<0)n=[-n[0],-n[1]];const p=add(m,n,(18+String(t).length*4*Math.abs(n[0]))*K);g+=`<text class="sd" x="${f(p[0])}" y="${f(p[1])}">${t}</text>`}
+ for(const[v,a,b,t,dl]of(o.ang||[])){const u1=N(V(P[v],P[a])),u2=N(V(P[v],P[b])),bis=N(add(u1,u2)),th=Math.acos(Math.max(-1,Math.min(1,u1[0]*u2[0]+u1[1]*u2[1])));const r=(Math.min(80,Math.max(32,19/Math.sin(th/2)))+String(t).length*2.6)*K,p=add(P[v],bis,r);g+=`<text class="an" x="${f(p[0])}" y="${f(p[1])}"${dl?` style="animation-delay:${dl}s"`:''}>${t}</text>`}
+ for(const k of(o.names===undefined?ks:o.names)){const d=N(V(cen,P[k])),p=add(P[k],d,17*K);g+=`<text class="nm" x="${f(p[0])}" y="${f(p[1])}">${k}</text>`}
+ return `<svg class="fig" style="font-size:${K}px" viewBox="${f(x0)} ${f(y0)} ${f(w)} ${f(h)}">${g}</svg>`}
+const TRI=['A','B','C'],legs=(t=TRI)=>[[t[0],t[1],1],[t[0],t[2],1]];
+const SETS=[['A','B','C'],['K','L','M'],['P','Q','R'],['S','T','U']];
+
+// ---------- נושאים ורמזים ----------
+const T={
+ sum:{n:'סכום הזוויות במשולש',h:'סכום שלוש הזוויות בכל משולש הוא '+dg(180)+'.',c:0},
+ adj:{n:'זוויות צמודות',h:'זוויות צמודות (יחד הן קו ישר) – סכומן '+dg(180)+'.',c:1},
+ iso:{n:'שוקיים, בסיס וזוויות בסיס',h:'במשולש שווה שוקיים שתי השוקיים שוות, וזוויות הבסיס שוות זו לזו.',c:2},
+ ident:{n:'זיהוי משולש שווה שוקיים',h:'משולש הוא שווה שוקיים אם יש בו שתי צלעות שוות – או שתי זוויות שוות.',c:3},
+ seg:{n:'תיכון, גובה, חוצה זווית',h:'תיכון – מגיע לאמצע הצלע. גובה – יוצר זווית של '+dg(90)+'. חוצה זווית – מחלק זווית לשני חלקים שווים.',c:4},
+ three:{n:'שלושה באחד: תיכון = גובה = חוצה זווית',h:'במשולש שווה שוקיים, הקטע מזווית הראש אל הבסיס הוא גם תיכון, גם גובה וגם חוצה זווית.',c:5},
+ eq:{n:'משוואות עם זוויות וצלעות',h:'כותבים משוואה: מחברים את הזוויות ומשווים ל-'+dg(180)+', או משווים שתי צלעות שוות. ואז פותרים.',c:6},
+ think:{n:'חשיבה והסקה',h:'עצרו ובדקו כל אפשרות: האם כל הזוויות חיוביות? האם הסכום '+dg(180)+'?',c:2}
+};
+
+// ---------- רמה 1: ידע וזיהוי ----------
+const triOK=s=>s[0]<s[1]+s[2]&&s[1]<s[0]+s[2]&&s[2]<s[0]+s[1];
+let factPool=[];
+const FACTS=[
+ {q:'סכום הזוויות בכל משולש הוא:',r:dg(180),w:[dg(90),dg(360),dg(270)],tag:'sum',s:'בכל משולש, בלי יוצא מן הכלל, סכום הזוויות הוא '+dg(180)+'.'},
+ {q:'שתי זוויות צמודות (יחד הן קו ישר) – סכומן:',r:dg(180),w:[dg(90),dg(360),dg(100)],tag:'adj',s:'קו ישר הוא חצי סיבוב: '+dg(180)+'.'},
+ {q:'במשולש שווה שוקיים – אילו זוויות שוות?',r:'שתי זוויות הבסיס',w:['זווית הראש וזווית בסיס','כל שלוש הזוויות, תמיד','אף זווית לא שווה'],tag:'iso',s:'הזוויות שליד הבסיס (מול השוקיים) שוות זו לזו.'},
+ {q:'קטע שיוצא מקודקוד אל אמצע הצלע שמולו נקרא:',r:'תיכון',w:['גובה','חוצה זווית','בסיס'],tag:'seg',s:'תיכון = מגיע ל<b>אמצע</b> הצלע.'},
+ {q:'גובה במשולש יוצר עם הצלע שמולו זווית של:',r:dg(90),w:[dg(180),dg(45),dg(60)],tag:'seg',s:'גובה תמיד מאונך לצלע: '+dg(90)+'.'},
+ {q:'במשולש שווה צלעות, כל זווית היא:',r:dg(60),w:[dg(90),dg(45),dg(180)],tag:'ident',s:'שלוש זוויות שוות: 180 : 3 = 60.'}];
+const L1=[
+ ()=>{const yes=Math.random()<.55;let s;if(yes){const a=ri(4,9);let b;do{b=ri(3,12)}while(b===a||b>=2*a);s=shuffle([a,a,b])}else{do{s=[ri(3,10),ri(3,10),ri(3,10)]}while(new Set(s).size<3||!triOK(s))}
+  return{tag:'ident',k:s.join(','),q:'האם המשולש שווה שוקיים?',fig:fig(sideP(s[0],s[1],s[2]),{poly:TRI,sides:[['A','B',s[0]],['A','C',s[1]],['B','C',s[2]]]}),...mc(yes?'כן':'לא',[yes?'לא':'כן']),
+  sol:yes?'יש בו שתי צלעות שוות (שני מספרים זהים) – לכן הוא שווה שוקיים.':'כל שלוש הצלעות שונות זו מזו – לכן הוא <b>לא</b> שווה שוקיים.'}},
+ ()=>{const t=pick(SETS),i=ri(0,2),ap=t[i],o=t.filter(x=>x!==ap),ask=pick(['b','a','ba']);const F=fig(isoP(ri(40,100,10),[ap,o[0],o[1]]),{poly:[ap,o[0],o[1]],ticks:[[ap,o[0],1],[ap,o[1],1]]});
+  const A=x=>M('∠'+x);
+  if(ask==='b')return{tag:'iso',k:ap+ask,q:'הקווים הקטנים מסמנים צלעות שוות. מהו <b>הבסיס</b>?',fig:F,...mc(M(o[0]+o[1]),[M(ap+o[0]),M(ap+o[1])]),sol:'השוקיים מסומנות. הבסיס הוא הצלע השלישית: '+M(o[0]+o[1])+'.'};
+  if(ask==='a')return{tag:'iso',k:ap+ask,q:'מהי <b>זווית הראש</b>?',fig:F,...mc(A(ap),[A(o[0]),A(o[1])]),sol:'זווית הראש נמצאת בין שתי השוקיים: '+A(ap)+'.'};
+  return{tag:'iso',k:ap+ask,q:'מהן <b>זוויות הבסיס</b>?',fig:F,...mc(A(o[0])+' ו-'+A(o[1]),[A(ap)+' ו-'+A(o[0]),A(ap)+' ו-'+A(o[1])]),sol:'זוויות הבסיס יושבות על הבסיס '+M(o[0]+o[1])+': '+A(o[0])+' ו-'+A(o[1])+'.'}},
+ ()=>{if(!factPool.length)factPool=shuffle(FACTS);const F=factPool.pop();return{tag:F.tag,k:F.q,q:F.q,...mc(F.r,F.w),sol:F.s}},
+ ()=>{let b,c,a;do{b=ri(30,80,10);c=ri(30,80,10);a=180-b-c}while(a<20);
+  return{tag:'sum',k:b+','+c,q:'מצאו את '+M('∠A')+' (במעלות).',fig:fig(angP(b,c),{poly:TRI,ang:[['B','A','C',b+'°'],['C','A','B',c+'°'],['A','B','C','?']]}),type:'num',ans:a,sol:M(`180 − ${b} − ${c} = ${a}`)+' &nbsp;לכן '+M('∠A = '+a+'°')}},
+ ()=>{const b=ri(35,80,5),g=pick(['B','C']),o=g==='B'?'C':'B';
+  return{tag:'iso',k:b+g,q:M('AB = AC')+'. מצאו את '+M('∠'+o)+'.',fig:fig(isoP(180-2*b),{poly:TRI,ticks:legs(),ang:[[g,'A',o,b+'°'],[o,'A',g,'?']]}),type:'num',ans:b,sol:'זוויות הבסיס שוות: '+M(`∠${o} = ∠${g} = ${b}°`)}},
+ ()=>{const t=ri(30,150,5);if(t===90)return L1[5]();const giveR=Math.random()<.5,P=lineP(t);
+  return{tag:'adj',k:t+''+giveR,q:'שתי הזוויות יוצרות יחד קו ישר. מהי הזווית המסומנת ב-?',fig:fig(P,{names:[],segs:[['L','R','ln'],['O','X','ln']],ang:[['O','R','X',giveR?t+'°':'?'],['O','L','X',giveR?'?':(180-t)+'°']]}),type:'num',ans:giveR?180-t:t,sol:'זוויות צמודות – סכומן 180: '+M(`180 − ${giveR?t:180-t} = ${giveR?180-t:t}`)}},
+ ()=>{const ty=pick(['m','h','b']),ax=ri(45,95,10),P={A:[ax,40],B:[0,200],C:[260,200]};
+  let D;if(ty==='m')D=mid(P.B,P.C);else if(ty==='h')D=[ax,200];else{const ab=Ln(V(P.A,P.B)),ac=Ln(V(P.A,P.C));D=add(P.B,V(P.B,P.C),ab/(ab+ac))}P.D=D;
+  const o={poly:TRI,segs:[['A','D']]};if(ty==='m')o.ticks=[['B','D',1],['D','C',1]];if(ty==='h')o.right=[['D','A','C']];if(ty==='b')o.arcs=[['A','B','D',1],['A','D','C',2]];
+  if(ty==='b'){o.arcs=[['A','B','D',1],['A','D','C',1]]}
+  const nm={m:'תיכון',h:'גובה',b:'חוצה זווית'},sol={m:'הסימנים מראים ש-'+M('BD = DC')+': D היא אמצע הצלע – לכן '+M('AD')+' תיכון.',h:'הריבוע הקטן מסמן '+dg(90)+' – לכן '+M('AD')+' גובה.',b:'שתי הקשתות מסמנות זוויות שוות – '+M('AD')+' מחלק את '+M('∠A')+' לשניים: חוצה זווית.'};
+  return{tag:'seg',k:ty+ax,q:'לפי הסימונים בשרטוט, הקטע '+M('AD')+' הוא:',fig:fig(P,o),...mc(nm[ty],Object.keys(nm).filter(x=>x!==ty).map(x=>nm[x])),sol:sol[ty]}}];
+
+// ---------- רמה 2: הבנה ----------
+const L2=[
+ ()=>{const b=ri(30,80,5),a=180-2*b;return{tag:'iso',k:'af'+b,q:M('AB = AC')+'. מצאו את זווית הראש '+M('∠A')+'.',fig:fig(isoP(a),{poly:TRI,ticks:legs(),ang:[['B','A','C',b+'°'],['A','B','C','?']]}),type:'num',ans:a,sol:'צעד 1: '+M(`∠C = ∠B = ${b}°`)+' (זוויות בסיס)<br>צעד 2: '+M(`∠A = 180 − ${b} − ${b} = ${a}°`)}},
+ ()=>{const a=ri(20,140,10),b=(180-a)/2;return{tag:'iso',k:'bf'+a,q:M('AB = AC')+', זווית הראש '+M('∠A = '+a+'°')+'. מצאו את '+M('∠B')+'.',fig:fig(isoP(a),{poly:TRI,ticks:legs(),ang:[['A','B','C',a+'°'],['B','A','C','?']]}),type:'num',ans:b,sol:'צעד 1: לשתי זוויות הבסיס יחד נשאר '+M(`180 − ${a} = ${180-a}`)+'<br>צעד 2: הן שוות, אז מחלקים לשניים: '+M(`${180-a} : 2 = ${b}°`)}},
+ ()=>{const yes=Math.random()<.55;let b,c,a;if(yes){const k=pick([30,40,50,70,80,35,55,65,75]);if(Math.random()<.5){b=k;c=180-2*k}else{b=k;c=k}if(b+c>=170){b=k;c=k}a=180-b-c}else{do{b=ri(30,100,10);c=ri(30,100,10);a=180-b-c}while(a<20||a===b||a===c||b===c)}
+  const same=a===b||a===c||b===c;return{tag:'ident',k:b+','+c,q:'שתי זוויות במשולש הן '+dg(b)+' ו-'+dg(c)+'. האם המשולש שווה שוקיים?',fig:fig(angP(b,c),{poly:TRI,ang:[['B','A','C',b+'°'],['C','A','B',c+'°'],['A','B','C','?']]}),...mc(same?'כן':'לא',[same?'לא':'כן']),
+  sol:'קודם מוצאים את הזווית השלישית: '+M(`180 − ${b} − ${c} = ${a}`)+'.<br>הזוויות: '+M(`${b}°, ${c}°, ${a}°`)+' – '+(same?'יש שתי זוויות שוות ← שווה שוקיים.':'כולן שונות ← לא שווה שוקיים.')}},
+ ()=>{const v=ri(1,4),ap=ri(40,100,10),P=isoP(ap);P.D=mid(P.B,P.C);const o={poly:TRI,ticks:legs(),segs:[['A','D']]};const m=ri(3,9);
+  if(v===1){o.ticks.push(['B','D',2],['D','C',2]);return{tag:'seg',k:'v1'+m,q:M('AB = AC')+', '+M('AD')+' תיכון לבסיס, '+M('BC = '+2*m)+' ס״מ. מה אורך '+M('BD')+'?',fig:fig(P,o),type:'num',ans:m,sol:'תיכון מגיע לאמצע הצלע, לכן '+M(`BD = ${2*m} : 2 = ${m}`)+' ס״מ.'}}
+  if(v===2){o.ticks.push(['B','D',2],['D','C',2]);o.ang=[['D','B','A','?']];return{tag:'three',k:'v2'+ap,q:M('AB = AC')+', '+M('AD')+' תיכון לבסיס. מצאו את '+M('∠ADB')+'.',fig:fig(P,o),type:'num',ans:90,sol:'במשולש שווה שוקיים התיכון לבסיס הוא גם <b>גובה</b>, לכן '+M('∠ADB = 90°')+'.'}}
+  if(v===3){const a=ri(40,120,10),Q=isoP(a);Q.D=mid(Q.B,Q.C);return{tag:'seg',k:'v3'+a,q:M('AD')+' חוצה את זווית הראש, '+M('∠BAC = '+a+'°')+'. מצאו את '+M('∠BAD')+'.',fig:fig(Q,{poly:TRI,ticks:legs(),segs:[['A','D']],arcs:[['A','B','D',1],['A','D','C',1]]}),type:'num',ans:a/2,sol:'חוצה זווית מחלק אותה לשני חלקים שווים: '+M(`${a} : 2 = ${a/2}°`)}}
+  o.right=[['D','A','C']];return{tag:'three',k:'v4'+m,q:M('AB = AC')+', '+M('AD')+' גובה לבסיס, '+M('BD = '+m)+' ס״מ. מה אורך '+M('BC')+'?',fig:fig(P,o),type:'num',ans:2*m,sol:'במשולש שווה שוקיים הגובה לבסיס הוא גם <b>תיכון</b> – D אמצע '+M('BC')+'.<br>'+M(`BC = 2 · ${m} = ${2*m}`)+' ס״מ.'}},
+ ()=>{const e=ri(100,170,10),b=180-e,P=isoP(180-2*b);P.E=add(P.C,[1,0],80);
+  return{tag:'adj',k:'eb'+e,q:M('AB = AC')+'. הצלע '+M('BC')+' הוארכה עד E. מצאו את '+M('∠B')+'.',fig:fig(P,{poly:TRI,ticks:legs(),segs:[['C','E','ex']],ang:[['C','E','A',e+'°'],['B','A','C','?']]}),type:'num',ans:b,sol:'צעד 1: צמודות – '+M(`∠ACB = 180 − ${e} = ${b}°`)+'<br>צעד 2: זוויות בסיס שוות – '+M(`∠B = ${b}°`)}},
+ ()=>{const L=ri(5,12);let b;do{b=ri(4,15)}while(b===L||b>=2*L);const P=isoP(Math.round(2*Math.asin(b/(2*L))/R));
+  if(Math.random()<.5)return{tag:'iso',k:'p1'+L+b,q:M('AB = AC')+'. מצאו את היקף המשולש (ס״מ).',fig:fig(P,{poly:TRI,ticks:legs(),sides:[['A','B',L],['B','C',b]]}),type:'num',ans:2*L+b,sol:M(`AC = AB = ${L}`)+'<br>היקף: '+M(`${L} + ${L} + ${b} = ${2*L+b}`)+' ס״מ'};
+  return{tag:'think',k:'p2'+L+b,q:'במשולש שווה שוקיים ההיקף '+M(2*L+b)+' ס״מ והבסיס '+M(b)+' ס״מ. מה אורך כל שוק?',fig:fig(P,{poly:TRI,ticks:legs(),sides:[['B','C',b]]}),type:'num',ans:L,sol:'לשתי השוקיים יחד נשאר '+M(`${2*L+b} − ${b} = ${2*L}`)+'<br>הן שוות: '+M(`${2*L} : 2 = ${L}`)+' ס״מ'}}];
+
+// ---------- רמה 3: יישום – משוואות ----------
+function solveLin(A,C,rhs){ // A·x + C = rhs
+ const lines=[M(`${ex(A,C)} = ${rhs}`)];if(C)lines.push(M(`${ex(A,0)} = ${rhs-C}`));if(A!==1)lines.push(M(`x = ${rhs-C} : ${A} = ${(rhs-C)/A}`));else if(C)lines.push(M(`x = ${rhs-C}`));return lines.join('<br>')}
+const L3=[
+ ()=>{const x=ri(20,70,5),k=ri(1,3),c=(180-2*x)-k*x;if(180-2*x<=0||Math.abs(c)>60)return L3[0]();
+  return{tag:'eq',k:'e1'+x+k,q:M('AB = AC')+'. מצאו את x.',fig:fig(isoP(180-2*x),{poly:TRI,ticks:legs(),ang:[['B','A','C','x'],['C','A','B','x'],['A','B','C',ex(k,c)]]}),type:'num',ans:x,sol:'מחברים את 3 הזוויות: '+M(`x + x + ${ex(k,c)} = 180`)+'<br>'+solveLin(2+k,c,180)}},
+ ()=>{const x=ri(10,60,10),k=ri(1,2),base=(180-k*x)/2,c=base-x;if(c===0||base<=10)return L3[1]();
+  return{tag:'eq',k:'e2'+x+k,q:M('AB = AC')+'. מצאו את x.',fig:fig(isoP(k*x),{poly:TRI,ticks:legs(),ang:[['B','A','C',ex(1,c)],['C','A','B',ex(1,c)],['A','B','C',ex(k,0)]]}),type:'num',ans:x,sol:M(`(${ex(1,c)}) + (${ex(1,c)}) + ${ex(k,0)} = 180`)+'<br>'+solveLin(2+k,2*c,180)}},
+ ()=>{const s=pick([[1,2,3],[2,3,4],[1,1,2],[2,3,5],[1,2,2],[3,4,5],[1,3,5],[2,2,5],[1,4,4]]),x=180/(s[0]+s[1]+s[2]);
+  return{tag:'eq',k:'e3'+s,q:'אלה זוויות המשולש. מצאו את x.',fig:fig(angP(s[0]*x,s[1]*x),{poly:TRI,ang:[['A','B','C',ex(s[2],0)],['B','A','C',ex(s[0],0)],['C','A','B',ex(s[1],0)]]}),type:'num',ans:x,sol:M(`${ex(s[0],0)} + ${ex(s[1],0)} + ${ex(s[2],0)} = 180`)+'<br>'+solveLin(s[0]+s[1]+s[2],0,180)}},
+ ()=>{const x=ri(2,8),a=ri(2,5);let c;do{c=ri(1,6)}while(c===a);const b=ri(1,9),d=(a-c)*x+b;if(c*x+d<=0)return L3[3]();const len=a*x+b;
+  const st=a>c?M(`${ex(a-c,0)} = ${d-b}`):M(`${ex(c-a,0)} = ${b-d}`);
+  return{tag:'eq',k:'e4'+x+a+c+b,q:'המשולש שווה שוקיים: '+M('AB = AC')+'. מצאו את x.',fig:fig(isoP(ri(40,80,10)),{poly:TRI,ticks:legs(),sides:[['A','B',ex(a,b)],['A','C',ex(c,d)]]}),type:'num',ans:x,sol:'משווים את השוקיים: '+M(`${ex(a,b)} = ${ex(c,d)}`)+'<br>'+st+'<br>'+M(`x = ${x}`)+' &nbsp;(כל שוק: '+M(`${a}·${x} + ${b} = ${len}`)+')'}},
+ ()=>{let x,k,m,c;do{x=ri(10,50,5);k=ri(1,3);m=ri(1,2);c=180-(k+m)*x}while(c<-40||c>80||c===0||k*x+c<=10||m*x<=10||m*x>=170);const t=m*x;
+  return{tag:'eq',k:'e5'+x+k+m,q:'שתי הזוויות יוצרות יחד קו ישר. מצאו את x.',fig:fig(lineP(t),{names:[],segs:[['L','R','ln'],['O','X','ln']],ang:[['O','R','X',ex(m,0)],['O','L','X',ex(k,c)]]}),type:'num',ans:x,sol:'זוויות צמודות: '+M(`${ex(k,c)} + ${ex(m,0)} = 180`)+'<br>'+solveLin(k+m,c,180)}},
+ ()=>{const x=ri(30,70,5),k=ri(2,3),c=180-(k+1)*x,P=isoP(180-2*x);P.E=add(P.C,[1,0],85);const ap=180-2*x;
+  return{tag:'eq',k:'e6'+x+k,q:M('AB = AC')+'. מצאו את x, ואז כתבו את '+M('∠A')+'.',fig:fig(P,{poly:TRI,ticks:legs(),segs:[['C','E','ex']],ang:[['C','A','B','x'],['C','E','A',ex(k,c)],['A','B','C','?']]}),type:'num',ans:ap,sol:'צמודות: '+M(`x + ${ex(k,c)} = 180`)+'<br>'+solveLin(k+1,c,180)+'<br>'+M(`∠B = ∠C = ${x}°`)+' ← '+M(`∠A = 180 − 2·${x} = ${ap}°`)}}];
+
+// ---------- רמה 4: חשיבה מסדר גבוה ----------
+let tfPool=[];
+const TF=[
+ {q:'זווית בסיס במשולש שווה שוקיים יכולה להיות '+dg(90)+'.',r:'לא נכון – שתי זוויות הבסיס יחד כבר '+dg(180)+', ולזווית הראש לא נשאר כלום.',w:['נכון – זה משולש ישר זווית שווה שוקיים.','נכון – כל זווית יכולה להיות '+dg(90)+'.']},
+ {q:'זווית הראש במשולש שווה שוקיים יכולה להיות קהה (גדולה מ-'+dg(90)+').',r:'נכון – למשל '+M('120°, 30°, 30°')+'.',w:['לא נכון – כל הזוויות חייבות להיות חדות.','לא נכון – זווית הראש תמיד '+dg(60)+'.']},
+ {q:'כל משולש שווה צלעות הוא גם שווה שוקיים.',r:'נכון – יש בו (לפחות) שתי צלעות שוות.',w:['לא נכון – יש בו שלוש צלעות שוות ולא שתיים.','לא נכון – אין לו בסיס.']},
+ {q:'כל משולש שווה שוקיים הוא גם שווה צלעות.',r:'לא נכון – למשל משולש עם צלעות '+M('5, 5, 8')+'.',w:['נכון – השוקיים שוות ולכן הכול שווה.','נכון – כי זוויות הבסיס שוות.']},
+ {q:'במשולש שווה שוקיים, התיכון ל<b>שוק</b> הוא תמיד גם גובה.',r:'לא נכון – רק הקטע מזווית הראש אל <b>הבסיס</b> הוא גם תיכון וגם גובה.',w:['נכון – כל תיכון הוא גם גובה.','נכון – כי השוקיים שוות.']},
+ {q:'אם במשולש יש שתי זוויות שוות – הוא שווה שוקיים.',r:'נכון – מול זוויות שוות נמצאות צלעות שוות.',w:['לא נכון – צריך צלעות שוות, זוויות לא מספיקות.','לא נכון – רק אם הזוויות הן '+dg(60)+'.']},
+ {q:'במשולש יכולות להיות שתי זוויות קהות.',r:'לא נכון – שתי זוויות קהות יחד גדולות מ-'+dg(180)+'.',w:['נכון – אם המשולש גדול מספיק.','נכון – במשולש שווה שוקיים.']}];
+const L4=[
+ ()=>{if(Math.random()<.5){const a=pick([30,40,50,70,80]),b=(180-a)/2;return{tag:'think',k:'tc'+a,q:'במשולש שווה שוקיים אחת הזוויות היא '+dg(a)+'. מהן שתי הזוויות האחרות?',...mc('יש 2 אפשרויות: '+M(`${b}°, ${b}°`)+' או '+M(`${a}°, ${180-2*a}°`),['רק '+M(`${b}°, ${b}°`),'רק '+M(`${a}°, ${180-2*a}°`),'אי אפשר לדעת שום דבר']),sol:'אם '+dg(a)+' היא זווית הראש: '+M(`(180 − ${a}) : 2 = ${b}`)+'.<br>אם '+dg(a)+' היא זווית בסיס: גם השנייה '+dg(a)+', והראש '+M(`180 − 2·${a} = ${180-2*a}`)+'.<br>שתי האפשרויות תקינות!'}}
+  const a=ri(100,140,10),b=(180-a)/2;return{tag:'think',k:'tc'+a,q:'במשולש שווה שוקיים אחת הזוויות היא '+dg(a)+'. מהן שתי הזוויות האחרות?',...mc(M(`${b}°, ${b}°`)+' – יש רק אפשרות אחת',['יש 2 אפשרויות','גם השנייה '+dg(a)+'','אי אפשר לדעת']),sol:'זווית של '+dg(a)+' לא יכולה להיות זווית בסיס – אחרת שתי זוויות הבסיס יחד '+M(2*a+'°')+', יותר מ-180.<br>לכן היא זווית הראש: '+M(`(180 − ${a}) : 2 = ${b}`)+'.'}},
+ ()=>{if(!tfPool.length)tfPool=shuffle(TF);const F=tfPool.pop();return{tag:'think',k:F.q,q:'נכון או לא נכון? למה?<br>«'+F.q+'»',...mc(F.r,F.w),sol:F.r}},
+ ()=>{const a=ri(15,70,5),P=isoP(2*a);P.D=mid(P.B,P.C);return{tag:'three',k:'ma'+a,q:M('AB = AC')+', '+M('AD')+' תיכון לבסיס, '+M('∠BAD = '+a+'°')+'. מצאו את '+M('∠B')+'.',fig:fig(P,{poly:TRI,ticks:[...legs(),['B','D',2],['D','C',2]],segs:[['A','D']],ang:[['A','B','D',a+'°'],['B','A','D','?']]}),type:'num',ans:90-a,sol:'התיכון לבסיס הוא גם גובה: '+M('∠ADB = 90°')+'.<br>במשולש ABD: '+M(`∠B = 180 − 90 − ${a} = ${90-a}°`)}},
+ ()=>{const v=ri(1,4);
+  if(v===1){const a=ri(20,100,10),b=(180-a)/2;return{tag:'iso',k:'er1'+a,q:'דנה כתבה: «זווית הראש '+dg(a)+', לכן כל זווית בסיס היא '+dg(a)+'». מה הטעות?',...mc('זוויות הבסיס שוות זו לזו – לא לזווית הראש. כל אחת '+dg(b)+'.',['אין טעות.','סכום הזוויות במשולש הוא '+dg(360)+'.']),sol:M(`(180 − ${a}) : 2 = ${b}°`)}}
+  if(v===2){const a=ri(20,100,10),b=(180-a)/2;return{tag:'iso',k:'er2'+a,q:'יואב כתב: «זווית הראש '+dg(a)+', לכן כל זווית בסיס היא '+M(`180 − ${a} = ${180-a}°`)+'». מה הטעות?',...mc('שכח לחלק ב-2: ה-'+M(180-a)+' מתחלקות בין שתי זוויות הבסיס – כל אחת '+dg(b)+'.',['אין טעות.','היה צריך לחבר: '+M(`180 + ${a}`)+'.']),sol:'בדיקה: '+M(`${a} + ${b} + ${b} = 180`)+' ✓'}}
+  if(v===3){const k=ri(2,4),x=180/(2+k);if(x%1)return L4[3]();return{tag:'eq',k:'er3'+k,q:'נועה פתרה: «'+M(`x + x + ${k}x = 180`)+' ← '+M(`${k+1}x = 180`)+'». מה הטעות?',...mc('צירפה לא נכון: '+M(`x + x + ${k}x = ${k+2}x`)+', ולכן '+M(`x = ${x}`)+'.',['אין טעות.','היה צריך להשוות ל-'+dg(360)+'.']),sol:M(`${k+2}x = 180 → x = ${x}`)}}
+  const a=ri(30,80,10);return{tag:'adj',k:'er4'+a,q:'עומר כתב: «הזווית הצמודה ל-'+dg(a)+' היא '+M(`90 − ${a} = ${90-a}°`)+'». מה הטעות?',...mc('זוויות צמודות משלימות ל-'+dg(180)+' ולא ל-'+dg(90)+'. התשובה: '+dg(180-a)+'.',['אין טעות.','היה צריך '+M(`${a} − 90`)+'.']),sol:M(`180 − ${a} = ${180-a}°`)}},
+ ()=>{let x,c1,c2,A;for(let t=0;t<50;t++){x=ri(20,40,5);c1=Math.random()<.5?x:ri(5,35,5);c2=180-4*x-c1;A=[2*x,x+c1,x+c2];if(A.every(v=>v>0))break}
+  const eqs=(A[0]===A[1])+(A[0]===A[2])+(A[1]===A[2]),typ=eqs===3?'שווה צלעות':eqs?'שווה שוקיים':'שונה צלעות',oth=eqs===3?'שונה צלעות':eqs?'שונה צלעות':'שווה שוקיים';
+  return{tag:'think',k:'cl'+x+c1,q:'אלה זוויות המשולש. מצאו את x – וקבעו איזה משולש זה.',fig:(()=>{const pr=[[A[0],ex(2,0)],[A[1],ex(1,c1)],[A[2],ex(1,c2)]].sort((a,b)=>b[0]-a[0]);return fig(angP(pr[1][0],pr[2][0]),{poly:TRI,ang:[['A','B','C',pr[0][1]],['B','A','C',pr[1][1]],['C','A','B',pr[2][1]]]})})(),...mc(M('x = '+x)+' · משולש '+typ,[M('x = '+x)+' · משולש '+oth,M('x = '+(x+5))+' · משולש '+typ,M('x = '+(x-5))+' · משולש '+oth]),sol:M(`2x + x ${c1>0?'+':'−'} ${Math.abs(c1)} + x ${c2>=0?'+':'−'} ${Math.abs(c2)} = 180`)+'<br>'+solveLin(4,c1+c2,180)+'<br>הזוויות: '+M(`${A[0]}°, ${A[1]}°, ${A[2]}°`)+' ← '+typ+'.'}},
+ ()=>{const a=ri(20,140,10),b=(180-a)/2,e=180-b,P=isoP(a);P.E=add(P.C,[1,0],80);
+  return{tag:'think',k:'xa'+a,q:M('AB = AC')+', '+M('∠A = '+a+'°')+'. הצלע '+M('BC')+' הוארכה עד E. מצאו את '+M('∠ACE')+'.',fig:fig(P,{poly:TRI,ticks:legs(),segs:[['C','E','ex']],ang:[['A','B','C',a+'°'],['C','E','A','?']]}),type:'num',ans:e,sol:'צעד 1: '+M(`∠ACB = (180 − ${a}) : 2 = ${b}°`)+'<br>צעד 2: צמודות – '+M(`∠ACE = 180 − ${b} = ${e}°`)}}];
+
+const LV=[{n:'ידע וזיהוי',d:'מזהים, מכירים מושגים, צעד אחד',e:'🌱',g:L1},{n:'הבנה',d:'שני צעדים, מבינים למה',e:'🧩',g:L2},{n:'יישום – משוואות',d:'בונים משוואה מהשרטוט ופותרים',e:'⚙️',g:L3},{n:'חשיבה מסדר גבוה',d:'מסיקים, בודקים אפשרויות, מוצאים טעויות',e:'🧠',g:L4}];
+const NQ=20;
+function build(L){const g=LV[L].g,out=[],keys=new Set();let i=0;factPool=[];tfPool=[];while(out.length<NQ&&i<800){const q=g[i%g.length]();i++;const key=q.k+'|'+q.q;if(keys.has(key))continue;keys.add(key);out.push(q)}return out}
+
+// ---------- שמירה ----------
+let DB={best:[null,null,null,null],last:[null,null,null,null],miss:[[],[],[],[]],name:''};
+try{const s=JSON.parse(localStorage.getItem('iso9_v1'));if(s)DB=Object.assign(DB,s)}catch(e){}
+const save=()=>{try{localStorage.setItem('iso9_v1',JSON.stringify(DB))}catch(e){}};
+
+// ---------- מסכים ----------
+let S={};
+const app=()=>$('#app');
+function go(w,a){window.scrollTo(0,0);({home,learn,play,report,exam})[w](a)}
+function fs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
+function stars(s){return s==null?'':s>=90?'⭐⭐⭐':s>=70?'⭐⭐':s>=50?'⭐':''}
+function thinkLevel(){let t=-1;DB.best.forEach((s,i)=>{if(s!=null&&s>=70)t=i});if(DB.exam&&DB.exam.tl>t)t=DB.exam.tl;return t}
+function home(){
+ const tl=thinkLevel();
+ app().innerHTML=`<div class="card"><div class="qt">בואו נכבוש את המשולש שווה השוקיים! 🚀</div><div style="color:var(--mute);font-size:17px">לא צריך לדעת כלום מראש. מתחילים בשיעור קצר, ואז מטפסים 4 רמות חשיבה.</div>
+ <button class="btn" onclick="go('learn',0)">📘 לומדים מאפס (3 דקות)</button></div>
+ ${LV.map((l,i)=>`<button class="btn lvl" onclick="go('play',${i})"><span class="e">${l.e}</span><span><b>רמה ${i+1}: ${l.n}</b><small>${l.d} · ${NQ} שאלות</small></span><span class="sc">${DB.best[i]!=null?DB.best[i]+' '+stars(DB.best[i]):''}</span></button>`).join('')}
+ <button class="btn" style="background:#0f766e" onclick="go('exam')">📝 בחן את עצמך · 12 שאלות מכל הרמות${DB.exam?' · '+DB.exam.best:''}</button>
+ <button class="btn sec" onclick="go('report')">📊 הציון שלי ורמת החשיבה ${tl>=0?'· '+LV[tl].e:''}</button>`}
+
+// שיעור מאפס
+const CARDS=[
+ {t:'1. סכום הזוויות במשולש',f:()=>fig(angP(60,70),{poly:TRI,ang:[['A','B','C','50°',1],['B','A','C','60°',1.5],['C','A','B','70°',2]]}),x:'בכל משולש – גדול או קטן – סכום שלוש הזוויות הוא תמיד '+dg(180)+'.<br>'+M('50 + 60 + 70 = 180'),d:'זווית חסרה? מחסרים מ-180 את מה שידוע.'},
+ {t:'2. זוויות צמודות',f:()=>fig(lineP(50),{names:[],segs:[['L','R','ln'],['O','X','ln']],ang:[['O','R','X','50°',1],['O','L','X','130°',1.6]]}),x:'שתי זוויות שיוצרות יחד <b>קו ישר</b> נקראות צמודות. סכומן '+dg(180)+'.<br>'+M('130 + 50 = 180'),d:'זווית צמודה = 180 פחות הזווית שליד.'},
+ {t:'3. מה זה משולש שווה שוקיים?',f:()=>fig(isoP(50),{poly:TRI,ticks:legs(),sides:[['A','B','שוק'],['A','C','שוק'],['B','C','בסיס']],arcs:[['B','A','C',1],['C','A','B',1]],ang:[['A','B','C','ראש',1.4]]}),x:'יש בו <b>שתי צלעות שוות</b> – השוקיים (מסומנות בקו קטן). הצלע השלישית – <b>הבסיס</b>.<br>הזווית בין השוקיים – <b>זווית הראש</b>. שתי הזוויות שליד הבסיס – <b>זוויות הבסיס</b>, והן שוות!',d:'שוקיים שוות ⟸ זוויות הבסיס שוות.'},
+ {t:'4. איך מזהים?',f:()=>`<div class="row"><div>${fig(isoP(70),{poly:TRI,names:[],ticks:legs()})}2 צלעות שוות</div><div>${fig(isoP(70),{poly:TRI,names:[],arcs:[['B','A','C',1],['C','A','B',1]]})}2 זוויות שוות</div><div>${fig(isoP(60),{poly:TRI,names:[],ticks:[...legs(),['B','C',1]]})}שווה צלעות</div></div>`,x:'משולש הוא שווה שוקיים אם יש בו <b>2 צלעות שוות</b> או <b>2 זוויות שוות</b>.<br>משולש שווה צלעות הוא גם שווה שוקיים, וכל זווית בו '+M('180 : 3 = 60°')+'.',d:'זוויות שוות ⟸ צלעות שוות (וגם להפך).'},
+ {t:'5. תיכון, גובה, חוצה זווית',f:()=>{const P={A:[70,40],B:[0,200],C:[260,200]},m={...P,D:mid(P.B,P.C)},h={...P,D:[70,200]},ab=Ln(V(P.A,P.B)),ac=Ln(V(P.A,P.C)),b={...P,D:add(P.B,V(P.B,P.C),ab/(ab+ac))};return`<div class="row"><div>${fig(m,{poly:TRI,names:[],segs:[['A','D']],ticks:[['B','D',1],['D','C',1]]})}<b>תיכון</b><br>לאמצע הצלע</div><div>${fig(h,{poly:TRI,names:[],segs:[['A','D']],right:[['D','A','C']]})}<b>גובה</b><br>זווית ישרה</div><div>${fig(b,{poly:TRI,names:[],segs:[['A','D']],arcs:[['A','B','D',1],['A','D','C',1]]})}<b>חוצה זווית</b><br>חוצה לשניים</div></div>`},x:'שלושה קטעים שיוצאים מקודקוד אל הצלע שמולו. במשולש רגיל – אלה שלושה קטעים שונים.',d:'תיכון – אמצע · גובה – '+dg(90)+' · חוצה – שתי זוויות שוות.'},
+ {t:'6. הסוד של שווה השוקיים 🤫',f:()=>{const P=isoP(60);P.D=mid(P.B,P.C);return fig(P,{poly:TRI,ticks:[...legs(),['B','D',2],['D','C',2]],segs:[['A','D']],right:[['D','A','C']],arcs:[['A','B','D',1],['A','D','C',1]]})},x:'במשולש שווה שוקיים, הקטע <b>מזווית הראש אל הבסיס</b> הוא שלושה באחד: תיכון + גובה + חוצה זווית!',d:'יודעים שהוא אחד מהשלושה? מקבלים את שני האחרים במתנה. (רק לבסיס – לא לשוק!)'},
+ {t:'7. משוואה עם זוויות',f:()=>fig(isoP(100),{poly:TRI,ticks:legs(),ang:[['B','A','C','x'],['C','A','B','x'],['A','B','C','2x + 20']]})+`<div class="steps">${[['x + x + 2x + 20 = 180','מחברים את כל הזוויות = 180'],['4x + 20 = 180','מכנסים: x+x+2x = 4x'],['4x = 160','מחסרים 20 משני האגפים'],['x = 40','מחלקים ב-4'],['40 + 40 + 100 = 180 ✓','בודקים!']].map((s,i)=>`<div style="animation-delay:${1+i*.9}s">${M(s[0])}<small>${s[1]}</small></div>`).join('')}</div>`,x:'במשולש שווה שוקיים זוויות הבסיס שוות – לכן שתיהן x.',d:'בונים משוואה מהשרטוט ← פותרים ← בודקים.'}];
+function learn(i){const c=CARDS[i];S.back=null;
+ app().innerHTML=`<div class="card"><div class="qt">${c.t}</div>${c.f()}<p>${c.x}</p><div class="did"><b>מה עשינו?</b> ${c.d}</div>
+ <div class="dots">${CARDS.map((_,j)=>`<i class="${j===i?'on':''}"></i>`).join('')}</div>
+ <div class="nav">${i>0?`<button class="btn sec" onclick="go('learn',${i-1})">→ הקודם</button>`:''}<button class="btn sec" onclick="go('learn',${i})">↻ שוב</button>${i<CARDS.length-1?`<button class="btn" onclick="go('learn',${i+1})">הבא ←</button>`:`<button class="btn" onclick="go('play',0)">יאללה לתרגול! 🚀</button>`}</div></div>`}
+let remind=null;
+function showCard(ci){remind=ci;const c=CARDS[ci];const box=$('#rem');box.innerHTML=`<div class="card" style="border:2px solid var(--acc2)"><div class="qt">📘 ${c.t}</div>${c.f()}<p>${c.x}</p><button class="btn sec" onclick="this.parentNode.remove()">סגור תזכורת</button></div>`;box.scrollIntoView({behavior:'smooth'})}
+
+// בחן את עצמך
+function exam(){const qs=[];for(let L=0;L<4;L++){const b=shuffle(build(L)),used=new Set();for(const q of b){if(qs.filter(x=>x.L===L).length>=3)break;const g=q.k.slice(0,2);if(used.has(g))continue;used.add(g);q.L=L;qs.push(q)}}
+ S={exam:true,qs,i:0,res:[]};showQ()}
+function examEnd(){const ok=S.res.filter(r=>r.ok).length,sc=Math.round(ok/S.qs.length*100);let tl=-1;
+ for(let L=0;L<4;L++){if(S.res.filter(r=>r.q.L===L&&r.ok).length>=2)tl=L;else break}
+ DB.exam={best:Math.max(DB.exam?.best??0,sc),last:sc,tl:Math.max(DB.exam?.tl??-1,tl),lastTl:tl};save();if(sc>=70)burst();
+ const wrong=S.res.filter(r=>!r.ok);
+ app().innerHTML=`<div class="card center"><div class="qt">📝 בחן את עצמך – התוצאה</div><div class="big">${sc}</div><div class="stars">${stars(sc)||'💪'}</div>
+ <p>${ok} מתוך ${S.qs.length} נכון</p>
+ <table>${LV.map((l,L)=>`<tr><td>${l.e} ${l.n}</td><td><b>${M(S.res.filter(r=>r.q.L===L&&r.ok).length+' / 3')}</b></td></tr>`).join('')}</table>
+ <div class="did" style="margin-top:12px;text-align:right"><b>רמת החשיבה שלי במבחן:</b> ${tl>=0?LV[tl].e+' רמה '+(tl+1)+' – '+LV[tl].n:'🌱 בדרך לרמה 1 – כדאי לעבור על השיעור הקצר ולתרגל את רמה 1'}</div>
+ ${wrong.length?`<div style="text-align:right;margin-top:12px"><b>בואו נראה מה פספסנו:</b>${wrong.map(r=>`<div class="fb no" style="margin-top:8px"><div>${r.q.q}</div>${r.q.fig||''}<div class="sol"><b>התשובה:</b> ${r.q.type==='mc'?r.q.opts[r.q.ans]:M(r.q.ans)}${r.q.type==='mc'&&r.q.opts[r.q.ans]===r.q.sol?'':'<br>'+r.q.sol}</div></div>`).join('')}</div>`:'<p>הכול נכון – אלופים! 🏆</p>'}
+ <button class="btn" onclick="go('exam')">📝 מבחן חדש (שאלות אחרות)</button><button class="btn sec" onclick="go('report')">📊 הציון שלי</button></div>`}
+// תרגול
+function play(L){S={L,qs:build(L),i:0,pts:0,first:0,miss:[]};showQ()}
+function showQ(){const q=S.q=S.qs[S.i];S.tries=0;S.done=false;
+ const tot=S.qs.length;app().innerHTML=`<div class="top"><span>${S.exam?'📝 בחן את עצמך · '+LV[q.L].e:LV[S.L].e+' רמה '+(S.L+1)+' ·'} שאלה ${S.i+1} מתוך ${tot}</span><span>${S.exam?'ניסיון אחד, בלי רמזים':'⭐ '+S.pts}</span></div><div class="bar"><i style="width:${S.i/tot*100}%"></i></div>
+ <div class="card"><div class="qt">${q.q}</div>${q.fig||''}
+ ${q.type==='mc'?`<div class="opts">${q.opts.map((o,j)=>`<button class="op" id="o${j}" onclick="ans(${j})">${o}</button>`).join('')}</div>`:`<div class="num"><input id="inp" inputmode="decimal" autocomplete="off" placeholder="?" onkeydown="if(event.key==='Enter')ans()"><button class="btn" onclick="ans()">בדיקה</button></div>`}
+ <div id="fb"></div></div>${S.exam?'':`<button class="link" onclick="showCard(${T[q.tag].c})">📘 צריך תזכורת?</button>`}<div id="rem"></div>`;
+ const inp=$('#inp');if(inp&&matchMedia('(pointer:fine)').matches)inp.focus()}
+const YAY=['נכון! 🎯','מצוין! 💪','בול! ✨','יפה מאוד! 🌟','אלופים! 🏆'];
+function ans(j){if(S.done)return;const q=S.q;let ok;
+ if(q.type==='mc')ok=j===q.ans;else{const raw=$('#inp').value.trim().replace(',','.').replace('°','');if(raw===''){$('#fb').innerHTML='<div class="fb hi">כתבו מספר בתיבה 🙂</div>';return}ok=Math.abs(parseFloat(raw)-q.ans)<1e-6}
+ const fb=$('#fb');
+ if(S.exam){S.done=true;S.res.push({q,ok});if(q.type==='mc'){$('#o'+j).classList.add('pick');q.opts.forEach((_,k)=>$('#o'+k).disabled=true)}else $('#inp').disabled=true;
+  fb.innerHTML=`<div class="fb hi">✔ התשובה נקלטה. את התוצאות תראו בסוף.</div><button class="btn" onclick="S.i++;S.i>=S.qs.length?examEnd():(showQ(),window.scrollTo(0,0))">${S.i<S.qs.length-1?'הבאה ←':'לתוצאות 🏁'}</button>`;return}
+ if(ok){const gain=S.tries===0?1:.5;S.pts+=gain;if(S.tries===0)S.first++;S.done=true;if(q.type==='mc')$('#o'+j).classList.add('good');
+  fb.innerHTML=`<div class="fb ok"><b>${pick(YAY)}</b> ${S.tries?'(בניסיון השני – חצי נקודה)':''}<div class="sol">${q.sol}</div></div>${nextBtn()}`}
+ else{S.tries++;
+  if(q.type==='mc'){$('#o'+j).classList.add('wrong');$('#o'+j).disabled=true}
+  if(S.tries===1){fb.innerHTML=`<div class="fb hi"><b>כמעט! 🤔 עוד ניסיון אחד.</b><br>💡 מה חסר כאן: ${T[q.tag].h}<br><button class="link" onclick="showCard(${T[q.tag].c})">📘 לתזכורת המלאה</button></div>`;if(q.type!=='mc'){$('#inp').value='';$('#inp').focus()}}
+  else{S.done=true;S.miss.push(q.tag);if(q.type==='mc'){$('#o'+q.ans).classList.add('good');q.opts.forEach((_,k)=>$('#o'+k).disabled=true)}
+   fb.innerHTML=`<div class="fb no"><b>לא נורא – מזה לומדים! 💙</b> התשובה: ${q.type==='mc'?'מסומנת בירוק':M(q.ans)}<div class="sol">${q.sol}</div></div>${nextBtn()}`}}
+ fb.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function nextBtn(){return`<button class="btn" onclick="nextQ()">${S.i<NQ-1?'הבאה ←':'לסיכום 🏁'}</button>`}
+function nextQ(){S.i++;if(S.i>=NQ)return finish();if(S.i%5===0){const d=S.qs.slice(S.i-5,S.i);app().innerHTML=`<div class="card center"><div class="big">🔥</div><div class="qt">סיימתם ${S.i} שאלות!</div><p>⭐ ${S.pts} נקודות עד עכשיו. נשימה קטנה… ועוד 5.</p><button class="btn" onclick="showQ()">ממשיכים ←</button></div>`;window.scrollTo(0,0);return}showQ();window.scrollTo(0,0)}
+function burst(){const b=$('#burst');b.innerHTML=Array.from({length:22},()=>`<span style="left:${Math.random()*100}%;animation-delay:${Math.random()*.6}s">${pick(['⭐','🎉','📐','✨'])}</span>`).join('');setTimeout(()=>b.innerHTML='',2600)}
+function finish(){const sc=Math.round(S.pts/NQ*100),L=S.L;DB.last[L]=sc;DB.best[L]=Math.max(DB.best[L]??0,sc);DB.miss[L]=[...new Set(S.miss)];save();if(sc>=70)burst();
+ const tops=[...new Set(S.miss)];
+ app().innerHTML=`<div class="card center"><div class="qt">${LV[L].e} רמה ${L+1}: ${LV[L].n}</div><div class="big">${sc}</div><div class="stars">${stars(sc)||'💪'}</div>
+ <p>${S.first} מתוך ${NQ} נכון כבר בניסיון הראשון.</p>
+ <p><b>${sc>=70?'✅ עברתם את רמת החשיבה: '+LV[L].n+'!':'עוד קצת תרגול ברמה הזו – אתם בדרך! (צריך 70 כדי לעבור)'}</b></p>
+ ${tops.length?`<div style="text-align:right"><b>כדאי לחזק:</b><br>${tops.map(t=>`<button class="pill" style="border:0;cursor:pointer" onclick="go('learn',${T[t].c})">📘 ${T[t].n}</button>`).join('')}</div>`:'<p>בלי אף טעות שנייה – מושלם! 🏆</p>'}
+ ${L<3&&sc>=70?`<button class="btn" onclick="go('play',${L+1})">לרמה ${L+2} ←</button>`:''}
+ <button class="btn ${L<3&&sc>=70?'sec':''}" onclick="go('play',${L})">↻ שוב את רמה ${L+1} (שאלות חדשות)</button>
+ <button class="btn sec" onclick="go('report')">📊 הציון שלי ורמת החשיבה</button></div>`}
+function report(){const tl=thinkLevel(),miss=[...new Set(DB.miss.flat())],d=new Date().toLocaleDateString('he-IL');
+ app().innerHTML=`<div class="card"><div class="qt">📊 הציון שלי – משולש שווה שוקיים</div><div style="color:var(--mute);font-size:15px">שחקים · ערכה: רוני מודן</div>
+ <input class="name" placeholder="השם שלי" value="${(DB.name||'').replace(/"/g,'')}" oninput="DB.name=this.value;save()"><div style="color:var(--mute);font-size:15px;margin:6px 0">${d}</div>
+ <table><tr><th>רמה</th><th>הכי טוב</th><th>אחרון</th></tr>${LV.map((l,i)=>`<tr><td>${l.e} ${i+1}. ${l.n}</td><td><b>${DB.best[i]??'–'}</b> ${stars(DB.best[i])}</td><td>${DB.last[i]??'–'}</td></tr>`).join('')}</table>
+ ${DB.exam?`<p><b>📝 בחן את עצמך:</b> הכי טוב ${DB.exam.best} · אחרון ${DB.exam.last}${DB.exam.lastTl>=0?' · רמה '+(DB.exam.lastTl+1):''}</p>`:''}
+ <div class="did" style="margin-top:14px"><b>רמת החשיבה שלי:</b> ${tl>=0?LV[tl].e+' רמה '+(tl+1)+' – '+LV[tl].n:'🌱 בדרך לרמה 1 – התחילו מהשיעור הקצר!'}</div>
+ ${miss.length?`<p><b>נושאים לחזק:</b><br>${miss.map(t=>`<span class="pill">${T[t].n}</span>`).join('')}</p>`:''}
+ <p style="font-size:15px;color:var(--mute)">עוברים רמה בציון 70 ומעלה. נכון בניסיון ראשון = נקודה, בשני = חצי.</p>
+ <div class="did">📸 רוצים להראות למורה? צלמו מסך של הכרטיס הזה ושלחו לה.</div>
+ <button class="btn sec" id="rst" onclick="if(this.dataset.ok){DB={best:[null,null,null,null],last:[null,null,null,null],miss:[[],[],[],[]],name:DB.name,exam:null};save();go('report')}else{this.dataset.ok=1;this.textContent='לחצו שוב כדי למחוק את כל הציונים'}">איפוס ציונים</button></div>`}
+go('home');
+</script>
+</body>
+</html>
