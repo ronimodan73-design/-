@@ -98,7 +98,7 @@ footer{text-align:center;color:var(--mute);font-size:14px;margin-top:20px}
 </head>
 <body>
 <div class="wrap">
-<header><div><h1>⚖️ יחס · 📐 פיתגורס</h1><div style="font-size:14px;color:var(--mute)">שחקים · ערכה: רוני מודן</div></div><div><button class="ib" onclick="home()" title="בית">🏠</button> <button class="ib" onclick="fs()" title="מסך מלא">⛶</button></div></header>
+<header><div><h1>⚖️ יחס · 📐 פיתגורס</h1><div style="font-size:15px;color:var(--acc);font-weight:700">ערכה: רוני מודן · שחקים</div></div><div><button class="ib" onclick="home()" title="בית">🏠</button> <button class="ib" onclick="fs()" title="מסך מלא">⛶</button></div></header>
 <main id="app"></main>
 <footer>ערכה: רוני מודן · שחקים · כיתה ח׳</footer>
 </div>
@@ -400,7 +400,7 @@ function home(){clearInterval(TT);window.scrollTo(0,0);
  <input class="name" id="nm" placeholder="השם שלי (לא חובה)" value="${DB.name||''}" onchange="DB.name=this.value.trim();save()" style="margin-top:10px"></div>
  ${['r','p'].map(t=>`<button class="btn lvl" onclick="topic('${t}')"><span class="e">${TOP[t].ic}</span><span><b>${TOP[t].name}</b><small>תזכורת + 4 רמות חשיבה</small></span><span class="sc">${doneCount(t)}/4 ⭐</span></button>`).join('')}
  <button class="btn lvl" onclick="testMenu()"><span class="e">📝</span><span><b>בחן את עצמך</b><small>מבחן קצר בלי רמזים – בסוף רואים מה לחזק</small></span></button>
- <button class="btn sec" onclick="share()">📲 שיתוף הקישור</button>`}
+ <button class="btn sec" onclick="share()">📲 שיתוף הקישור</button><div class="center" style="margin-top:14px;font-weight:700;color:var(--acc);font-size:18px">ערכה: רוני מודן · שחקים</div>`}
 function doneCount(t){return[0,1,2,3].filter(l=>(DB.best[t+l]||0)>=70).length}
 function topic(t){window.scrollTo(0,0);
  app().innerHTML=`<div class="card"><div class="qt">${TOP[t].ic} ${TOP[t].name}</div><div style="color:var(--mute);font-size:17px">מומלץ להתחיל בתזכורת קצרה, ואז לטפס רמה אחרי רמה.</div>
