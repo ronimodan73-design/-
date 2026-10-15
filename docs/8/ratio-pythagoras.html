@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#4f46e5">
+<title>יחס ופיתגורס · כיתה ח׳</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#1f2937;--mute:#6b7280;--acc:#4f46e5;--acc2:#eef2ff;--ok:#15803d;--okbg:#ecfdf5;--bad:#b91c1c;--badbg:#fef2f2;--hint:#92400e;--hintbg:#fffbeb;--line:#e5e7eb;--rem:#7c3aed;--rembg:#f5f3ff}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:19px;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:10px 14px 50px}
+.m{direction:ltr;unicode-bidi:isolate;display:inline-block;font-weight:600;white-space:nowrap}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-weight:700;line-height:1.15;margin:0 3px;direction:ltr}
+.fr i{font-style:normal;padding:0 4px}.fr i:first-child{border-bottom:2px solid currentColor}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 10px}
+header h1{font-size:21px;margin:0}
+.ib{min-width:48px;min-height:48px;border:0;background:var(--card);border-radius:12px;padding:8px 11px;font-size:18px;box-shadow:0 1px 3px #0001;cursor:pointer}
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 2px 10px #0000000d;margin:12px 0;animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px 16px;font-size:19px;font-family:inherit;cursor:pointer;background:var(--acc);color:#fff;font-weight:600;margin-top:10px}
+.btn.sec{background:var(--acc2);color:var(--acc)}
+.btn.rem{background:var(--rem)}
+.btn:active{transform:scale(.98)}
+.lvl{display:flex;align-items:center;gap:12px;text-align:right;background:var(--card);color:var(--ink);border:2px solid var(--line);font-weight:400}
+.lvl .e{font-size:22px;min-width:78px;text-align:center;white-space:nowrap;letter-spacing:-2px}
+.lvl b{display:block;font-size:19px}
+.lvl small{color:var(--mute);font-size:15px}
+.lvl .sc{margin-inline-start:auto;font-weight:700;color:var(--acc);white-space:nowrap}
+.top{display:flex;justify-content:space-between;color:var(--mute);font-size:16px}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:linear-gradient(270deg,#818cf8,#4f46e5);border-radius:9px;transition:width .4s}
+.qt{font-size:20px;font-weight:600}
+.opts{display:grid;gap:9px;margin-top:12px}
+.op{min-height:52px;border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px;font-size:18px;font-family:inherit;text-align:right;cursor:pointer;color:var(--ink)}
+.op:disabled{opacity:.45}
+.op.good{border-color:var(--ok);background:var(--okbg);opacity:1}
+.op.wrong{border-color:var(--bad);background:var(--badbg);animation:sh .3s}
+@keyframes sh{25%{transform:translateX(6px)}75%{transform:translateX(-6px)}}
+.num{display:flex;gap:8px;margin-top:12px}
+.num input,.rat input{min-height:52px;font-size:22px;padding:10px;border:2px solid var(--line);border-radius:14px;text-align:center;font-family:inherit;direction:ltr;min-width:0}
+.num input{flex:1}
+.num .btn{width:auto;margin:0;padding:0 22px}
+.rat{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-top:12px;direction:ltr}
+.rat label{display:flex;flex-direction:column;align-items:center;font-size:15px;color:var(--mute);width:120px}
+.rat input{width:100%}
+.rat b{font-size:30px;padding-bottom:6px}
+.fb{border-radius:14px;padding:12px 14px;margin-top:12px;animation:up .3s}
+.fb.ok{background:var(--okbg);color:#064e3b}
+.fb.hi{background:var(--hintbg);color:var(--hint)}
+.fb.no{background:var(--badbg);color:#7f1d1d}
+.diag{background:var(--rembg);border-inline-start:4px solid var(--rem);border-radius:10px;padding:8px 12px;margin-top:10px;color:#4c1d95;font-size:17px}
+.remb{background:var(--rembg);color:var(--rem);border-radius:12px;padding:6px 12px;font-size:16px;font-weight:600;margin-bottom:6px}
+.steps div{opacity:0;animation:up .4s forwards;padding:6px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;gap:10px;color:var(--ink)}
+.steps small{color:#15803d;font-size:15px;text-align:left;white-space:nowrap}
+.fig{width:100%;max-width:330px;max-height:230px;display:block;margin:8px auto 0;direction:ltr}
+.fig .pl{fill:#eef2ff;stroke:#334155;stroke-width:2.6;stroke-linejoin:round}
+.fig .ln{stroke:#334155;stroke-width:2.6;stroke-linecap:round;fill:none}
+.fig .wall{stroke:#78716c;stroke-width:7}
+.fig .dash{stroke:#0891b2;stroke-width:2.4;stroke-dasharray:7 5;fill:none}
+.fig .ra{fill:none;stroke:#e11d48;stroke-width:2}
+.fig text{font-family:Arial,sans-serif;text-anchor:middle;dominant-baseline:middle;font-weight:700;font-size:17px;fill:#0f766e}
+.fig text.q{fill:#e11d48;font-size:20px}
+.fig text.w{fill:#57534e;font-size:15px;font-weight:600}
+.fig .pl,.fig .ln{stroke-dasharray:1400;stroke-dashoffset:1400;animation:dr 1s ease forwards}
+.fig text,.fig .ra,.fig .dash,.fig circle{opacity:0;animation:fd .4s .6s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+@keyframes fd{to{opacity:1}}
+.dots{display:flex;justify-content:center;gap:6px;margin:8px 0}
+.dots i{width:9px;height:9px;border-radius:9px;background:var(--line)}
+.dots i.on{background:var(--acc);width:22px}
+.nav{display:flex;gap:8px}.nav .btn{flex:1;padding:13px 6px;font-size:17px}
+.big{font-size:56px;font-weight:800;text-align:center;color:var(--acc);line-height:1.1}
+.stars{text-align:center;font-size:34px;letter-spacing:4px}
+.center{text-align:center}
+.box{background:var(--acc2);border-radius:12px;padding:10px 12px;margin:8px 0}
+.warn{background:var(--badbg);border-radius:12px;padding:10px 12px;margin:8px 0;color:#7f1d1d}
+.rv{opacity:0;animation:up .5s forwards}
+table{width:100%;border-collapse:collapse;font-size:17px}
+td,th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
+.name{width:100%;font-size:19px;padding:10px;border:2px solid var(--line);border-radius:12px;font-family:inherit}
+.burst{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+.burst span{position:absolute;top:-30px;font-size:26px;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(300deg);opacity:.2}}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;border-radius:12px;padding:10px 16px;font-size:16px;z-index:10;animation:up .3s}
+footer{text-align:center;color:var(--mute);font-size:14px;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div><h1>⚖️ יחס · 📐 פיתגורס</h1><div style="font-size:14px;color:var(--mute)">שחקים · ערכה: רוני מודן</div></div><div><button class="ib" onclick="home()" title="בית">🏠</button> <button class="ib" onclick="fs()" title="מסך מלא">⛶</button></div></header>
+<main id="app"></main>
+<footer>ערכה: רוני מודן · שחקים · כיתה ח׳</footer>
+</div>
+<div class="burst" id="burst"></div>
+<script>
+// ================= כלים =================
+const $=s=>document.querySelector(s);
+const app=()=>({set innerHTML(h){$('#app').innerHTML=h.replace(/(ניצב|יתר)²/g,'<span class="m">$1²</span>')}});
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const M=s=>`<span class="m">${s}</span>`;
+const RT=(a,b)=>M(a+' : '+b);
+const fr=(a,b)=>`<span class="fr"><i>${a}</i><i>${b}</i></span>`;
+const sq=n=>n+'²';
+function cop(lo,hi,dist=true){let a,b;do{a=ri(lo,hi);b=ri(lo,hi)}while(gcd(a,b)!==1||(dist&&a===b)||(a===1&&b===1));return[a,b]}
+// בחירה מרובה: right = html, wrongs = [[html,msg],...]
+function mc(right,wrongs){const all=[{h:right,r:1}];wrongs.forEach(w=>{if(!all.some(x=>x.h===w[0]))all.push({h:w[0],m:w[1]})});const o=shuffle(all);return{kind:'mc',opts:o.map(x=>x.h),msgs:o.map(x=>x.m||null),ans:o.findIndex(x=>x.r)}}
+function fs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+function burst(){const b=$('#burst');for(let i=0;i<26;i++){const s=document.createElement('span');s.textContent=pick(['⭐','🎉','✨','💜','🏆']);s.style.left=Math.random()*100+'%';s.style.animationDelay=Math.random()*.6+'s';b.appendChild(s);setTimeout(()=>s.remove(),2600)}}
+// ---- שמירת התקדמות (רק במכשיר של התלמיד) ----
+let DB={name:'',best:{}};
+try{const s=localStorage.getItem('rm_ratio_pyth_v1');if(s)DB=Object.assign(DB,JSON.parse(s))}catch(e){}
+function save(){try{localStorage.setItem('rm_ratio_pyth_v1',JSON.stringify(DB))}catch(e){}}
+function share(){const u=location.href.split('#')[0];if(navigator.share){navigator.share({title:'יחס ופיתגורס – תרגול',url:u}).catch(()=>{})}else if(navigator.clipboard){navigator.clipboard.writeText(u).then(()=>toast('הקישור הועתק ✔'),()=>prompt('העתיקו את הקישור:',u))}else prompt('העתיקו את הקישור:',u)}
+
+// ================= שרטוטים =================
+// משולש ישר זווית: ניצב אופקי (h), ניצב אנכי (v), יתר (c). flip = הזווית הישרה משמאל
+function tri(a,b,L,o={}){
+ const s=Math.min(190/a,140/b);let w=Math.max(70,a*s),h=Math.max(60,b*s);
+ const flip=!!o.flip,cy=185,cx=flip?60:250,ax=flip?cx+w:cx-w,by=cy-h;
+ const d=flip?1:-1;let g='';
+ if(o.wall){g+=`<line class="ln" x1="${flip?10:290}" y1="${cy}" x2="${ax+d*-30}" y2="${cy}"/><line class="wall" x1="${cx+(flip?-4:4)}" y1="${cy}" x2="${cx+(flip?-4:4)}" y2="${by-14}"/>`}
+ g+=`<polygon class="pl" points="${cx},${cy} ${ax},${cy} ${cx},${by}"/>`;
+ g+=`<path class="ra" d="M${cx+d*14},${cy} L${cx+d*14},${cy-14} L${cx},${cy-14}"/>`;
+ const T=(x,y,t)=>t===undefined||t===''?'':`<text x="${x}" y="${y}" class="${t==='?'?'q':''}">${t}</text>`;
+ g+=T((cx+ax)/2,cy+16,L.h);
+ g+=T(cx-d*24,(cy+by)/2,L.v);
+ const mx=(ax+cx)/2,my=(cy+by)/2,nx=-(by-cy),ny=(cx-ax);const nl=Math.hypot(nx,ny);let ux=nx/nl,uy=ny/nl;if(uy>0){ux=-ux;uy=-uy}
+ g+=T(mx+ux*20,my+uy*20,L.c);
+ if(o.words)o.words.forEach(t=>g+=`<text class="w" x="${t[0]}" y="${t[1]}">${t[2]}</text>`);
+ return `<svg class="fig" viewBox="0 0 310 210">${g}</svg>`}
+function rect(L,o={}){let g=`<rect class="pl" x="40" y="35" width="230" height="130" rx="2"/>`;
+ if(o.diag)g+=`<line class="dash" x1="40" y1="165" x2="270" y2="35"/>`;
+ const T=(x,y,t)=>t===undefined?'':`<text x="${x}" y="${y}" class="${t==='?'?'q':''}">${t}</text>`;
+ g+=T(155,185,L.w)+T(18,100,L.h);if(o.diag)g+=T(138,80,L.d);
+ return `<svg class="fig" viewBox="0 0 310 200">${g}</svg>`}
+function iso(L){let g=`<polygon class="pl" points="155,30 40,180 270,180"/><line class="dash" x1="155" y1="30" x2="155" y2="180"/><path class="ra" d="M155,166 L169,166 L169,180"/>`;
+ g+=`<text x="85" y="98">${L.c}</text><text x="${225}" y="98">${L.c}</text><text x="155" y="197">${L.base}</text><text x="140" y="120" class="q">${L.hgt}</text>`;
+ return `<svg class="fig" viewBox="0 0 310 205">${g}</svg>`}
+function walk(a,b){const s=Math.min(200/a,130/b);const w=Math.max(80,a*s),h=Math.max(60,b*s);const x0=40,y0=180;
+ let g=`<polyline class="ln" points="${x0},${y0} ${x0+w},${y0} ${x0+w},${y0-h}"/><line class="dash" x1="${x0}" y1="${y0}" x2="${x0+w}" y2="${y0-h}"/>`;
+ g+=`<circle cx="${x0}" cy="${y0}" r="6" fill="#16a34a"/><circle cx="${x0+w}" cy="${y0-h}" r="6" fill="#e11d48"/>`;
+ g+=`<text x="${x0+w/2}" y="${y0+16}">${a}</text><text x="${x0+w+22}" y="${y0-h/2}">${b}</text><text x="${x0+w/2-14}" y="${y0-h/2-14}" class="q">?</text>`;
+ g+=`<text class="w" x="${x0}" y="${y0+18}">התחלה</text>`;
+ return `<svg class="fig" viewBox="0 0 310 205">${g}</svg>`}
+function dots(a,b,c1='#e11d48',c2='#2563eb'){let g='';const r=11,sp=28;
+ const row=(n,y,c)=>{for(let i=0;i<n;i++)g+=`<circle cx="${30+i*sp}" cy="${y}" r="${r}" fill="${c}"/>`};
+ row(a,30,c1);row(b,75,c2);return `<svg class="fig" viewBox="0 0 ${Math.max(a,b)*sp+30} 105" style="max-height:110px">${g}</svg>`}
+
+// ================= מחוללי שאלות: יחס =================
+const RATIO={
+r_write(){const c=pick([['בנים','בנות','בכיתה יש {a} בנים ו־{b} בנות.'],['כדורים אדומים','כדורים כחולים','בקופסה יש {a} כדורים אדומים ו־{b} כדורים כחולים.'],['עפרונות','עטים','בקלמר יש {a} עפרונות ו־{b} עטים.']]);
+ let a=ri(2,9),b=ri(2,9);while(a===b)b=ri(2,9);const g=gcd(a,b);
+ const sol=[[`${c[0]}: ${M(a)} · ${c[1]}: ${M(b)}`,'סופרים כל קבוצה'],[`היחס: ${RT(a,b)}`,'לפי הסדר שבשאלה']];if(g>1)sol.push([`אפשר לצמצם: ${RT(a/g,b/g)}`,`חילקנו את שניהם ב־${M(g)}`]);
+ return{kind:'ratio',labels:[c[0],c[1]],ans:[a,b],exact:false,
+ txt:c[2].replace('{a}',M(a)).replace('{b}',M(b))+` מה היחס בין ${c[0]} ל${c[1]}?`,fig:c[0]==='כדורים אדומים'?dots(a,b):'',
+ hint:`היחס נכתב לפי הסדר שבשאלה: קודם ${c[0]}, אחר כך ${c[1]}.`,
+ err:(x,y)=>x*a===y*b&&a!==b?`הפכתם את הסדר! השאלה שואלת קודם על ה${c[0]==='בנים'?'בנים':c[0]}. היחס הוא ${c[0]} : ${c[1]}.`:null,
+ sol,diag:'לכתוב יחס לפי הסדר שבשאלה – מה שמוזכר ראשון נכתב ראשון.'}},
+r_equiv(){const[a,b]=cop(1,6),k=ri(2,5);
+ return Object.assign(mc(RT(k*a,k*b),[[RT(a+k,b+k),`הוספתם ${M(k)} לשני האיברים. ביחס לא מוסיפים – כופלים (או מחלקים) את שניהם באותו מספר.`],[RT(k*a,b),'כפלתם רק איבר אחד. צריך לכפול את שני האיברים באותו מספר.'],[RT(k*b,k*a),'הסדר התהפך! שימו לב מי ראשון.']]),{
+ txt:`איזה יחס שווה ל־${RT(a,b)}?`,hint:'יחס שווה מקבלים כשכופלים את שני האיברים באותו מספר (כמו הרחבת שבר).',
+ sol:[[`${RT(a,b)} ← ${RT(k*a,k*b)}`,`כפלנו את שניהם ב־${M(k)}`]],diag:'הרחבת יחס: כופלים את שני האיברים באותו מספר – לא מוסיפים.'})},
+r_expand(){const[a,b]=cop(1,7),k=ri(2,6);
+ return{kind:'num',ans:k*b,txt:`השלימו את המספר החסר: ${RT(a,b)} = ${RT(k*a,'?')}`,
+ hint:`בכמה כפלו את ${M(a)} כדי לקבל ${M(k*a)}? כפלו גם את ${M(b)} באותו מספר.`,
+ err:x=>x===b+(k*a-a)?`הוספתם ${M(k*a-a)} במקום לכפול. ${M(a)} הפך ל־${M(k*a)} כי כפלנו ב־${M(k)}.`:null,
+ sol:[[M(`${a} · ${k} = ${k*a}`),`כפלו ב־${M(k)}`],[M(`${b} · ${k} = ${k*b}`),'כופלים גם את השני ב־'+M(k)]],diag:'למצוא "פי כמה" גדל איבר אחד – ולכפול את השני באותו מספר.'}},
+r_reduce(){const[a,b]=cop(1,9),g=ri(2,9);
+ return{kind:'ratio',labels:['',''],ans:[a,b],exact:true,txt:`צמצמו את היחס ${RT(a*g,b*g)} עד הסוף.`,
+ hint:`חפשו מספר שמחלק גם את ${M(a*g)} וגם את ${M(b*g)}. אפשר לצמצם כמה פעמים.`,
+ sol:[[`מספר שמחלק את שניהם: ${M(g)}`,'גורם משותף'],[M(`${a*g} : ${g} = ${a}`)+' , '+M(`${b*g} : ${g} = ${b}`),'מחלקים את שניהם'],[`היחס המצומצם: ${RT(a,b)}`,'אין עוד מספר שמחלק את שניהם']],
+ diag:'למצוא גורם משותף – מספר שמחלק את שני האיברים (בעזרת לוח הכפל).'}},
+r_recipe(){const c=pick([['כוסות קמח','ביצים','במתכון לעוגה יש'],['כפות סוכר','כוסות מים','במתכון ללימונדה יש'],['שקיות צבע כחול','שקיות צבע צהוב','כדי לקבל צבע ירוק מערבבים']]);const[a,b]=cop(1,5),k=ri(2,6);
+ return{kind:'num',ans:k*b,txt:`${c[2]} ${M(a)} ${c[0]} לכל ${M(b)} ${c[1]}. כמה ${c[1]} צריך עבור ${M(k*a)} ${c[0]}?`,
+ hint:`פי כמה גדלה הכמות של ה${c[0].split(' ')[0]}? ${M(a)} → ${M(k*a)}.`,
+ err:x=>x===b+(k*a-a)?'הוספתם במקום לכפול. במתכון כל הכמויות גדלות פי אותו מספר.':null,
+ sol:[[M(`${k*a} : ${a} = ${k}`),`הכמות גדלה פי ${M(k)}`],[M(`${b} · ${k} = ${k*b}`),'גם השני גדל פי '+M(k)]],diag:'שמירה על יחס: אם כמות אחת גדלה פי משהו – גם השנייה גדלה פי אותו מספר.'}},
+r_part(){const[a,b]=cop(1,5);
+ return Object.assign(mc(fr(a,a+b),[[fr(a,b),`${fr(a,b)} משווה בנים לבנות – לא לכל הכיתה. כל הכיתה = ${M(a+'+'+b+'='+(a+b))} חלקים.`],[fr(b,a+b),'זה החלק של הבנות, לא של הבנים.'],[fr(b,a),'זה היחס ההפוך, ולא חלק מהכיתה.']]),{
+ txt:`היחס בין מספר הבנים למספר הבנות בכיתה הוא ${RT(a,b)}. איזה חלק מכל תלמידי הכיתה הם בנים?`,hint:`כמה חלקים יש בכל הכיתה? בנים + בנות = ${M(a+' + '+b)}.`,
+ sol:[[`כל הכיתה: ${M(a+' + '+b+' = '+(a+b))} חלקים`,'מחברים את החלקים'],[`הבנים: ${M(a)} מתוך ${M(a+b)} → ${fr(a,a+b)}`,'חלק מהשלם']],diag:'ההבדל בין יחס (חלק מול חלק) לבין שבר (חלק מתוך השלם).'})},
+r_divide(){const[a,b]=cop(1,7),k=ri(2,9),T=(a+b)*k,askB=Math.random()<.5;
+ return{kind:'num',ans:askB?b*k:a*k,txt:`מחלקים ${M(T)} סוכריות בין רון לדנה ביחס ${RT(a,b)} (רון : דנה). כמה סוכריות ${askB?'תקבל דנה':'יקבל רון'}?`,
+ hint:`כמה חלקים יש בסך הכול? ${M(a+' + '+b+' = '+(a+b))}. כמה סוכריות יש בחלק אחד?`,
+ err:x=>x===k?`מצאתם כמה סוכריות בחלק אחד (${M(k)}) – עכשיו כפלו במספר החלקים של ${askB?'דנה':'רון'}.`:x*2===T?'חלוקה ביחס היא לא חצי־חצי.':x===(askB?a*k:b*k)?`זה מה ש${askB?'רון':'דנה'} מקבל/ת. בדקו את מי שאלו.`:null,
+ sol:[[`מספר החלקים: ${M(a+' + '+b+' = '+(a+b))}`,'מחברים'],[`חלק אחד: ${M(T+' : '+(a+b)+' = '+k)}`,'מחלקים את הכול'],[`${askB?'דנה':'רון'}: ${M((askB?b:a)+' · '+k+' = '+(askB?b*k:a*k))}`,'כופלים במספר החלקים']],
+ diag:'חלוקה ביחס: (1) כמה חלקים בסך הכול, (2) כמה בחלק אחד, (3) כפל במספר החלקים.'}},
+r_onepart(){const[a,b]=cop(1,7),k=ri(2,8);
+ return{kind:'num',ans:(a+b)*k,txt:`היחס בין מספר הבנים למספר הבנות בכיתה הוא ${RT(a,b)}. בכיתה יש ${M(b*k)} בנות. כמה תלמידים יש בכיתה?`,
+ hint:`הבנות הן ${M(b)} חלקים, והן ${M(b*k)} תלמידות. כמה תלמידים בחלק אחד?`,
+ err:x=>x===a*k?'זה מספר הבנים. השאלה שואלת על כל הכיתה.':x===b*k+a?'הוספתם את מספר החלקים ולא את מספר הבנים.':null,
+ sol:[[`חלק אחד: ${M(b*k+' : '+b+' = '+k)}`,'הבנות = '+M(b)+' חלקים'],[`בנים: ${M(a+' · '+k+' = '+a*k)}`,'כפל'],[`כל הכיתה: ${M(a*k+' + '+b*k+' = '+(a+b)*k)}`,'בנים + בנות']],diag:'לגלות כמה שווה חלק אחד מתוך הנתון, ומשם למצוא את השאר.'}},
+r_rect(){let[a,b]=cop(1,6);if(a<b)[a,b]=[b,a];const k=ri(2,6),P=2*(a+b)*k;
+ return{kind:'num',ans:a*k,txt:`היחס בין האורך לרוחב של מלבן הוא ${RT(a,b)}. היקף המלבן ${M(P)} ס״מ. מה אורך המלבן?`,fig:rect({w:'?',h:'רוחב'}),
+ hint:`בהיקף יש 2 אורכים ו־2 רוחבים. אורך + רוחב = חצי היקף = ${M(P/2)}.`,
+ err:x=>x===2*a*k?'שכחתם שבהיקף כל צלע מופיעה פעמיים – צריך להתחיל מחצי ההיקף.':x===b*k?'זה הרוחב. שאלו על האורך (הצלע הארוכה).':null,
+ sol:[[`אורך + רוחב: ${M(P+' : 2 = '+P/2)}`,'חצי היקף'],[`חלק אחד: ${M(P/2+' : '+(a+b)+' = '+k)}`,M(a+' + '+b+' = '+(a+b))+' חלקים'],[`אורך: ${M(a+' · '+k+' = '+a*k)}`,'ס״מ']],diag:'לחבר בין היקף לחלוקה ביחס: קודם חצי היקף, ואז חלוקה ביחס.'}},
+r_diff(){let[a,b]=cop(1,8);if(a>b)[a,b]=[b,a];const k=ri(2,9);
+ return{kind:'num',ans:a*k,txt:`ליעל ולנועה יש מדבקות ביחס ${RT(a,b)} (יעל : נועה). לנועה יש ${M((b-a)*k)} מדבקות יותר מליעל. כמה מדבקות יש ליעל?`,
+ hint:`ההפרש ביניהן הוא ${M(b+' − '+a+' = '+(b-a))} חלקים. כמה מדבקות בחלק אחד?`,
+ err:x=>x===(b-a)*k?'זה ההפרש, לא מה שיש ליעל.':x===k?`זה חלק אחד. ליעל יש ${M(a)} חלקים.`:x===b*k?'זה מה שיש לנועה.':null,
+ sol:[[`הפרש בחלקים: ${M(b+' − '+a+' = '+(b-a))}`,'חיסור'],[`חלק אחד: ${M((b-a)*k+' : '+(b-a)+' = '+k)}`,'מחלקים'],[`יעל: ${M(a+' · '+k+' = '+a*k)}`,'כפל']],diag:'גם הפרש אפשר לתרגם ל"חלקים" – ומשם למצוא חלק אחד.'}},
+r_three(){let a,b,c;do{a=ri(1,6);b=ri(1,6);c=ri(1,6)}while(a===b||b===c||a===c||gcd(gcd(a,b),c)!==1);const k=ri(2,6),T=(a+b+c)*k,mx=Math.max(a,b,c);
+ return{kind:'num',ans:mx*k,txt:`מחלקים ${M(T)} ש״ח בין שלושה אחים ביחס ${M(a+' : '+b+' : '+c)}. כמה ש״ח מקבל האח שמקבל הכי הרבה?`,
+ hint:`גם עם 3 איברים: כמה חלקים בסך הכול? ${M(a+' + '+b+' + '+c)}.`,err:x=>x===k?`זה חלק אחד. האח הגדול מקבל ${M(mx)} חלקים.`:null,
+ sol:[[`חלקים: ${M(a+' + '+b+' + '+c+' = '+(a+b+c))}`,'מחברים'],[`חלק אחד: ${M(T+' : '+(a+b+c)+' = '+k)}`,'מחלקים'],[`הכי הרבה: ${M(mx+' · '+k+' = '+mx*k)}`,'ש״ח']],diag:'חלוקה ביחס עובדת אותו דבר גם עם שלושה איברים.'}},
+r_compare(){let a1,b1,d,a2,b2;a1=ri(1,4);b1=a1+ri(1,4);d=ri(1,3);a2=a1+d;b2=b1+d;if(Math.random()<.5){[a1,a2]=[a2,a1];[b1,b2]=[b2,b1]}
+ const right=a1*b2>a2*b1?'מיץ א׳':'מיץ ב׳';
+ return Object.assign(mc(right,[[right==='מיץ א׳'?'מיץ ב׳':'מיץ א׳','השוו את החלק של התרכיז ביחס למים – לא את הכמות עצמה.'],['הטעם זהה','ההפרש בין מים לתרכיז שווה – אבל יחס בודקים בכפל ובחילוק, לא בחיסור!']]),{
+ txt:`במיץ א׳ מערבבים ${M(a1)} כוסות תרכיז עם ${M(b1)} כוסות מים. במיץ ב׳ מערבבים ${M(a2)} כוסות תרכיז עם ${M(b2)} כוסות מים. באיזה מיץ טעם התרכיז חזק יותר?`,
+ hint:`כתבו כל מיץ כשבר: תרכיז מתוך מים – ${fr(a1,b1)} ו־${fr(a2,b2)}. איזה שבר גדול יותר?`,
+ sol:[[`א׳: ${fr(a1,b1)} · ב׳: ${fr(a2,b2)}`,'תרכיז לכל כוס מים'],[`מכנה משותף: ${fr(a1*b2,b1*b2)} מול ${fr(a2*b1,b1*b2)}`,'משווים מונים'],[`${right} חזק יותר`,'השבר הגדול']],diag:'השוואת יחסים: הופכים לשברים עם מכנה משותף (ולא משווים הפרשים).'})},
+r_change(){const[a,b]=cop(1,5),k=ri(2,6),m=ri(1,6),B=a*k+m,G=b*k,g=gcd(B,G);
+ return{kind:'ratio',labels:['בנים','בנות'],ans:[B/g,G/g],exact:false,txt:`בכיתה היחס בין בנים לבנות הוא ${RT(a,b)}, ויש בה ${M((a+b)*k)} תלמידים. הצטרפו לכיתה עוד ${M(m)} בנים. מה היחס החדש בין בנים לבנות?`,
+ hint:'קודם מצאו כמה בנים וכמה בנות יש עכשיו (חלוקה ביחס), ורק אחר כך הוסיפו את הבנים החדשים.',
+ err:(x,y)=>x*b===y*(a+m)?'הוספתם לאיבר של היחס. צריך להוסיף למספר הבנים האמיתי – קודם מוצאים כמה בנים יש.':null,
+ sol:[[`חלק אחד: ${M((a+b)*k+' : '+(a+b)+' = '+k)}`,'חלוקה ביחס'],[`בנים: ${M(a*k)} · בנות: ${M(b*k)}`,'לפני ההצטרפות'],[`בנים עכשיו: ${M(a*k+' + '+m+' = '+B)}`,'נוספו '+M(m)],[`יחס חדש: ${RT(B,G)}${g>1?' = '+RT(B/g,G/g):''}`,g>1?'צמצום':'אי אפשר לצמצם']],diag:'כשמשהו משתנה – עובדים עם הכמויות האמיתיות, לא עם מספרי היחס.'}},
+r_claim(){const[a,b]=cop(1,5);
+ return Object.assign(mc(`לא. רק ${M(a)} מתוך ${M(a+b)} תלמידים הם בנים.`,[['כן, היא צודקת.',`יחס ${RT(a,b)} אומר: על כל ${M(a)} בנים יש ${M(b)} בנות – ${M(a+b)} תלמידים בקבוצה.`],[`לא. ${M(b)} מתוך ${M(a+b)} תלמידים הם בנים.`,`${M(b)} זה מספר החלקים של הבנות.`]]),{
+ txt:`דנה אמרה: "היחס בין בנים לבנות בכיתה הוא ${RT(a,b)}, לכן ${M(a)} מתוך ${M(b)} תלמידים הם בנים." האם היא צודקת?`,hint:`בכל "קבוצה" יש ${M(a)} בנים ו־${M(b)} בנות. כמה תלמידים בקבוצה?`,
+ sol:[[`בקבוצה: ${M(a+' + '+b+' = '+(a+b))} תלמידים`,'בנים + בנות'],[`בנים: ${M(a)} מתוך ${M(a+b)} = ${fr(a,a+b)}`,'חלק מהשלם']],diag:'הבנת המשמעות של יחס: חלק מול חלק, ולא חלק מתוך הכול.'})}
+};
+
+// ================= מחוללי שאלות: פיתגורס =================
+const TRS=[[3,4,5],[6,8,10],[5,12,13],[9,12,15],[8,15,17],[12,16,20],[7,24,25],[15,20,25],[20,21,29],[10,24,26]];
+const tr=(n=TRS.length)=>pick(TRS.slice(0,n));
+const PY={
+p_hyp(){const[a,b]=tr(5),L=shuffle(['x','y','z']),flip=Math.random()<.5;
+ return Object.assign(mc(L[2],[[L[0],'זה ניצב – הוא נוגע בזווית הישרה.'],[L[1],'זה ניצב – הוא נוגע בזווית הישרה.']]),{
+ txt:'איזו צלע היא היתר במשולש?',fig:tri(a,b,{h:L[0],v:L[1],c:L[2]},{flip}),hint:'מצאו את הזווית הישרה (הריבוע הקטן). היתר נמצא מולה – הוא לא נוגע בה.',
+ sol:[['היתר נמצא מול הזווית הישרה','לא נוגע בה'],[`לכן היתר הוא ${M(L[2])}`,'וגם הצלע הארוכה']],diag:'לזהות יתר וניצבים: היתר מול הזווית הישרה, והוא הצלע הארוכה ביותר.'})},
+p_square(){const n=ri(3,15);if(Math.random()<.5)return{kind:'num',ans:n*n,txt:`חשבו: ${M(sq(n))} = ?`,hint:`${M(sq(n))} פירושו ${M(n+' · '+n)}.`,
+ err:x=>x===2*n?`${M(sq(n))} זה ${M(n)} כפול עצמו, ולא כפול 2.`:null,sol:[[M(`${sq(n)} = ${n} · ${n} = ${n*n}`),'ריבוע = מספר כפול עצמו']],diag:'ריבוע של מספר: המספר כפול עצמו (לא כפול 2).'};
+ return{kind:'num',ans:n,txt:`חשבו: ${M('√'+n*n)} = ?`,hint:`איזה מספר כפול עצמו נותן ${M(n*n)}?`,err:x=>x*2===n*n?'שורש זה לא חצי! מחפשים מספר שכפול עצמו נותן את המספר.':null,
+ sol:[[M(`${n} · ${n} = ${n*n}`),'בודקים'],[M(`√${n*n} = ${n}`),'לכן השורש']],diag:'שורש: איזה מספר כפול עצמו נותן את המספר.'}},
+p_findc(lv){const[a,b,c]=lv>=1?tr():tr(4),flip=Math.random()<.5;
+ return{kind:'num',ans:c,txt:'מצאו את אורך היתר (בס״מ).',fig:tri(a,b,{h:a,v:b,c:'?'},{flip}),hint:`יתר² = ניצב² + ניצב². כמה זה ${M(sq(a)+' + '+sq(b))}?`,
+ err:x=>x===a+b?'חיברתם את הצלעות עצמן. צריך לחבר את הריבועים שלהן.':x===a*a+b*b?`כמעט! ${M(x)} זה היתר בריבוע – נשאר להוציא שורש.`:null,
+ sol:[[M(`${sq(a)} + ${sq(b)} = ${a*a} + ${b*b} = ${c*c}`),'ניצב² + ניצב²'],[M(`√${c*c} = ${c}`),'שורש']],diag:'משפט פיתגורס: ריבוע, חיבור הריבועים, ואז שורש.'}},
+p_findleg(){const[a,b,c]=tr(),flip=Math.random()<.5,hb=Math.random()<.5;
+ return{kind:'num',ans:hb?b:a,txt:'מצאו את אורך הניצב החסר (בס״מ).',fig:tri(a,b,hb?{h:a,v:'?',c}:{h:'?',v:b,c},{flip}),
+ hint:`כשמחפשים ניצב – מחסירים: ניצב² = יתר² − ניצב². כמה זה ${M(sq(c)+' − '+sq(hb?a:b))}?`,
+ err:x=>{const g=hb?a:b;return x*x===c*c+g*g?'חיברתם את הריבועים. כשמחפשים ניצב צריך להחסיר מהיתר.':x===c-g?'החסרתם את הצלעות עצמן. צריך להחסיר את הריבועים.':x===c*c-g*g?'כמעט! זה הניצב בריבוע – נשאר להוציא שורש.':null},
+ sol:[[M(`${sq(c)} − ${sq(hb?a:b)} = ${c*c} − ${(hb?a:b)**2} = ${(hb?b:a)**2}`),'יתר² − ניצב²'],[M(`√${(hb?b:a)**2} = ${hb?b:a}`),'שורש']],diag:'מציאת ניצב: מחסירים מריבוע היתר את ריבוע הניצב הידוע.'}},
+p_isright(){const[a,b,c]=tr(),yes=Math.random()<.5,cc=yes?c:c+pick([-1,1]);const s=shuffle([a,b,cc]),mx=Math.max(a,b,cc),o=[a,b,cc].filter(v=>v!==mx).concat([a,b,cc].filter(v=>v===mx).slice(1));
+ return Object.assign(mc(yes?'כן':'לא',[[yes?'לא':'כן',yes?'בדקו שוב את החישוב של סכום הריבועים.':'סכום ריבועי הצלעות הקצרות שונה מריבוע הארוכה – לכן אין זווית ישרה.']]),{
+ txt:`אורכי הצלעות של משולש: ${M(s.join(' , '))}. האם המשולש ישר זווית?`,hint:'בדקו: האם ריבוע הצלע הארוכה שווה לסכום הריבועים של שתי האחרות?',
+ sol:[[M(`${sq(o[0])} + ${sq(o[1])} = ${o[0]**2+o[1]**2}`),'שתי הקצרות'],[M(`${sq(mx)} = ${mx*mx}`),'הארוכה'],[yes?'שווים → ישר זווית':'לא שווים → לא ישר זווית','משפט פיתגורס ההפוך']],diag:'פיתגורס הפוך: בודקים אם ריבוע הצלע הארוכה = סכום ריבועי שתי האחרות.'})},
+p_ladder(){const[a,b,c]=pick([[3,4,5],[6,8,10],[5,12,13],[9,12,15],[7,24,25]]);
+ return{kind:'num',ans:b,txt:`סולם באורך ${M(c)} מ׳ נשען על קיר. רגל הסולם רחוקה ${M(a)} מ׳ מהקיר. לאיזה גובה מגיע הסולם על הקיר?`,
+ fig:tri(a,b,{h:a,v:'?',c},{wall:true,words:[[275,40,'קיר']]}),hint:'הסולם הוא היתר (מול הזווית הישרה בין הקיר לרצפה). מחפשים ניצב.',
+ err:x=>x*x===a*a+c*c?'הסולם הוא היתר – לכן מחסירים ולא מחברים.':x===c-a?'צריך להחסיר את הריבועים, לא את האורכים.':null,
+ sol:[['הסולם = יתר, הקיר והרצפה = ניצבים','זווית ישרה בין קיר לרצפה'],[M(`${sq(c)} − ${sq(a)} = ${c*c-a*a}`),'מחפשים ניצב'],[M(`√${b*b} = ${b}`),'מ׳']],diag:'לזהות בבעיה מילולית מי היתר (מול הזווית הישרה) ומי הניצבים.'}},
+p_tv(){const[a,b,c]=tr();
+ return{kind:'num',ans:c,txt:`לשולחן מלבני יש אורך ${M(b)} ס״מ ורוחב ${M(a)} ס״מ. מה אורך האלכסון של השולחן?`,fig:rect({w:b,h:a,d:'?'},{diag:true}),
+ hint:'האלכסון מחלק את המלבן לשני משולשים ישרי זווית. האלכסון הוא היתר.',err:x=>x===a+b?'חיברתם את הצלעות. צריך לחבר את הריבועים.':x===a*a+b*b?'נשאר להוציא שורש!':null,
+ sol:[['האלכסון = יתר','במלבן כל הזוויות ישרות'],[M(`${sq(a)} + ${sq(b)} = ${c*c}`),'ניצב² + ניצב²'],[M(`√${c*c} = ${c}`),'ס״מ']],diag:'לראות משולש ישר זווית "מוסתר" בתוך מלבן.'}},
+p_iso(){const[a,b,c]=pick([[3,4,5],[6,8,10],[5,12,13],[9,12,15],[8,15,17]]);
+ return{kind:'num',ans:b,txt:`במשולש שווה שוקיים אורך כל שוק ${M(c)} ס״מ ואורך הבסיס ${M(2*a)} ס״מ. מה אורך הגובה לבסיס?`,fig:iso({c,base:2*a,hgt:'?'}),
+ hint:`הגובה חוצה את הבסיס לשני חצאים של ${M(a)} ס״מ, ויוצר משולש ישר זווית שהשוק בו היא היתר.`,
+ err:x=>x*x===c*c-4*a*a?`לא חציתם את הבסיס. בכל משולש קטן הניצב הוא ${M(a)}, לא ${M(2*a)}.`:x*x===c*c+a*a?'השוק היא היתר – מחסירים.':null,
+ sol:[[`חצי בסיס: ${M(2*a+' : 2 = '+a)}`,'הגובה חוצה את הבסיס'],[M(`${sq(c)} − ${sq(a)} = ${b*b}`),'שוק = יתר'],[M(`√${b*b} = ${b}`),'ס״מ']],diag:'בשווה שוקיים הגובה חוצה את הבסיס – משתמשים בחצי בסיס.'}},
+p_walk(){const[a,b,c]=tr();
+ return{kind:'num',ans:c,txt:`יוסי הלך ${M(a)} מ׳ מזרחה ואחר כך ${M(b)} מ׳ צפונה. מה המרחק בקו ישר בינו לבין נקודת ההתחלה?`,fig:walk(a,b),
+ hint:'מזרח וצפון יוצרים זווית ישרה. הקו הישר חזרה הוא היתר.',err:x=>x===a+b?'זה המרחק שהלך – לא בקו ישר.':x===a*a+b*b?'נשאר להוציא שורש!':null,
+ sol:[['בין מזרח לצפון יש זווית ישרה','הדרך הישרה = יתר'],[M(`${sq(a)} + ${sq(b)} = ${c*c}`),'ניצב² + ניצב²'],[M(`√${c*c} = ${c}`),'מ׳']],diag:'לתרגם תיאור מילולי לשרטוט של משולש ישר זווית.'}},
+p_between(){let a,b,s,f;do{a=ri(1,7);b=ri(1,7);s=a*a+b*b;f=Math.floor(Math.sqrt(s))}while(f*f===s||a===b);
+ return Object.assign(mc(`בין ${M(f)} ל־${M(f+1)}`,[[`בין ${M(f+1)} ל־${M(f+2)}`,`${M(sq(f+1)+' = '+(f+1)**2)} – גדול מ־${M(s)}.`],[`בין ${M(f-1)} ל־${M(f)}`,`${M(sq(f)+' = '+f*f)} – עדיין קטן מ־${M(s)}.`],[`בין ${M(a+b-1)} ל־${M(a+b)}`,'חיברתם את הצלעות. צריך לחבר ריבועים.']]),{
+ txt:`במשולש ישר זווית הניצבים הם ${M(a)} ס״מ ו־${M(b)} ס״מ. בין אילו שני מספרים שלמים נמצא אורך היתר?`,fig:tri(a,b,{h:a,v:b,c:'?'}),
+ hint:`חשבו יתר² = ${M(sq(a)+' + '+sq(b))}. ואז חפשו: איזה מספר בריבוע קרוב לזה?`,
+ sol:[[M(`${sq(a)} + ${sq(b)} = ${s}`),'יתר²'],[M(`${sq(f)} = ${f*f} < ${s} < ${(f+1)**2} = ${sq(f+1)}`),'מחפשים ריבועים מסביב'],[`היתר בין ${M(f)} ל־${M(f+1)}`,'אומדן שורש']],diag:'אומדן שורש: למצוא בין אילו ריבועים שלמים נמצא המספר.'})},
+p_error(){const[a,b,c]=tr(5);
+ return Object.assign(mc(`צריך לחבר את הריבועים: ${M(a*a+' + '+b*b+' = '+c*c)}, והיתר הוא ${M(c)}.`,[['אין טעות, נועה צודקת.',`בדקו: האם ${M(sq(a+b))} שווה ל־${M(sq(a)+' + '+sq(b))}?`],[`צריך לכפול: ${M(a+' · '+b+' = '+a*b)}, והיתר הוא ${M(a*b)}.`,'פיתגורס הוא חיבור של ריבועים, לא כפל של הצלעות.'],[`צריך להחסיר: ${M(b+' − '+a+' = '+(b-a))}.`,'מחסירים רק כשמחפשים ניצב – וגם אז את הריבועים.']]),{
+ txt:`נועה חישבה את היתר במשולש ישר זווית שהניצבים שלו ${M(a)} ו־${M(b)}: "${M(a+' + '+b+' = '+(a+b))}, לכן היתר הוא ${M(a+b)}". מה הטעות שלה?`,
+ hint:'נזכרו בנוסחה: מה מחברים – את הצלעות או את הריבועים שלהן?',sol:[[M(`${sq(a)} + ${sq(b)} = ${c*c}`),'מחברים ריבועים'],[M(`√${c*c} = ${c}`),`היתר ${c}, לא ${a+b}`]],diag:'לזהות טעות נפוצה: חיבור צלעות במקום חיבור ריבועים.'})},
+p_two(){const[a,b,c]=tr();
+ return{kind:'num',ans:2*(a+b),txt:`במלבן אורך האלכסון ${M(c)} ס״מ ואורך צלע אחת ${M(a)} ס״מ. מה היקף המלבן?`,fig:rect({w:'?',h:a,d:c},{diag:true}),
+ hint:'שלב 1: מצאו את הצלע החסרה בעזרת פיתגורס (האלכסון הוא היתר). שלב 2: חשבו היקף.',err:x=>x===b?'מצאתם את הצלע החסרה – עכשיו חשבו את ההיקף.':x===a+b?'זה חצי היקף. במלבן 4 צלעות.':null,
+ sol:[[M(`${sq(c)} − ${sq(a)} = ${b*b}`),'אלכסון = יתר'],[M(`√${b*b} = ${b}`),'הצלע החסרה'],[M(`2 · (${a} + ${b}) = ${2*(a+b)}`),'היקף']],diag:'שאלה דו־שלבית: קודם פיתגורס, אחר כך היקף.'}},
+p_short(){const[a,b,c]=tr();
+ return{kind:'num',ans:a+b-c,txt:`מגרש מלבני באורך ${M(b)} מ׳ וברוחב ${M(a)} מ׳. רוני הלכה באלכסון במקום ללכת לאורך שתי צלעות. בכמה מטרים הדרך שלה קצרה יותר?`,fig:rect({w:b,h:a,d:'?'},{diag:true}),
+ hint:'חשבו את שתי הדרכים: לאורך הצלעות (חיבור), ובאלכסון (פיתגורס). ואז הפרש.',err:x=>x===c?'זה אורך האלכסון. השאלה – בכמה הדרך קצרה יותר.':x===a+b?'זו הדרך הארוכה. חסר עוד שלב.':null,
+ sol:[[M(`${a} + ${b} = ${a+b}`),'דרך הצלעות'],[M(`√(${sq(a)} + ${sq(b)}) = ${c}`),'דרך האלכסון'],[M(`${a+b} − ${c} = ${a+b-c}`),'ההפרש']],diag:'שאלת השוואה: לחשב שתי דרכים ולמצוא את ההפרש.'}}
+};
+
+// ================= רמות =================
+const TOP={r:{name:'יחס',ic:'⚖️',G:RATIO,L:[['r_write','r_equiv','r_expand'],['r_reduce','r_recipe','r_part'],['r_divide','r_onepart','r_rect','r_diff'],['r_three','r_compare','r_change','r_claim']]},
+ p:{name:'משפט פיתגורס',ic:'📐',G:PY,L:[['p_hyp','p_square','p_findc'],['p_findleg','p_isright','p_findc'],['p_ladder','p_tv','p_iso','p_walk'],['p_between','p_error','p_two','p_short']]}};
+const LV=[['★','ידע והבנה','מכירים את המושגים'],['★★','יישום','משתמשים בכלל'],['★★★','בעיות מילוליות','מתרגמים סיפור לחשבון'],['★★★★','חשיבה מסדר גבוה','שאלות מפמ״ר, מוקשים והסבר']];
+const PER=20;
+function gen(t,id,lv,avoid){let q;for(let i=0;i<25;i++){q=TOP[t].G[id](lv);if(!avoid||q.txt!==avoid)break}q.id=id;q.t=t;q.lv=lv;return q}
+
+// ================= מסכים =================
+function hi(){return DB.name?` ${DB.name}`:''}
+function home(){window.scrollTo(0,0);
+ app().innerHTML=`<div class="card"><div class="qt">שלום${hi()}! 👋 מה מתרגלים היום?</div>
+ <div style="color:var(--mute);font-size:17px">טעיתם? לא נורא – תקבלו רמז ושאלות דומות עד שזה יושב טוב.</div>
+ <input class="name" id="nm" placeholder="השם שלי (לא חובה)" value="${DB.name||''}" onchange="DB.name=this.value.trim();save()" style="margin-top:10px"></div>
+ ${['r','p'].map(t=>`<button class="btn lvl" onclick="topic('${t}')"><span class="e">${TOP[t].ic}</span><span><b>${TOP[t].name}</b><small>תזכורת + 4 רמות חשיבה</small></span><span class="sc">${doneCount(t)}/4 ⭐</span></button>`).join('')}
+ <button class="btn lvl" onclick="testMenu()"><span class="e">📝</span><span><b>בחן את עצמך</b><small>מבחן קצר בלי רמזים – בסוף רואים מה לחזק</small></span></button>
+ <button class="btn sec" onclick="share()">📲 שיתוף הקישור</button>`}
+function doneCount(t){return[0,1,2,3].filter(l=>(DB.best[t+l]||0)>=14).length}
+function topic(t){window.scrollTo(0,0);
+ app().innerHTML=`<div class="card"><div class="qt">${TOP[t].ic} ${TOP[t].name}</div><div style="color:var(--mute);font-size:17px">מומלץ להתחיל בתזכורת קצרה, ואז לטפס רמה אחרי רמה.</div>
+ <button class="btn sec" onclick="recap('${t}',0)">🎬 תזכורת קצרה – מה צריך לזכור</button></div>
+ ${LV.map((v,l)=>{const b=DB.best[t+l];return`<button class="btn lvl" onclick="startLevel('${t}',${l})"><span class="e">${v[0]}</span><span><b>${v[1]}</b><small>${v[2]} · ${PER} שאלות</small></span><span class="sc">${b!=null?b+'/'+PER+' '+stars(b):''}</span></button>`}).join('')}
+ <button class="btn sec" onclick="startTest('${t}')">📝 בחן את עצמך ב${TOP[t].name}</button>`}
+function stars(s){return s>=18?'⭐⭐⭐':s>=14?'⭐⭐':s>=10?'⭐':''}
+
+// ---------- תזכורת מונפשת ----------
+const RECAP={r:[
+ ['למה צריך יחס? 🍋',`במתכון, במפה ובערבוב צבעים – חשוב <b>כמה מזה לעומת כמה מזה</b>. אם מכפילים מתכון ושוכחים לשמור על היחס – העוגה נהרסת!`],
+ ['מה זה יחס?',`${dots(2,3)}<div class="rv" style="animation-delay:.8s">2 עיגולים אדומים ו־3 כחולים: היחס בין אדומים לכחולים הוא ${RT(2,3)}.</div><div class="warn rv" style="animation-delay:1.4s">⚠️ הסדר חשוב! ${RT(2,3)} זה לא ${RT(3,2)}.</div>`],
+ ['צמצום והרחבה',`<div class="box rv">כמו בשבר: כופלים או מחלקים את <b>שני</b> האיברים באותו מספר.</div><div class="rv" style="animation-delay:.7s">${RT(2,3)} = ${RT(4,6)} = ${RT(6,9)} <small>(כפול 2, כפול 3)</small></div><div class="rv" style="animation-delay:1.3s">${RT(12,18)} = ${RT(2,3)} <small>(חילקנו ב־6)</small></div><div class="warn rv" style="animation-delay:1.9s">✗ לא מוסיפים: ${RT(2,3)} לא שווה ל־${RT(3,4)}</div>`],
+ ['חלוקה ביחס – 3 צעדים',`<div>מחלקים ${M(20)} ביחס ${RT(2,3)}:</div><div class="steps">${[['1. כמה חלקים?',M('2 + 3 = 5')],['2. כמה בחלק אחד?',M('20 : 5 = 4')],['3. כפל בחלקים',M('2 · 4 = 8')+' , '+M('3 · 4 = 12')]].map((s,i)=>`<div style="animation-delay:${.4+i*.6}s"><span>${s[0]}</span><small>${s[1]}</small></div>`).join('')}</div><div class="rv box" style="animation-delay:2.4s">בדיקה: ${M('8 + 12 = 20')} ✔</div>`]],
+p:[
+ ['למה צריך את פיתגורס? 🪜',`האם הסולם יגיע לחלון? כמה ארוך האלכסון של מסך? מה הדרך הקצרה ביותר? פיתגורס מאפשר לחשב צלע <b>בלי למדוד</b>.`],
+ ['משולש ישר זווית',`${tri(3,4,{h:'ניצב',v:'ניצב',c:'יתר'})}<div class="box rv" style="animation-delay:1s">היתר נמצא <b>מול</b> הזווית הישרה, והוא תמיד הצלע הארוכה.</div>`],
+ ['ריבוע ושורש',`<div class="rv">${M('5² = 5 · 5 = 25')} <small>(לא 5 · 2!)</small></div><div class="rv" style="animation-delay:.8s">${M('√25 = 5')} – איזה מספר כפול עצמו נותן 25?</div>`],
+ ['משפט פיתגורס',`<div class="box rv">ניצב² + ניצב² = יתר²</div><div class="steps">${[['ניצבים 3 ו־4',M('9 + 16 = 25')],['שורש',M('√25 = 5')+' ← היתר']].map((s,i)=>`<div style="animation-delay:${.5+i*.6}s"><span>${s[0]}</span><small>${s[1]}</small></div>`).join('')}</div><div class="warn rv" style="animation-delay:1.9s">מחפשים <b>ניצב</b>? מחסירים: ניצב² = יתר² − ניצב²</div>`]]};
+function recap(t,i){window.scrollTo(0,0);const R=RECAP[t],s=R[i];
+ app().innerHTML=`<div class="card"><div class="dots">${R.map((_,j)=>`<i class="${j===i?'on':''}"></i>`).join('')}</div><div class="qt">${s[0]}</div><div style="margin-top:8px">${s[1]}</div>
+ <div class="nav">${i>0?`<button class="btn sec" onclick="recap('${t}',${i-1})">→ הקודם</button>`:''}${i<R.length-1?`<button class="btn" onclick="recap('${t}',${i+1})">הבא ←</button>`:`<button class="btn" onclick="startLevel('${t}',0)">מתחילים ברמה ★ ←</button>`}</div></div>`}
+
+// ---------- רמה ----------
+let S=null;
+function startLevel(t,l){const ids=TOP[t].L[l];let seq=[];while(seq.length<PER)seq=seq.concat(shuffle(ids));seq=seq.slice(0,PER);
+ S={t,l,n:0,score:0,seq,rem:null};nextQ()}
+function nextQ(){if(S.rem&&S.rem.need>0){if(S.rem.count>=5&&!S.rem.asked)return stuck();S.rem.count++;show(gen(S.t,S.rem.id,S.l,Q&&Q.txt));return}
+ if(S.rem&&S.rem.need<=0){S.rem=null;toast('💪 הבנת! ממשיכים במסלול');burst()}
+ if(S.n>=PER)return levelEnd();show(gen(S.t,S.seq[S.n],S.l,Q&&Q.txt))}
+function stuck(){S.rem.asked=true;app().innerHTML=`<div class="card"><div class="qt">🤝 הנושא הזה עוד קצת קשה – וזה בסדר!</div><div class="diag">🔎 מה כדאי לחזק: ${S.lastDiag||''}</div>
+ <div style="margin-top:8px">אפשר לחזור לתזכורת, לבקש עזרה מהמורה, או לנסות עוד שאלה דומה.</div>
+ <button class="btn rem" onclick="nextQ()">עוד שאלה דומה 💪</button><button class="btn sec" onclick="recap('${S.t}',0)">🎬 לתזכורת</button><button class="btn sec" onclick="S.rem=null;nextQ()">להמשיך הלאה</button></div>`}
+let Q=null,tries=0,done=false;
+function inputHTML(q,dis=''){if(q.kind==='mc')return`<div class="opts">${q.opts.map((o,i)=>`<button class="op" id="o${i}" onclick="answer(${i})">${o}</button>`).join('')}</div>`;
+ if(q.kind==='ratio')return`<div class="rat"><label><span>${q.labels[0]||'&nbsp;'}</span><input id="a1" inputmode="numeric"></label><b>:</b><label><span>${q.labels[1]||'&nbsp;'}</span><input id="a2" inputmode="numeric"></label></div><button class="btn" id="go" onclick="answer()">בדיקה</button>`;
+ return`<div class="num"><input id="a1" inputmode="decimal" placeholder="תשובה"><button class="btn" id="go" onclick="answer()">בדיקה</button></div>`}
+function show(q){Q=q;tries=0;done=false;window.scrollTo(0,0);
+ const rem=S.rem?`<div class="remb">🔁 תרגול חיזוק – שאלה דומה (צריך עוד ${S.rem.need} ${S.rem.need>1?'הצלחות':'הצלחה'})</div>`:'';
+ app().innerHTML=`<div class="top"><span>${TOP[S.t].ic} ${TOP[S.t].name} · ${LV[S.l][0]}</span><span>${Math.min(S.n+1,PER)}/${PER} · ✔ ${S.score}</span></div><div class="bar"><i style="width:${S.n/PER*100}%"></i></div>
+ <div class="card">${rem}<div class="qt">${q.txt}</div>${q.fig||''}${inputHTML(q)}<div id="fb"></div></div>`;
+ document.querySelectorAll('.rat input,.num input').forEach((el,i,all)=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){if(i<all.length-1)all[i+1].focus();else answer()}}));}
+function readVal(){const f=id=>{const v=($('#'+id)||{}).value;return v==null||v.trim()===''?NaN:parseFloat(v.replace(',','.'))};return Q.kind==='ratio'?[f('a1'),f('a2')]:f('a1')}
+function judge(q,v){// מחזיר {ok, msg}
+ if(q.kind==='mc')return{ok:v===q.ans,msg:q.msgs[v]};
+ if(q.kind==='num'){if(isNaN(v))return{empty:1};const ok=Math.abs(v-q.ans)<1e-9;return{ok,msg:ok?null:(q.err&&q.err(v))}}
+ const[x,y]=v;if(isNaN(x)||isNaN(y))return{empty:1};const[a,b]=q.ans;const eq=x>0&&y>0&&x*b===y*a;
+ if(eq&&q.exact&&!(x===a&&y===b))return{ok:false,msg:'נכון – אבל אפשר לצמצם עוד! חפשו מספר נוסף שמחלק את שני האיברים.'};
+ return{ok:eq,msg:eq?null:(q.err&&q.err(x,y))}}
+const solHTML=q=>`<div class="steps">${q.sol.map((s,i)=>`<div style="animation-delay:${i*.35}s"><span>${s[0]}</span><small>${s[1]}</small></div>`).join('')}</div>`;
+function ansText(q){return q.kind==='mc'?q.opts[q.ans]:q.kind==='ratio'?RT(q.ans[0],q.ans[1]):M(q.ans)}
+function answer(i){if(done)return;const v=Q.kind==='mc'?i:readVal(),r=judge(Q,v),fb=$('#fb');
+ if(r.empty){fb.innerHTML='<div class="fb hi">כתבו תשובה ואז לחצו "בדיקה" 🙂</div>';return}
+ if(r.ok){done=true;if(Q.kind==='mc')$('#o'+i).classList.add('good');lock();
+  const first=tries===0;
+  if(!S.rem){S.n++;if(first)S.score++;else S.rem={id:Q.id,need:1,count:0}}
+  else{if(first)S.rem.need--;else S.rem.need=Math.max(S.rem.need,1)}
+  const nextLbl=S.rem&&S.rem.need>0?'לשאלה דומה 💪':'הבא ←';
+  fb.innerHTML=`<div class="fb ok"><b>${pick(['✔ נכון! כל הכבוד','✔ מצוין!','✔ בדיוק!','✔ יפה מאוד!'])}${hi()}</b>${!first?'<div>תיקנתם לבד – זה הכי חשוב! נעשה עוד שאלה דומה כדי לוודא.</div>':''}<div style="margin-top:6px;font-weight:600">מה עשינו?</div>${solHTML(Q)}</div><button class="btn ${S.rem&&S.rem.need>0?'rem':''}" onclick="nextQ()">${nextLbl}</button>`;
+  return}
+ tries++;if(Q.kind==='mc'){const b=$('#o'+i);b.classList.add('wrong');b.disabled=true}
+ if(tries===1){fb.innerHTML=`<div class="fb hi">🤔 ${r.msg||'לא בדיוק.'}<div style="margin-top:4px">💡 רמז: ${Q.hint}</div><div style="margin-top:4px;font-weight:600">נסו שוב!</div></div>`;return}
+ done=true;lock();S.lastDiag=Q.diag;
+ if(!S.rem)S.n++;
+ S.rem={id:Q.id,need:2,count:S.rem?S.rem.count:0,asked:S.rem?S.rem.asked:false};
+ if(Q.kind==='mc')$('#o'+Q.ans).classList.add('good');
+ fb.innerHTML=`<div class="fb no">${r.msg?r.msg+'<br>':''}התשובה הנכונה: ${ansText(Q)}<div style="margin-top:6px;font-weight:600">ככה פותרים:</div>${solHTML(Q)}</div>
+ <div class="diag">🔎 מה כנראה חסר לך: ${Q.diag}</div><div style="margin-top:6px;font-size:17px">עכשיו תקבלו שאלה דומה עם מספרים אחרים – תנסו לבד לפי הדרך שראיתם.</div>
+ <button class="btn rem" onclick="nextQ()">לשאלה דומה 💪</button>`}
+function lock(){document.querySelectorAll('#app input,#app .op,#go').forEach(e=>e.disabled=true)}
+function levelEnd(){const{t,l,score}=S;if(DB.best[t+l]==null||score>DB.best[t+l])DB.best[t+l]=score;save();if(score>=14)burst();window.scrollTo(0,0);
+ app().innerHTML=`<div class="card center"><div class="qt">סיימתם את רמה ${LV[l][0]}${hi()}! 🎉</div><div class="big">${score}/${PER}</div><div class="stars">${stars(score)||'💪'}</div>
+ <div style="color:var(--mute)">${score>=14?'מוכנים לרמה הבאה!':'כדאי לתרגל את הרמה הזאת עוד פעם – כל פעם יש שאלות חדשות.'}</div>
+ ${l<3?`<button class="btn" onclick="startLevel('${t}',${l+1})">לרמה ${LV[l+1][0]} ←</button>`:`<button class="btn" onclick="startTest('${t}')">📝 בחן את עצמך</button>`}
+ <button class="btn sec" onclick="startLevel('${t}',${l})">שוב את אותה רמה</button><button class="btn sec" onclick="topic('${t}')">לתפריט ${TOP[t].name}</button></div>`}
+
+// ---------- בחן את עצמך ----------
+let TS=null;
+function testMenu(){window.scrollTo(0,0);app().innerHTML=`<div class="card"><div class="qt">📝 בחן את עצמך</div><div style="color:var(--mute);font-size:17px">12 שאלות מכל רמות החשיבה. אין רמזים ואין משוב בזמן המבחן – הכול מתגלה בסוף, עם הסבר לכל טעות.</div></div>
+ <button class="btn lvl" onclick="startTest('r')"><span class="e">⚖️</span><span><b>יחס</b></span></button><button class="btn lvl" onclick="startTest('p')"><span class="e">📐</span><span><b>פיתגורס</b></span></button><button class="btn lvl" onclick="startTest('rp')"><span class="e">⚖️📐</span><span><b>שני הנושאים יחד</b></span></button>`}
+function startTest(w){const plan=[];const add=(t,l,n)=>{const ids=shuffle(TOP[t].L[l]);for(let i=0;i<n;i++)plan.push([t,l,ids[i%ids.length]])};
+ if(w==='rp'){['r','p'].forEach(t=>{add(t,0,1);add(t,1,2);add(t,2,2);add(t,3,1)})}else{[0,1,2,3].forEach(l=>add(w,l,3))}
+ plan.sort((x,y)=>x[1]-y[1]);TS={w,qs:plan.map(p=>gen(p[0],p[2],p[1])),i:0,ans:[],t0:Date.now()};tq()}
+function tq(){const q=TS.qs[TS.i];Q=q;done=false;window.scrollTo(0,0);
+ app().innerHTML=`<div class="top"><span>📝 בחן את עצמך · ${TOP[q.t].ic} ${LV[q.lv][0]}</span><span>${TS.i+1}/${TS.qs.length}</span></div><div class="bar"><i style="width:${TS.i/TS.qs.length*100}%"></i></div>
+ <div class="card"><div class="qt">${q.txt}</div>${q.fig||''}${inputHTML(q).replace(/onclick="answer\(/g,'onclick="tAnswer(').replace('>בדיקה<','>שמירה והמשך ←<')}<div id="fb"></div></div>`;
+ document.querySelectorAll('.rat input,.num input').forEach((el,i,all)=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){if(i<all.length-1)all[i+1].focus();else tAnswer()}}))}
+function tAnswer(i){const q=TS.qs[TS.i],v=q.kind==='mc'?i:readVal(),r=judge(q,v);if(r.empty){$('#fb').innerHTML='<div class="fb hi">כתבו תשובה 🙂</div>';return}
+ TS.ans.push({ok:!!r.ok,v});TS.i++;if(TS.i<TS.qs.length)tq();else tEnd()}
+function tEnd(){const n=TS.qs.length,sc=TS.ans.filter(a=>a.ok).length,min=Math.round((Date.now()-TS.t0)/60000),pct=Math.round(sc/n*100);
+ const tl={};TS.qs.forEach((q,i)=>{const k=q.t+q.lv;tl[k]=tl[k]||{t:q.t,l:q.lv,ok:0,all:0};tl[k].all++;if(TS.ans[i].ok)tl[k].ok++});
+ const rows=Object.values(tl).sort((a,b)=>a.t<b.t?-1:a.t>b.t?1:a.l-b.l);const weak=rows.find(x=>x.ok<x.all);if(pct>=80)burst();window.scrollTo(0,0);
+ const shown=v=>v==null?'':Array.isArray(v)?RT(v[0],v[1]):typeof v==='number'&&!isNaN(v)?M(v):'';
+ app().innerHTML=`<div class="card center"><div class="qt">תוצאות המבחן${hi()}</div><div class="big">${pct}</div><div style="color:var(--mute)">${sc} מתוך ${n} נכונות · ${M(Math.max(1,min))} דקות</div>
+ <table style="margin-top:10px"><tr><th>נושא</th><th>רמה</th><th>נכון</th></tr>${rows.map(x=>`<tr><td>${TOP[x.t].name}</td><td>${LV[x.l][0]}</td><td>${x.ok}/${x.all} ${x.ok===x.all?'✔':''}</td></tr>`).join('')}</table>
+ ${weak?`<div class="diag" style="text-align:right">🎯 מומלץ לתרגל: <b>${TOP[weak.t].name} – רמה ${LV[weak.l][0]}</b></div><button class="btn" onclick="startLevel('${weak.t}',${weak.l})">לתרגל עכשיו ←</button>`:'<div class="fb ok">כל הכבוד! הכול נכון 🏆</div>'}</div>
+ ${TS.qs.map((q,i)=>TS.ans[i].ok?'':`<div class="card"><div style="color:var(--bad);font-weight:600">✗ שאלה ${i+1} · ${LV[q.lv][0]}</div><div>${q.txt}</div>${q.fig||''}
+ ${q.kind!=='mc'?`<div style="margin-top:6px">התשובה שלך: ${shown(TS.ans[i].v)}</div>`:`<div style="margin-top:6px">התשובה שלך: ${q.opts[TS.ans[i].v]}</div>`}<div class="fb ok">התשובה הנכונה: ${ansText(q)}${solHTML(q)}</div><div class="diag">🔎 מה לחזק: ${q.diag}</div></div>`).join('')}
+ <button class="btn sec" onclick="home()">🏠 לדף הבית</button>`}
+home();
+</script>
+</body>
+</html>
