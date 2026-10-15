@@ -85,6 +85,15 @@ td,th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
 @keyframes fall{to{transform:translateY(105vh) rotate(300deg);opacity:.2}}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;border-radius:12px;padding:10px 16px;font-size:16px;z-index:10;animation:up .3s}
 footer{text-align:center;color:var(--mute);font-size:14px;margin-top:20px}
+.c1{color:#dc2626;font-weight:700}.c2{color:#2563eb;font-weight:700}
+.rat label:first-child span{color:#dc2626;font-weight:700}.rat label:last-child span{color:#2563eb;font-weight:700}
+.rat label:first-child input{border-color:#fca5a5}.rat label:last-child input{border-color:#93c5fd}
+.fig g.gp{opacity:0;animation:fd .45s forwards}
+.hb{display:flex;gap:8px;margin-top:10px}.hb .btn{margin:0;padding:10px 6px;font-size:16px}
+.help{background:#fffbeb;border:2px solid #fde68a;border-radius:14px;padding:10px 12px;margin-top:10px}
+.ht{font-weight:700;color:#92400e;margin-bottom:4px}
+.hs{padding:7px 0;border-bottom:1px dashed #fde68a}.hs.new{animation:up .4s}
+.code div{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line)}.code .ce{font-size:24px;min-width:32px}
 </style>
 </head>
 <body>
@@ -153,80 +162,123 @@ function dots(a,b,c1='#e11d48',c2='#2563eb'){let g='';const r=11,sp=28;
  row(a,30,c1);row(b,75,c2);return `<svg class="fig" viewBox="0 0 ${Math.max(a,b)*sp+30} 105" style="max-height:110px">${g}</svg>`}
 
 // ================= מחוללי שאלות: יחס =================
+const c1=x=>`<span class="c1">${x}</span>`,c2=x=>`<span class="c2">${x}</span>`;
+const RC=(a,b)=>`<span class="m"><span class="c1">${a}</span> : <span class="c2">${b}</span></span>`;
 const RATIO={
-r_write(){const c=pick([['בנים','בנות','בכיתה יש {a} בנים ו־{b} בנות.'],['כדורים אדומים','כדורים כחולים','בקופסה יש {a} כדורים אדומים ו־{b} כדורים כחולים.'],['עפרונות','עטים','בקלמר יש {a} עפרונות ו־{b} עטים.']]);
+r_write(){const c=pick([['בנים','בנות',(a,b)=>`בכיתה יש ${c1(a+' בנים')} ו־${c2(b+' בנות')}.`],['כדורים אדומים','כדורים כחולים',(a,b)=>`בקופסה יש ${c1(a+' כדורים אדומים')} ו־${c2(b+' כדורים כחולים')}.`],['עפרונות','עטים',(a,b)=>`בקלמר יש ${c1(a+' עפרונות')} ו־${c2(b+' עטים')}.`]]);
  let a=ri(2,9),b=ri(2,9);while(a===b)b=ri(2,9);const g=gcd(a,b);
- const sol=[[`${c[0]}: ${M(a)} · ${c[1]}: ${M(b)}`,'סופרים כל קבוצה'],[`היחס: ${RT(a,b)}`,'לפי הסדר שבשאלה']];if(g>1)sol.push([`אפשר לצמצם: ${RT(a/g,b/g)}`,`חילקנו את שניהם ב־${M(g)}`]);
- return{kind:'ratio',labels:[c[0],c[1]],ans:[a,b],exact:false,
- txt:c[2].replace('{a}',M(a)).replace('{b}',M(b))+` מה היחס בין ${c[0]} ל${c[1]}?`,fig:c[0]==='כדורים אדומים'?dots(a,b):'',
- hint:`היחס נכתב לפי הסדר שבשאלה: קודם ${c[0]}, אחר כך ${c[1]}.`,
- err:(x,y)=>x*a===y*b&&a!==b?`הפכתם את הסדר! השאלה שואלת קודם על ה${c[0]==='בנים'?'בנים':c[0]}. היחס הוא ${c[0]} : ${c[1]}.`:null,
- sol,diag:'לכתוב יחס לפי הסדר שבשאלה – מה שמוזכר ראשון נכתב ראשון.'}},
+ const sol=[[`${c1(c[0])}: ${M(a)} · ${c2(c[1])}: ${M(b)}`,'סופרים כל קבוצה'],[`היחס: ${RC(a,b)}`,'לפי הסדר שבשאלה']];if(g>1)sol.push([`אפשר לצמצם: ${RC(a/g,b/g)}`,`חילקנו את שניהם ב־${M(g)}`]);
+ return{kind:'ratio',labels:[c[0],c[1]],ans:[a,b],exact:false,A:c[0],B:c[1],known:`${c1(a+' '+c[0])}, ${c2(b+' '+c[1])}`,ask:'מה היחס',
+ txt:c[2](a,b)+` מה היחס בין ${c1(c[0])} ל${c2(c[1])}?`,fig:c[0]==='כדורים אדומים'?dots(a,b):'',
+ hint:`היחס נכתב לפי הסדר שבשאלה: קודם ${c1(c[0])}, אחר כך ${c2(c[1])}.`,
+ err:(x,y)=>x*a===y*b&&a!==b?`הפכתם את הסדר! בשאלה נאמר קודם ${c1(c[0])} – לכן הם ראשונים ביחס.`:null,
+ sol,diag:'לכתוב יחס לפי הסדר שבשאלה – מה שנאמר ראשון נכתב ראשון.'}},
 r_equiv(){const[a,b]=cop(1,6),k=ri(2,5);
- return Object.assign(mc(RT(k*a,k*b),[[RT(a+k,b+k),`הוספתם ${M(k)} לשני האיברים. ביחס לא מוסיפים – כופלים (או מחלקים) את שניהם באותו מספר.`],[RT(k*a,b),'כפלתם רק איבר אחד. צריך לכפול את שני האיברים באותו מספר.'],[RT(k*b,k*a),'הסדר התהפך! שימו לב מי ראשון.']]),{
- txt:`איזה יחס שווה ל־${RT(a,b)}?`,hint:'יחס שווה מקבלים כשכופלים את שני האיברים באותו מספר (כמו הרחבת שבר).',
- sol:[[`${RT(a,b)} ← ${RT(k*a,k*b)}`,`כפלנו את שניהם ב־${M(k)}`]],diag:'הרחבת יחס: כופלים את שני האיברים באותו מספר – לא מוסיפים.'})},
+ return Object.assign(mc(RC(k*a,k*b),[[RC(a+k,b+k),`הוספתם ${M(k)} לשני המספרים. ביחס לא מוסיפים – כופלים את שניהם באותו מספר.`],[RC(k*a,b),'כפלתם רק מספר אחד. צריך לכפול את שניהם באותו מספר.'],[RC(k*b,k*a),'הסדר התהפך! שימו לב מי ראשון.']]),{
+ txt:`איזה יחס שווה ל־${RC(a,b)}?`,hint:'יחס שווה מקבלים כשכופלים את שני המספרים באותו מספר.',grp:[a,b,k],
+ dec:['🔍 יחס שווה = אותו יחס, רק עם יותר קבוצות',`✍️ בודקים כל תשובה: האם ${c1('הראשון')} ו${c2('השני')} גדלו פי <b>אותו</b> מספר?`,'⚠️ אם הוסיפו מספר – זה לא יחס שווה'],
+ sol:[[`${RC(a,b)} ← ${RC(k*a,k*b)}`,`כפלנו את שניהם ב־${M(k)}`]],diag:'הרחבת יחס: כופלים את שני המספרים באותו מספר – לא מוסיפים.'})},
 r_expand(){const[a,b]=cop(1,7),k=ri(2,6);
- return{kind:'num',ans:k*b,txt:`השלימו את המספר החסר: ${RT(a,b)} = ${RT(k*a,'?')}`,
- hint:`בכמה כפלו את ${M(a)} כדי לקבל ${M(k*a)}? כפלו גם את ${M(b)} באותו מספר.`,
- err:x=>x===b+(k*a-a)?`הוספתם ${M(k*a-a)} במקום לכפול. ${M(a)} הפך ל־${M(k*a)} כי כפלנו ב־${M(k)}.`:null,
- sol:[[M(`${a} · ${k} = ${k*a}`),`כפלו ב־${M(k)}`],[M(`${b} · ${k} = ${k*b}`),'כופלים גם את השני ב־'+M(k)]],diag:'למצוא "פי כמה" גדל איבר אחד – ולכפול את השני באותו מספר.'}},
+ return{kind:'num',ans:k*b,txt:`השלימו את המספר החסר: ${RC(a,b)} = ${RC(k*a,'?')}`,grp:[a,b,k],
+ dec:[`🔍 ${c1(a)} הפך ל־${c1(k*a)}. פי כמה הוא גדל?`,`📦 כלומר: כמה קבוצות של ${RC(a,b)} יש כאן?`,`✍️ גם ${c2(b)} גדל פי אותו מספר`],
+ hint:`בכמה כפלו את ${c1(a)} כדי לקבל ${c1(k*a)}? כפלו גם את ${c2(b)} באותו מספר.`,
+ err:x=>x===b+(k*a-a)?`הוספתם ${M(k*a-a)} במקום לכפול. ${c1(a)} הפך ל־${c1(k*a)} כי כפלנו ב־${M(k)}.`:null,
+ sol:[[M(`${a} · ${k} = ${k*a}`),`פי ${M(k)} = ${M(k)} קבוצות`],[M(`${b} · ${k} = ${k*b}`),'גם השני פי '+M(k)]],diag:'למצוא "פי כמה" (כמה קבוצות) – ולכפול גם את השני באותו מספר.'}},
 r_reduce(){const[a,b]=cop(1,9),g=ri(2,9);
- return{kind:'ratio',labels:['',''],ans:[a,b],exact:true,txt:`צמצמו את היחס ${RT(a*g,b*g)} עד הסוף.`,
- hint:`חפשו מספר שמחלק גם את ${M(a*g)} וגם את ${M(b*g)}. אפשר לצמצם כמה פעמים.`,
- sol:[[`מספר שמחלק את שניהם: ${M(g)}`,'גורם משותף'],[M(`${a*g} : ${g} = ${a}`)+' , '+M(`${b*g} : ${g} = ${b}`),'מחלקים את שניהם'],[`היחס המצומצם: ${RT(a,b)}`,'אין עוד מספר שמחלק את שניהם']],
- diag:'למצוא גורם משותף – מספר שמחלק את שני האיברים (בעזרת לוח הכפל).'}},
+ return{kind:'ratio',labels:['',''],ans:[a,b],exact:true,txt:`צמצמו את היחס ${RC(a*g,b*g)} עד הסוף.`,grp:[a,b,g],
+ dec:['🔍 צמצום = מחלקים את שני המספרים באותו מספר',`✍️ מחפשים מספר שמחלק גם את ${c1(a*g)} וגם את ${c2(b*g)}`,'💡 מנסים: 2, 3, 5... אפשר לצמצם כמה פעמים','✔ עוצרים כשאין מספר שמחלק את שניהם'],
+ hint:`חפשו מספר שמחלק גם את ${c1(a*g)} וגם את ${c2(b*g)}. אפשר לצמצם כמה פעמים.`,
+ sol:[[`מספר שמחלק את שניהם: ${M(g)}`,'גורם משותף'],[M(`${a*g} : ${g} = ${a}`)+' , '+M(`${b*g} : ${g} = ${b}`),'מחלקים את שניהם'],[`היחס המצומצם: ${RC(a,b)}`,'אין עוד מספר שמחלק את שניהם']],
+ diag:'למצוא גורם משותף – מספר שמחלק את שני המספרים (בעזרת לוח הכפל).'}},
 r_recipe(){const c=pick([['כוסות קמח','ביצים','במתכון לעוגה יש'],['כפות סוכר','כוסות מים','במתכון ללימונדה יש'],['שקיות צבע כחול','שקיות צבע צהוב','כדי לקבל צבע ירוק מערבבים']]);const[a,b]=cop(1,5),k=ri(2,6);
- return{kind:'num',ans:k*b,txt:`${c[2]} ${M(a)} ${c[0]} לכל ${M(b)} ${c[1]}. כמה ${c[1]} צריך עבור ${M(k*a)} ${c[0]}?`,
- hint:`פי כמה גדלה הכמות של ה${c[0].split(' ')[0]}? ${M(a)} → ${M(k*a)}.`,
+ return{kind:'num',ans:k*b,txt:`${c[2]} ${c1(a+' '+c[0])} לכל ${c2(b+' '+c[1])}. כמה ${c2(c[1])} צריך עבור ${c1(k*a+' '+c[0])}?`,
+ A:c[0],B:c[1],known:`בכל קבוצה ${RC(a,b)}, ויש ${c1(k*a+' '+c[0])}`,ask:`כמה ${c2(c[1])}`,grpQ:[a,b],grp:[a,b,k],
+ hint:`כמה קבוצות של ${c1(a)} יש ב־${c1(k*a)}?`,
  err:x=>x===b+(k*a-a)?'הוספתם במקום לכפול. במתכון כל הכמויות גדלות פי אותו מספר.':null,
- sol:[[M(`${k*a} : ${a} = ${k}`),`הכמות גדלה פי ${M(k)}`],[M(`${b} · ${k} = ${k*b}`),'גם השני גדל פי '+M(k)]],diag:'שמירה על יחס: אם כמות אחת גדלה פי משהו – גם השנייה גדלה פי אותו מספר.'}},
+ sol:[[M(`${k*a} : ${a} = ${k}`),`${M(k)} קבוצות`],[M(`${b} · ${k} = ${k*b}`),'בכל קבוצה '+c2(b)]],diag:'לגלות כמה קבוצות יש – וכך גם השני גדל פי אותו מספר.'}},
 r_part(){const[a,b]=cop(1,5);
  return Object.assign(mc(fr(a,a+b),[[fr(a,b),`${fr(a,b)} משווה בנים לבנות – לא לכל הכיתה. כל הכיתה = ${M(a+'+'+b+'='+(a+b))} חלקים.`],[fr(b,a+b),'זה החלק של הבנות, לא של הבנים.'],[fr(b,a),'זה היחס ההפוך, ולא חלק מהכיתה.']]),{
- txt:`היחס בין מספר הבנים למספר הבנות בכיתה הוא ${RT(a,b)}. איזה חלק מכל תלמידי הכיתה הם בנים?`,hint:`כמה חלקים יש בכל הכיתה? בנים + בנות = ${M(a+' + '+b)}.`,
- sol:[[`כל הכיתה: ${M(a+' + '+b+' = '+(a+b))} חלקים`,'מחברים את החלקים'],[`הבנים: ${M(a)} מתוך ${M(a+b)} → ${fr(a,a+b)}`,'חלק מהשלם']],diag:'ההבדל בין יחס (חלק מול חלק) לבין שבר (חלק מתוך השלם).'})},
+ txt:`היחס בין ${c1('הבנים')} ל${c2('הבנות')} בכיתה הוא ${RC(a,b)}. איזה חלק <u>מכל</u> תלמידי הכיתה הם בנים?`,grp:[a,b,1],
+ A:'בנים',B:'בנות',known:`בכל קבוצה ${c1(a+' בנים')} ו־${c2(b+' בנות')}`,ask:'איזה חלק מ<b>כל</b> הכיתה – לא רק מהבנות',
+ hint:`כמה תלמידים בכל קבוצה? ${M(a+' + '+b)}.`,
+ sol:[[`בכל קבוצה: ${M(a+' + '+b+' = '+(a+b))} תלמידים`,'מחברים'],[`הבנים: ${c1(a)} מתוך ${M(a+b)} → ${fr(a,a+b)}`,'חלק מהשלם']],diag:'ההבדל בין יחס (חלק מול חלק) לבין שבר (חלק מתוך הכול).'})},
 r_divide(){const[a,b]=cop(1,7),k=ri(2,9),T=(a+b)*k,askB=Math.random()<.5;
- return{kind:'num',ans:askB?b*k:a*k,txt:`מחלקים ${M(T)} סוכריות בין רון לדנה ביחס ${RT(a,b)} (רון : דנה). כמה סוכריות ${askB?'תקבל דנה':'יקבל רון'}?`,
- hint:`כמה חלקים יש בסך הכול? ${M(a+' + '+b+' = '+(a+b))}. כמה סוכריות יש בחלק אחד?`,
- err:x=>x===k?`מצאתם כמה סוכריות בחלק אחד (${M(k)}) – עכשיו כפלו במספר החלקים של ${askB?'דנה':'רון'}.`:x*2===T?'חלוקה ביחס היא לא חצי־חצי.':x===(askB?a*k:b*k)?`זה מה ש${askB?'רון':'דנה'} מקבל/ת. בדקו את מי שאלו.`:null,
- sol:[[`מספר החלקים: ${M(a+' + '+b+' = '+(a+b))}`,'מחברים'],[`חלק אחד: ${M(T+' : '+(a+b)+' = '+k)}`,'מחלקים את הכול'],[`${askB?'דנה':'רון'}: ${M((askB?b:a)+' · '+k+' = '+(askB?b*k:a*k))}`,'כופלים במספר החלקים']],
- diag:'חלוקה ביחס: (1) כמה חלקים בסך הכול, (2) כמה בחלק אחד, (3) כפל במספר החלקים.'}},
+ return{kind:'num',ans:askB?b*k:a*k,txt:`מחלקים ${M(T)} סוכריות בין ${c1('רון')} ל${c2('דנה')} ביחס ${RC(a,b)}. כמה סוכריות ${askB?c2('תקבל דנה'):c1('יקבל רון')}?`,
+ A:'רון',B:'דנה',known:`ביחד ${M(T)} סוכריות`,ask:`כמה ${askB?c2('דנה'):c1('רון')}`,grp:[a,b,k],
+ extra:[`📦 בכל קבוצה ${c1(a)} לרון ו־${c2(b)} לדנה = ${M(a+b)} סוכריות. כמה קבוצות יש ב־${M(T)}?`],
+ hint:`בכל קבוצה ${M(a+' + '+b+' = '+(a+b))} סוכריות. כמה קבוצות כאלה יש?`,
+ err:x=>x===k?`מצאתם כמה קבוצות (${M(k)}) – עכשיו כפלו במה ש${askB?'דנה':'רון'} מקבל/ת בכל קבוצה.`:x*2===T?'חלוקה ביחס היא לא חצי־חצי.':x===(askB?a*k:b*k)?`זה מה ש${askB?'רון':'דנה'} מקבל/ת. בדקו את מי שאלו.`:null,
+ sol:[[`בכל קבוצה: ${M(a+' + '+b+' = '+(a+b))}`,'מחברים'],[`כמה קבוצות: ${M(T+' : '+(a+b)+' = '+k)}`,'מחלקים את הכול'],[`${askB?c2('דנה'):c1('רון')}: ${M((askB?b:a)+' · '+k+' = '+(askB?b*k:a*k))}`,'בכל קבוצה כפול מספר הקבוצות']],
+ diag:'חלוקה ביחס: (1) כמה בקבוצה אחת, (2) כמה קבוצות, (3) כפל.'}},
 r_onepart(){const[a,b]=cop(1,7),k=ri(2,8);
- return{kind:'num',ans:(a+b)*k,txt:`היחס בין מספר הבנים למספר הבנות בכיתה הוא ${RT(a,b)}. בכיתה יש ${M(b*k)} בנות. כמה תלמידים יש בכיתה?`,
- hint:`הבנות הן ${M(b)} חלקים, והן ${M(b*k)} תלמידות. כמה תלמידים בחלק אחד?`,
- err:x=>x===a*k?'זה מספר הבנים. השאלה שואלת על כל הכיתה.':x===b*k+a?'הוספתם את מספר החלקים ולא את מספר הבנים.':null,
- sol:[[`חלק אחד: ${M(b*k+' : '+b+' = '+k)}`,'הבנות = '+M(b)+' חלקים'],[`בנים: ${M(a+' · '+k+' = '+a*k)}`,'כפל'],[`כל הכיתה: ${M(a*k+' + '+b*k+' = '+(a+b)*k)}`,'בנים + בנות']],diag:'לגלות כמה שווה חלק אחד מתוך הנתון, ומשם למצוא את השאר.'}},
+ return{kind:'num',ans:(a+b)*k,txt:`היחס בין ${c1('הבנים')} ל${c2('הבנות')} בכיתה הוא ${RC(a,b)}. בכיתה יש ${c2(b*k+' בנות')}. כמה תלמידים יש בכיתה?`,
+ A:'בנים',B:'בנות',known:`${c2(b*k+' בנות')}`,ask:'כמה תלמידים בכל הכיתה',grpQ:[a,b],grp:[a,b,k],
+ hint:`בכל קבוצה יש ${c2(b)} בנות. כמה קבוצות יש ב־${c2(b*k)}?`,
+ err:x=>x===a*k?'זה מספר הבנים. שאלו על כל הכיתה.':x===b*k+a?'הוספתם את המספר מהיחס ולא את מספר הבנים.':null,
+ sol:[[`כמה קבוצות: ${M(b*k+' : '+b+' = '+k)}`,'לפי הבנות'],[`בנים: ${M(a+' · '+k+' = '+a*k)}`,'כפל'],[`כל הכיתה: ${M(a*k+' + '+b*k+' = '+(a+b)*k)}`,'בנים + בנות']],diag:'לגלות כמה קבוצות יש מתוך הנתון, ומשם למצוא את השאר.'}},
 r_rect(){let[a,b]=cop(1,6);if(a<b)[a,b]=[b,a];const k=ri(2,6),P=2*(a+b)*k;
- return{kind:'num',ans:a*k,txt:`היחס בין האורך לרוחב של מלבן הוא ${RT(a,b)}. היקף המלבן ${M(P)} ס״מ. מה אורך המלבן?`,fig:rect({w:'?',h:'רוחב'}),
- hint:`בהיקף יש 2 אורכים ו־2 רוחבים. אורך + רוחב = חצי היקף = ${M(P/2)}.`,
- err:x=>x===2*a*k?'שכחתם שבהיקף כל צלע מופיעה פעמיים – צריך להתחיל מחצי ההיקף.':x===b*k?'זה הרוחב. שאלו על האורך (הצלע הארוכה).':null,
- sol:[[`אורך + רוחב: ${M(P+' : 2 = '+P/2)}`,'חצי היקף'],[`חלק אחד: ${M(P/2+' : '+(a+b)+' = '+k)}`,M(a+' + '+b+' = '+(a+b))+' חלקים'],[`אורך: ${M(a+' · '+k+' = '+a*k)}`,'ס״מ']],diag:'לחבר בין היקף לחלוקה ביחס: קודם חצי היקף, ואז חלוקה ביחס.'}},
+ return{kind:'num',ans:a*k,txt:`היחס בין ${c1('האורך')} ל${c2('הרוחב')} של מלבן הוא ${RC(a,b)}. היקף המלבן ${M(P)} ס״מ. מה ${c1('אורך')} המלבן?`,fig:rect({w:'?',h:'רוחב'}),
+ A:'אורך',B:'רוחב',known:`היקף ${M(P)} ס״מ`,ask:`מה ${c1('האורך')}`,grp:[a,b,k],extra:[`💡 בהיקף יש 2 אורכים ו־2 רוחבים. ${c1('אורך')} + ${c2('רוחב')} = חצי היקף`],
+ hint:`${c1('אורך')} + ${c2('רוחב')} = חצי היקף = ${M(P/2)}. כמה קבוצות של ${M(a+b)}?`,
+ err:x=>x===2*a*k?'שכחתם שבהיקף כל צלע מופיעה פעמיים – צריך להתחיל מחצי ההיקף.':x===b*k?'זה הרוחב. שאלו על האורך.':null,
+ sol:[[`אורך + רוחב: ${M(P+' : 2 = '+P/2)}`,'חצי היקף'],[`כמה קבוצות: ${M(P/2+' : '+(a+b)+' = '+k)}`,'בכל קבוצה '+M(a+b)],[`אורך: ${M(a+' · '+k+' = '+a*k)}`,'ס״מ']],diag:'קודם חצי היקף, ואז חלוקה ביחס.'}},
 r_diff(){let[a,b]=cop(1,8);if(a>b)[a,b]=[b,a];const k=ri(2,9);
- return{kind:'num',ans:a*k,txt:`ליעל ולנועה יש מדבקות ביחס ${RT(a,b)} (יעל : נועה). לנועה יש ${M((b-a)*k)} מדבקות יותר מליעל. כמה מדבקות יש ליעל?`,
- hint:`ההפרש ביניהן הוא ${M(b+' − '+a+' = '+(b-a))} חלקים. כמה מדבקות בחלק אחד?`,
- err:x=>x===(b-a)*k?'זה ההפרש, לא מה שיש ליעל.':x===k?`זה חלק אחד. ליעל יש ${M(a)} חלקים.`:x===b*k?'זה מה שיש לנועה.':null,
- sol:[[`הפרש בחלקים: ${M(b+' − '+a+' = '+(b-a))}`,'חיסור'],[`חלק אחד: ${M((b-a)*k+' : '+(b-a)+' = '+k)}`,'מחלקים'],[`יעל: ${M(a+' · '+k+' = '+a*k)}`,'כפל']],diag:'גם הפרש אפשר לתרגם ל"חלקים" – ומשם למצוא חלק אחד.'}},
+ return{kind:'num',ans:a*k,txt:`ל${c1('יעל')} ול${c2('נועה')} יש מדבקות ביחס ${RC(a,b)}. לנועה יש ${M((b-a)*k)} מדבקות <u>יותר</u> מליעל. כמה מדבקות יש ל${c1('יעל')}?`,
+ A:'יעל',B:'נועה',known:`לנועה ${M((b-a)*k)} <b>יותר</b>`,ask:`כמה ל${c1('יעל')}`,grp:[a,b,k],extra:[`📦 בכל קבוצה לנועה יש ${M(b+' − '+a+' = '+(b-a))} יותר. כמה קבוצות?`],
+ hint:`בכל קבוצה ההפרש הוא ${M(b-a)}. כמה קבוצות יש?`,
+ err:x=>x===(b-a)*k?'זה ההפרש, לא מה שיש ליעל.':x===k?`זה מספר הקבוצות. ליעל יש ${c1(a)} בכל קבוצה.`:x===b*k?'זה מה שיש לנועה.':null,
+ sol:[[`הפרש בכל קבוצה: ${M(b+' − '+a+' = '+(b-a))}`,'חיסור'],[`כמה קבוצות: ${M((b-a)*k+' : '+(b-a)+' = '+k)}`,'מחלקים'],[`יעל: ${M(a+' · '+k+' = '+a*k)}`,'כפל']],diag:'גם הפרש אפשר לחלק לקבוצות – ומשם לדעת כמה קבוצות יש.'}},
 r_three(){let a,b,c;do{a=ri(1,6);b=ri(1,6);c=ri(1,6)}while(a===b||b===c||a===c||gcd(gcd(a,b),c)!==1);const k=ri(2,6),T=(a+b+c)*k,mx=Math.max(a,b,c);
  return{kind:'num',ans:mx*k,txt:`מחלקים ${M(T)} ש״ח בין שלושה אחים ביחס ${M(a+' : '+b+' : '+c)}. כמה ש״ח מקבל האח שמקבל הכי הרבה?`,
- hint:`גם עם 3 איברים: כמה חלקים בסך הכול? ${M(a+' + '+b+' + '+c)}.`,err:x=>x===k?`זה חלק אחד. האח הגדול מקבל ${M(mx)} חלקים.`:null,
- sol:[[`חלקים: ${M(a+' + '+b+' + '+c+' = '+(a+b+c))}`,'מחברים'],[`חלק אחד: ${M(T+' : '+(a+b+c)+' = '+k)}`,'מחלקים'],[`הכי הרבה: ${M(mx+' · '+k+' = '+mx*k)}`,'ש״ח']],diag:'חלוקה ביחס עובדת אותו דבר גם עם שלושה איברים.'}},
+ dec:['🔍 שלושה אחים – לכן שלושה מספרים ביחס',`📦 בכל קבוצה: ${M(a+' + '+b+' + '+c)} ש״ח`,'❓ כמה קבוצות יש בכל הכסף?'],
+ hint:`בכל קבוצה ${M(a+' + '+b+' + '+c)} ש״ח. כמה קבוצות?`,err:x=>x===k?`זה מספר הקבוצות. האח הגדול מקבל ${M(mx)} בכל קבוצה.`:null,
+ sol:[[`בכל קבוצה: ${M(a+' + '+b+' + '+c+' = '+(a+b+c))}`,'מחברים'],[`כמה קבוצות: ${M(T+' : '+(a+b+c)+' = '+k)}`,'מחלקים'],[`הכי הרבה: ${M(mx+' · '+k+' = '+mx*k)}`,'ש״ח']],diag:'חלוקה ביחס עובדת אותו דבר גם עם שלושה מספרים.'}},
 r_compare(){let a1,b1,d,a2,b2;a1=ri(1,4);b1=a1+ri(1,4);d=ri(1,3);a2=a1+d;b2=b1+d;if(Math.random()<.5){[a1,a2]=[a2,a1];[b1,b2]=[b2,b1]}
  const right=a1*b2>a2*b1?'מיץ א׳':'מיץ ב׳';
  return Object.assign(mc(right,[[right==='מיץ א׳'?'מיץ ב׳':'מיץ א׳','השוו את החלק של התרכיז ביחס למים – לא את הכמות עצמה.'],['הטעם זהה','ההפרש בין מים לתרכיז שווה – אבל יחס בודקים בכפל ובחילוק, לא בחיסור!']]),{
- txt:`במיץ א׳ מערבבים ${M(a1)} כוסות תרכיז עם ${M(b1)} כוסות מים. במיץ ב׳ מערבבים ${M(a2)} כוסות תרכיז עם ${M(b2)} כוסות מים. באיזה מיץ טעם התרכיז חזק יותר?`,
- hint:`כתבו כל מיץ כשבר: תרכיז מתוך מים – ${fr(a1,b1)} ו־${fr(a2,b2)}. איזה שבר גדול יותר?`,
+ txt:`במיץ א׳ מערבבים ${c1(a1+' כוסות תרכיז')} עם ${c2(b1+' כוסות מים')}. במיץ ב׳ מערבבים ${c1(a2+' כוסות תרכיז')} עם ${c2(b2+' כוסות מים')}. באיזה מיץ טעם התרכיז חזק יותר?`,
+ dec:['🔍 משווים שני מיצים: בכל אחד '+c1('תרכיז')+' ו'+c2('מים'),'✍️ כותבים כל מיץ כשבר: תרכיז מתוך מים','⚖️ משווים בעזרת מכנה משותף – לא לפי ההפרש!'],
+ hint:`כתבו כל מיץ כשבר: ${fr(a1,b1)} ו־${fr(a2,b2)}. איזה שבר גדול יותר?`,
  sol:[[`א׳: ${fr(a1,b1)} · ב׳: ${fr(a2,b2)}`,'תרכיז לכל כוס מים'],[`מכנה משותף: ${fr(a1*b2,b1*b2)} מול ${fr(a2*b1,b1*b2)}`,'משווים מונים'],[`${right} חזק יותר`,'השבר הגדול']],diag:'השוואת יחסים: הופכים לשברים עם מכנה משותף (ולא משווים הפרשים).'})},
 r_change(){const[a,b]=cop(1,5),k=ri(2,6),m=ri(1,6),B=a*k+m,G=b*k,g=gcd(B,G);
- return{kind:'ratio',labels:['בנים','בנות'],ans:[B/g,G/g],exact:false,txt:`בכיתה היחס בין בנים לבנות הוא ${RT(a,b)}, ויש בה ${M((a+b)*k)} תלמידים. הצטרפו לכיתה עוד ${M(m)} בנים. מה היחס החדש בין בנים לבנות?`,
+ return{kind:'ratio',labels:['בנים','בנות'],ans:[B/g,G/g],exact:false,txt:`בכיתה היחס בין ${c1('בנים')} ל${c2('בנות')} הוא ${RC(a,b)}, ויש בה ${M((a+b)*k)} תלמידים. הצטרפו לכיתה עוד ${c1(m+' בנים')}. מה היחס החדש בין ${c1('בנים')} ל${c2('בנות')}?`,
+ A:'בנים',B:'בנות',known:`${M((a+b)*k)} תלמידים, ונוספו ${c1(m+' בנים')}`,ask:'היחס החדש',grp:[a,b,k],extra:['⚠️ קודם מוצאים כמה בנים יש <b>באמת</b>, ורק אז מוסיפים'],
  hint:'קודם מצאו כמה בנים וכמה בנות יש עכשיו (חלוקה ביחס), ורק אחר כך הוסיפו את הבנים החדשים.',
- err:(x,y)=>x*b===y*(a+m)?'הוספתם לאיבר של היחס. צריך להוסיף למספר הבנים האמיתי – קודם מוצאים כמה בנים יש.':null,
- sol:[[`חלק אחד: ${M((a+b)*k+' : '+(a+b)+' = '+k)}`,'חלוקה ביחס'],[`בנים: ${M(a*k)} · בנות: ${M(b*k)}`,'לפני ההצטרפות'],[`בנים עכשיו: ${M(a*k+' + '+m+' = '+B)}`,'נוספו '+M(m)],[`יחס חדש: ${RT(B,G)}${g>1?' = '+RT(B/g,G/g):''}`,g>1?'צמצום':'אי אפשר לצמצם']],diag:'כשמשהו משתנה – עובדים עם הכמויות האמיתיות, לא עם מספרי היחס.'}},
+ err:(x,y)=>x*b===y*(a+m)?'הוספתם למספר שביחס. צריך להוסיף למספר הבנים האמיתי – קודם מוצאים כמה בנים יש.':null,
+ sol:[[`כמה קבוצות: ${M((a+b)*k+' : '+(a+b)+' = '+k)}`,'חלוקה ביחס'],[`${c1('בנים')}: ${M(a*k)} · ${c2('בנות')}: ${M(b*k)}`,'לפני ההצטרפות'],[`בנים עכשיו: ${M(a*k+' + '+m+' = '+B)}`,'נוספו '+M(m)],[`יחס חדש: ${RC(B,G)}${g>1?' = '+RC(B/g,G/g):''}`,g>1?'צמצום':'אי אפשר לצמצם']],diag:'כשמשהו משתנה – עובדים עם הכמויות האמיתיות, לא עם המספרים שביחס.'}},
 r_claim(){const[a,b]=cop(1,5);
- return Object.assign(mc(`לא. רק ${M(a)} מתוך ${M(a+b)} תלמידים הם בנים.`,[['כן, היא צודקת.',`יחס ${RT(a,b)} אומר: על כל ${M(a)} בנים יש ${M(b)} בנות – ${M(a+b)} תלמידים בקבוצה.`],[`לא. ${M(b)} מתוך ${M(a+b)} תלמידים הם בנים.`,`${M(b)} זה מספר החלקים של הבנות.`]]),{
- txt:`דנה אמרה: "היחס בין בנים לבנות בכיתה הוא ${RT(a,b)}, לכן ${M(a)} מתוך ${M(b)} תלמידים הם בנים." האם היא צודקת?`,hint:`בכל "קבוצה" יש ${M(a)} בנים ו־${M(b)} בנות. כמה תלמידים בקבוצה?`,
- sol:[[`בקבוצה: ${M(a+' + '+b+' = '+(a+b))} תלמידים`,'בנים + בנות'],[`בנים: ${M(a)} מתוך ${M(a+b)} = ${fr(a,a+b)}`,'חלק מהשלם']],diag:'הבנת המשמעות של יחס: חלק מול חלק, ולא חלק מתוך הכול.'})}
+ return Object.assign(mc(`לא. רק ${M(a)} מתוך ${M(a+b)} תלמידים הם בנים.`,[['כן, היא צודקת.',`יחס ${RC(a,b)} אומר: בכל קבוצה ${c1(a+' בנים')} ו־${c2(b+' בנות')} – ${M(a+b)} תלמידים.`],[`לא. ${M(b)} מתוך ${M(a+b)} תלמידים הם בנים.`,`${M(b)} זה מספר הבנות בכל קבוצה.`]]),{
+ txt:`דנה אמרה: "היחס בין ${c1('בנים')} ל${c2('בנות')} בכיתה הוא ${RC(a,b)}, לכן ${M(a)} מתוך ${M(b)} תלמידים הם בנים." האם היא צודקת?`,grp:[a,b,1],
+ dec:['🔍 יחס = חלק מול חלק (בנים מול בנות)',`📦 בכל קבוצה: ${c1(a+' בנים')} ו־${c2(b+' בנות')}`,'❓ כמה תלמידים יש בקבוצה אחת?'],
+ hint:`בכל קבוצה יש ${c1(a+' בנים')} ו־${c2(b+' בנות')}. כמה תלמידים בקבוצה?`,
+ sol:[[`בקבוצה: ${M(a+' + '+b+' = '+(a+b))} תלמידים`,'בנים + בנות'],[`בנים: ${c1(a)} מתוך ${M(a+b)} = ${fr(a,a+b)}`,'חלק מהשלם']],diag:'המשמעות של יחס: חלק מול חלק, ולא חלק מתוך הכול.'})}
 };
-
+// ---------- מודל הקבוצות ----------
+function groups(a,b,k){const s=11,g=2,cols=Math.min(k,5),gw=Math.max(a,b)*(s+g)+12,gh=2*(s+g)+28,rows=Math.ceil(k/cols);let o='';
+ for(let i=0;i<k;i++){const x=6+(i%cols)*(gw+8),y=6+Math.floor(i/cols)*(gh+8);let r=`<rect x="${x}" y="${y}" width="${gw}" height="${gh}" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>`;
+  for(let j=0;j<a;j++)r+=`<rect x="${x+6+j*(s+g)}" y="${y+6}" width="${s}" height="${s}" rx="2" fill="#dc2626"/>`;
+  for(let j=0;j<b;j++)r+=`<rect x="${x+6+j*(s+g)}" y="${y+8+s+g}" width="${s}" height="${s}" rx="2" fill="#2563eb"/>`;
+  r+=`<text x="${x+gw/2}" y="${y+gh-8}" style="font-size:11px;fill:#475569;opacity:1;animation:none">${i+1}</text>`;
+  o+=`<g class="gp" style="animation-delay:${i*.35}s">${r}</g>`}
+ const W=6+cols*(gw+8),H=6+rows*(gh+8);return `<svg class="fig" viewBox="0 0 ${W} ${H}" style="max-height:${Math.min(240,H*2)}px">${o}</svg>`}
+function grpBlock(q){if(!q.grp)return'';const[a,b,k]=q.grp;
+ if(k===1)return`${groups(a,b,1)}<div class="box">📦 קבוצה אחת: ${c1(a)} ו־${c2(b)} – ביחד ${M(a+b)}.<br>${c1(a)} מתוך ${M(a+b)} = ${fr(a,a+b)}</div>`;
+ return`${groups(a,b,k)}<div class="box">📦 ${M(k)} קבוצות. בכל קבוצה ${RC(a,b)}.<br>ביחד: ${RC(a*k,b*k)}<br><b>גורם ההרחבה = מספר הקבוצות = ${M(k)}</b></div>`}
+function decSteps(q){if(q.dec)return q.dec;if(!q.A)return['💡 '+q.hint];
+ const st=[`🔍 מה משווים? ${c1(q.A)} ו${c2(q.B)}`,`🥇 מי נאמר קודם? ${c1(q.A)} – לכן הוא <b>ראשון</b> ביחס`,`✍️ כותבים לפי הסדר: <span class="m">${c1(q.A)} : ${c2(q.B)}</span>`,`📌 מה ידוע? ${q.known}`,`❓ מה שואלים? ${q.ask}`];
+ if(q.grpQ)st.push(`📦 נחשוב: כמה קבוצות של ${RC(q.grpQ[0],q.grpQ[1])} יש כאן?`);return st.concat(q.extra||[])}
+const CODE=`<div class="code">${[['🔍','קוראים לאט. מה משווים? (שני דברים)'],['🥇','מי נאמר קודם? הוא <b>הראשון</b> ביחס – '+c1('אדום')],['✍️','כותבים לפי הסדר: '+'<span class="m">'+c1('ראשון')+' : '+c2('שני')+'</span><br><small>הראשון נכתב <b>משמאל</b>, כמו שכותבים מספרים</small>'],['📌','מה ידוע? ❓ מה שואלים?'],['📦','כמה קבוצות? (זה גורם ההרחבה)'],['✔','בודקים: התשובה הגיונית?']].map((s,i)=>`<div class="rv" style="animation-delay:${i*.45}s"><span class="ce">${s[0]}</span><span>${s[1]}</span></div>`).join('')}</div>`;
+// ---------- עזרה: פענוח / דוגמה פתורה – צעד אחר צעד ----------
+let HP=null;
+function helpSteps(q,ex){const st=[];if(ex)st.push(`<div style="font-weight:600">📖 דוגמה עם מספרים אחרים:</div><div>${q.txt}</div>${q.fig||''}`);
+ decSteps(q).forEach(x=>st.push(x));
+ if(ex){if(q.grp)st.push(grpBlock(q));q.sol.forEach(x=>st.push(`${x[0]} <small style="color:#15803d">(${x[1]})</small>`));st.push(`✔ התשובה: ${ansText(q)}`);st.push('💪 עכשיו פתרו את השאלה שלכם באותה דרך')}
+ else st.push('💪 עכשיו נסו לפתור לבד');return st}
+function openHelp(m,box='help'){const q=m==='dec'?Q:gen(Q.t,Q.id,Q.lv,Q.txt);HP={st:helpSteps(q,m==='ex'),i:m==='ex'?1:1,box,title:m==='ex'?'📖 דוגמה פתורה':'🔍 פענוח השאלה'};drawHelp()}
+function drawHelp(){const b=$('#'+HP.box);if(!b)return;const last=HP.i>=HP.st.length;
+ b.innerHTML=`<div class="help"><div class="ht">${HP.title}</div>${HP.st.slice(0,HP.i).map((x,j)=>`<div class="hs ${j===HP.i-1?'new':''}">${x}</div>`).join('')}
+ ${last?(HP.box==='help'?`<button class="btn sec" onclick="$('#help').innerHTML=''">סגירה ✕</button>`:''):`<button class="btn sec" onclick="HP.i++;drawHelp()">הצעד הבא ←</button>`}</div>`;
+ const n=b.querySelector('.hs.new');if(n&&HP.i>1)n.scrollIntoView({behavior:'smooth',block:'nearest'})}
 // ================= מחוללי שאלות: פיתגורס =================
 const TRS=[[3,4,5],[6,8,10],[5,12,13],[9,12,15],[8,15,17],[12,16,20],[7,24,25],[15,20,25],[20,21,29],[10,24,26]];
 const tr=(n=TRS.length)=>pick(TRS.slice(0,n));
@@ -317,6 +369,8 @@ function stars(s){return s>=18?'⭐⭐⭐':s>=14?'⭐⭐':s>=10?'⭐':''}
 const RECAP={r:[
  ['למה צריך יחס? 🍋',`במתכון, במפה ובערבוב צבעים – חשוב <b>כמה מזה לעומת כמה מזה</b>. אם מכפילים מתכון ושוכחים לשמור על היחס – העוגה נהרסת!`],
  ['מה זה יחס?',`${dots(2,3)}<div class="rv" style="animation-delay:.8s">2 עיגולים אדומים ו־3 כחולים: היחס בין אדומים לכחולים הוא ${RT(2,3)}.</div><div class="warn rv" style="animation-delay:1.4s">⚠️ הסדר חשוב! ${RT(2,3)} זה לא ${RT(3,2)}.</div>`],
+ ['🔑 קוד הפענוח',CODE],
+ ['📦 מודל הקבוצות',`<div>יחס ${RC(2,3)} = קבוצה של ${c1('2 אדומים')} ו־${c2('3 כחולים')}. לוקחים 3 קבוצות:</div>${groups(2,3,3)}<div class="box rv" style="animation-delay:1.3s">${RC(2,3)} ← ${RC(6,9)}<br><b>גורם ההרחבה = מספר הקבוצות = 3</b></div>`],
  ['צמצום והרחבה',`<div class="box rv">כמו בשבר: כופלים או מחלקים את <b>שני</b> האיברים באותו מספר.</div><div class="rv" style="animation-delay:.7s">${RT(2,3)} = ${RT(4,6)} = ${RT(6,9)} <small>(כפול 2, כפול 3)</small></div><div class="rv" style="animation-delay:1.3s">${RT(12,18)} = ${RT(2,3)} <small>(חילקנו ב־6)</small></div><div class="warn rv" style="animation-delay:1.9s">✗ לא מוסיפים: ${RT(2,3)} לא שווה ל־${RT(3,4)}</div>`],
  ['חלוקה ביחס – 3 צעדים',`<div>מחלקים ${M(20)} ביחס ${RT(2,3)}:</div><div class="steps">${[['1. כמה חלקים?',M('2 + 3 = 5')],['2. כמה בחלק אחד?',M('20 : 5 = 4')],['3. כפל בחלקים',M('2 · 4 = 8')+' , '+M('3 · 4 = 12')]].map((s,i)=>`<div style="animation-delay:${.4+i*.6}s"><span>${s[0]}</span><small>${s[1]}</small></div>`).join('')}</div><div class="rv box" style="animation-delay:2.4s">בדיקה: ${M('8 + 12 = 20')} ✔</div>`]],
 p:[
@@ -328,9 +382,14 @@ function recap(t,i){window.scrollTo(0,0);const R=RECAP[t],s=R[i];
  app().innerHTML=`<div class="card"><div class="dots">${R.map((_,j)=>`<i class="${j===i?'on':''}"></i>`).join('')}</div><div class="qt">${s[0]}</div><div style="margin-top:8px">${s[1]}</div>
  <div class="nav">${i>0?`<button class="btn sec" onclick="recap('${t}',${i-1})">→ הקודם</button>`:''}${i<R.length-1?`<button class="btn" onclick="recap('${t}',${i+1})">הבא ←</button>`:`<button class="btn" onclick="startLevel('${t}',0)">מתחילים ברמה ★ ←</button>`}</div></div>`}
 
+// ---------- שיעור קצר לפני רמה (יחס) ----------
+function lesson(l,st){window.scrollTo(0,0);const top=`<div class="top"><span>⚖️ יחס · ${LV[l][0]} · שיעור קצר</span><span>${st+1}/2</span></div>`;
+ if(st===0){app().innerHTML=`${top}<div class="card"><div class="qt">🔑 קוד הפענוח – ככה קוראים שאלת יחס</div>${CODE}<button class="btn" onclick="lesson(${l},1)">לדוגמה פתורה ←</button><button class="btn sec" onclick="startLevel('r',${l},1)">אני כבר יודע/ת – לתרגול</button></div>`;return}
+ Q=gen('r',TOP.r.L[l][0],l);HP={st:helpSteps(Q,true),i:1,box:'lh',title:'📖 דוגמה פתורה – צעד אחר צעד'};
+ app().innerHTML=`${top}<div class="card"><div id="lh"></div><button class="btn" onclick="startLevel('r',${l},1)">עכשיו אני! לתרגול ←</button></div>`;drawHelp()}
 // ---------- רמה ----------
 let S=null;
-function startLevel(t,l){const ids=TOP[t].L[l];let seq=[];while(seq.length<PER)seq=seq.concat(shuffle(ids));seq=seq.slice(0,PER);
+function startLevel(t,l,go){if(t==='r'&&!go)return lesson(l,0);const ids=TOP[t].L[l];let seq=[];while(seq.length<PER)seq=seq.concat(shuffle(ids));seq=seq.slice(0,PER);
  S={t,l,n:0,score:0,seq,rem:null};nextQ()}
 function nextQ(){if(S.rem&&S.rem.need>0){if(S.rem.count>=5&&!S.rem.asked)return stuck();S.rem.count++;show(gen(S.t,S.rem.id,S.l,Q&&Q.txt));return}
  if(S.rem&&S.rem.need<=0){S.rem=null;toast('💪 הבנת! ממשיכים במסלול');burst()}
@@ -345,7 +404,7 @@ function inputHTML(q,dis=''){if(q.kind==='mc')return`<div class="opts">${q.opts.
 function show(q){Q=q;tries=0;done=false;window.scrollTo(0,0);
  const rem=S.rem?`<div class="remb">🔁 תרגול חיזוק – שאלה דומה (צריך עוד ${S.rem.need} ${S.rem.need>1?'הצלחות':'הצלחה'})</div>`:'';
  app().innerHTML=`<div class="top"><span>${TOP[S.t].ic} ${TOP[S.t].name} · ${LV[S.l][0]}</span><span>${Math.min(S.n+1,PER)}/${PER} · ✔ ${S.score}</span></div><div class="bar"><i style="width:${S.n/PER*100}%"></i></div>
- <div class="card">${rem}<div class="qt">${q.txt}</div>${q.fig||''}${inputHTML(q)}<div id="fb"></div></div>`;
+ <div class="card">${rem}<div class="qt">${q.txt}</div>${q.fig||''}<div class="hb"><button class="btn sec" onclick="openHelp('dec')">🔍 פענוח השאלה</button><button class="btn sec" onclick="openHelp('ex')">📖 דוגמה פתורה</button></div><div id="help"></div>${inputHTML(q)}<div id="fb"></div></div>`;
  document.querySelectorAll('.rat input,.num input').forEach((el,i,all)=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){if(i<all.length-1)all[i+1].focus();else answer()}}));}
 function readVal(){const f=id=>{const v=($('#'+id)||{}).value;return v==null||v.trim()===''?NaN:parseFloat(v.replace(',','.'))};return Q.kind==='ratio'?[f('a1'),f('a2')]:f('a1')}
 function judge(q,v){// מחזיר {ok, msg}
@@ -371,7 +430,7 @@ function answer(i){if(done)return;const v=Q.kind==='mc'?i:readVal(),r=judge(Q,v)
  if(!S.rem)S.n++;
  S.rem={id:Q.id,need:2,count:S.rem?S.rem.count:0,asked:S.rem?S.rem.asked:false};
  if(Q.kind==='mc')$('#o'+Q.ans).classList.add('good');
- fb.innerHTML=`<div class="fb no">${r.msg?r.msg+'<br>':''}התשובה הנכונה: ${ansText(Q)}<div style="margin-top:6px;font-weight:600">ככה פותרים:</div>${solHTML(Q)}</div>
+ fb.innerHTML=`<div class="fb no">${r.msg?r.msg+'<br>':''}התשובה הנכונה: ${ansText(Q)}<div style="margin-top:6px;font-weight:600">ככה פותרים:</div>${solHTML(Q)}${grpBlock(Q)}</div>
  <div class="diag">🔎 מה כנראה חסר לך: ${Q.diag}</div><div style="margin-top:6px;font-size:17px">עכשיו תקבלו שאלה דומה עם מספרים אחרים – תנסו לבד לפי הדרך שראיתם.</div>
  <button class="btn rem" onclick="nextQ()">לשאלה דומה 💪</button>`}
 function lock(){document.querySelectorAll('#app input,#app .op,#go').forEach(e=>e.disabled=true)}
