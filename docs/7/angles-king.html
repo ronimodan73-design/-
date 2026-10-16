@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<title>מלך הזוויות</title>
+<style>
+:root{--navy:#1e3a8a;--ink:#0f172a;--mut:#64748b;--ok:#16a34a;--bad:#dc2626;--gold:#facc15;--bg:#eef2ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:linear-gradient(160deg,#1e3a8a,#4338ca 60%,#7c3aed);font-family:'Segoe UI',Arial,'Rubik',sans-serif;color:var(--ink)}
+#app{height:100dvh;max-width:560px;margin:0 auto;padding:max(8px,env(safe-area-inset-top)) 8px max(8px,env(safe-area-inset-bottom))}
+.scr{height:100%;display:flex;flex-direction:column;gap:6px}
+.card{background:#fff;border-radius:18px;box-shadow:0 6px 20px #0003}
+.m{unicode-bidi:isolate;direction:ltr;display:inline-block;font-weight:700;white-space:nowrap}
+button{font-family:inherit;cursor:pointer;border:0}
+/* home */
+.hero{text-align:center;color:#fff;padding:6px 0 0}
+.hero h1{margin:0;font-size:30px;letter-spacing:.5px}
+.hero p{margin:2px 0 0;font-size:14px;opacity:.9}
+.tools{display:flex;gap:6px;justify-content:center;margin-top:6px}
+.tools button{background:#ffffff26;color:#fff;border-radius:99px;padding:6px 12px;font-size:13px}
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:center}
+.st{background:#fff;border-radius:16px;padding:9px 10px;text-align:right;display:flex;flex-direction:column;gap:2px;box-shadow:0 4px 12px #0003;min-height:0}
+.st .lv{font-size:12px;color:#f59e0b;letter-spacing:1px}
+.st .nm{font-size:15px;font-weight:800;color:var(--navy)}
+.st .sb{font-size:12px;color:var(--mut)}
+.st .won{font-size:13px}
+.st.wide{grid-column:span 2}
+.credit{text-align:center;color:#fff;font-size:13px;opacity:.95;padding-bottom:2px}
+/* play */
+.top{display:flex;align-items:center;gap:8px;color:#fff}
+.ic{background:#ffffff26;color:#fff;width:34px;height:34px;border-radius:50%;font-size:16px;flex:none}
+.tt{flex:1;font-size:14px;font-weight:700;line-height:1.2}
+.pr{font-size:13px;white-space:nowrap;background:#ffffff26;padding:4px 9px;border-radius:99px}
+.bar{height:6px;background:#ffffff33;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);transition:width .4s}
+.main{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 10px;gap:6px}
+.qt{font-size:16px;line-height:1.45;font-weight:600}
+.qt .giv{font-size:14.5px;color:#334155;font-weight:500}
+.rule{background:#fef9c3;border:2px solid #facc15;border-radius:12px;padding:6px 9px;font-size:14.5px;line-height:1.4}
+.fig{flex:1;min-height:110px;display:flex;align-items:center;justify-content:center}
+.fig svg{width:100%;height:100%;max-height:100%}
+.fb{min-height:44px;border-radius:12px;padding:7px 10px;font-size:15px;line-height:1.4;background:#f1f5f9;display:block}
+.fb.ok{background:#dcfce7;color:#14532d}
+.fb.bad{background:#fff7ed;color:#7c2d12;border:2px solid #fdba74}
+.fb.sol{background:#eff6ff;color:#1e3a8a;border:2px solid #93c5fd}
+.legend{display:flex;gap:10px;font-size:13px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.inp{display:flex;flex-direction:column;gap:6px}
+.slots{display:flex;justify-content:center;align-items:flex-end;gap:6px;direction:ltr}
+.slots .an{font-size:28px;font-weight:800;color:var(--navy);padding-bottom:4px}
+.sl{width:46px;text-align:center}
+.sl b{display:flex;align-items:center;justify-content:center;height:46px;border:2.5px dashed #94a3b8;border-radius:12px;font-size:24px;background:#f8fafc}
+.sl.v b{border-color:#ef4444;background:#fef2f2;color:#b91c1c}
+.sl small{display:block;font-size:11px;color:var(--mut);height:14px}
+.sl.v small{color:#dc2626;font-weight:700}
+.keys{display:flex;gap:5px;direction:ltr}
+.keys button,.pad button{flex:1;height:44px;border-radius:12px;background:#e0e7ff;color:var(--navy);font-size:21px;font-weight:800;box-shadow:0 2px 0 #a5b4fc}
+.keys button:active,.pad button:active{transform:translateY(2px);box-shadow:none}
+.keys .del,.pad .del{background:#fee2e2;color:#b91c1c;box-shadow:0 2px 0 #fca5a5}
+.pad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;direction:ltr}
+.numrow{display:flex;gap:8px;align-items:center;justify-content:center;direction:ltr}
+.disp{min-width:110px;height:46px;border:2.5px dashed #94a3b8;border-radius:12px;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;background:#f8fafc;color:var(--navy)}
+.go{height:48px;border-radius:14px;background:var(--ok);color:#fff;font-size:18px;font-weight:800;box-shadow:0 3px 0 #15803d;width:100%}
+.go:disabled{background:#cbd5e1;box-shadow:none;color:#fff}
+.go.blue{background:#2563eb;box-shadow:0 3px 0 #1d4ed8}
+.row2{display:flex;gap:8px}
+.row2 .go{flex:1}
+.ghost{background:#e2e8f0;color:#334155;box-shadow:0 3px 0 #cbd5e1}
+.found{display:flex;flex-wrap:wrap;gap:5px;font-size:14px;direction:ltr;justify-content:center;min-height:26px}
+.found span{border-radius:99px;padding:2px 9px;color:#fff;font-weight:700}
+/* svg */
+.lt{font-size:17px;font-weight:800;text-anchor:middle;dominant-baseline:central;fill:#0f172a;font-family:Arial,sans-serif}
+.vxt{fill:#dc2626}
+.vl{font-size:12px;font-weight:700;text-anchor:middle;dominant-baseline:central;fill:#475569;font-family:Arial,sans-serif}
+.slb{font-size:14px;font-weight:800;text-anchor:middle;dominant-baseline:central;font-family:Arial,sans-serif}
+.tag{font-size:12px;font-weight:800;text-anchor:middle;dominant-baseline:central;font-family:Arial,sans-serif}
+.pop{transform-box:view-box;transform-origin:0 0;animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{transform:scale(.05);opacity:0}to{transform:scale(1);opacity:1}}
+.gone{animation:gone 1.4s ease-in .3s forwards}
+@keyframes gone{to{fill-opacity:.04;stroke-opacity:.35}}
+.blink{animation:blink 1s ease-in-out 3}
+@keyframes blink{50%{opacity:.2}}
+.vx{fill:none;stroke:#ef4444;stroke-width:3;transform-box:view-box;transform-origin:0 0;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.7);opacity:.3}}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(6px)}75%{transform:translateX(-6px)}}
+.cf{position:fixed;font-size:26px;pointer-events:none;animation:cf 1.1s ease-out forwards;z-index:9}
+@keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(200deg);opacity:0}}
+/* end */
+.end{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:16px}
+.big{font-size:64px;font-weight:900;color:var(--navy);line-height:1}
+.stars{font-size:44px;letter-spacing:4px}
+@media (max-height:640px){.qt{font-size:15px}.keys button,.pad button{height:40px}.sl b{height:42px}.go{height:44px}.hero h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const LET='ABCDEFGHKLMNPRST'.split('');
+const C=['#2563eb','#ef4444','#16a34a','#f59e0b','#a855f7','#0891b2'];
+const GOLD='#eab308',RED='#dc2626',GREEN='#16a34a',BLUE='#2563eb';
+const m=s=>`<span class="m" dir="ltr">${s}</span>`;
+const P=(d,r)=>{const a=d*Math.PI/180;return [+(Math.cos(a)*r).toFixed(2),+(-Math.sin(a)*r).toFixed(2)]};
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const cw=(c,t)=>`<b style="color:${c}">${t}</b>`;
+
+/* ---------- geometry ---------- */
+function makeFan(n,o={}){
+  const min=o.min??18,max=o.max??45;
+  const secs=o.secs||Array.from({length:n-1},()=>rnd(min,max));
+  const tot=sum(secs);
+  const bases=[0,0,8,18,90-tot/2,180-tot,170-tot,195,270-tot/2];
+  const base=Math.round(o.base??pick(bases));
+  const dirs=[base];secs.forEach(s=>dirs.push(dirs[dirs.length-1]+s));
+  const ls=shuffle(LET.slice()).slice(0,n+1);
+  return {V:ls[n],L:ls.slice(0,n),dirs,secs,n};
+}
+const val=(f,i,j)=>sum(f.secs.slice(i,j));
+const nm=(f,i,j,rev)=>rev?f.L[j]+f.V+f.L[i]:f.L[i]+f.V+f.L[j];
+const A=(f,i,j,rev)=>m('∢'+nm(f,i,j,rev));
+const S=(i,j,c,o={})=>Object.assign({i,j,c},o);
+
+function svgFan(f,h={}){
+  const R=140,lp=f.dirs.map(d=>P(d,R+17));
+  const xs=[0],ys=[0];lp.forEach(p=>{xs.push(p[0]);ys.push(p[1])});
+  const mid=(f.dirs[0]+f.dirs[f.dirs.length-1])/2,vl=P(mid+180,21);xs.push(vl[0]);ys.push(vl[1]);
+  let x0=Math.min(...xs)-16,x1=Math.max(...xs)+16,y0=Math.min(...ys)-16,y1=Math.max(...ys)+16;
+  const w=x1-x0,hh=y1-y0,W=Math.max(w,240),H=Math.max(hh,175);x0-=(W-w)/2;y0-=(H-hh)/2;
+  let s=`<svg viewBox="${x0.toFixed(1)} ${y0.toFixed(1)} ${W.toFixed(1)} ${H.toFixed(1)}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">`;
+  const secs=h.secs||[];
+  secs.forEach(q=>s+=secPath(f,q));
+  f.dirs.forEach((d,i)=>{const p=P(d,R),hr=(h.rays||[]).find(r=>r.i==i);
+    s+=`<line x1="0" y1="0" x2="${p[0]}" y2="${p[1]}" stroke="${hr?hr.c:'#1e293b'}" stroke-width="${hr?5.5:3}" stroke-linecap="round"${hr?' class="pop"':''}/>`});
+  if(h.vals)f.secs.forEach((v,k)=>{if(h.vals===true||h.vals.includes(k)){const p=P((f.dirs[k]+f.dirs[k+1])/2,96);s+=`<text x="${p[0]}" y="${p[1]}" class="vl">${v}°</text>`}});
+  secs.forEach(q=>s+=secLab(f,q));
+  f.L.forEach((L,i)=>{const p=lp[i],hr=(h.rays||[]).find(r=>r.i==i);s+=`<text x="${p[0]}" y="${p[1]}" class="lt"${hr?` style="fill:${hr.c}"`:''}>${L}</text>`});
+  s+=`<circle cx="0" cy="0" r="4.5" fill="#1e293b"/>`;
+  if(h.vx)s+=`<circle cx="0" cy="0" r="9" class="vx"/>`;
+  s+=`<text x="${vl[0]}" y="${vl[1]}" class="lt${h.vx?' vxt':''}">${f.V}</text>`;
+  return s+'</svg>';
+}
+function rOf(q){return q.r||(34+13*(q.j-q.i))}
+function secPath(f,q){
+  const a=f.dirs[q.i],b=f.dirs[q.j],r=rOf(q),s=P(a,r),e=P(b,r);
+  const dash=q.dash?' stroke-dasharray="6 4"':'';
+  return `<path d="M0 0 L${s[0]} ${s[1]} A${r} ${r} 0 0 0 ${e[0]} ${e[1]}Z" fill="${q.c}" fill-opacity="${q.o??.35}" stroke="${q.c}" stroke-width="${q.sw??2.5}"${dash} class="${q.cls||''}"/>`;
+}
+function secLab(f,q){
+  if(!q.lab)return '';
+  const a=f.dirs[q.i],b=f.dirs[q.j],r=q.lr??rOf(q)*.62,p=P((a+b)/2,r);
+  return `<text x="${p[0]}" y="${p[1]}" class="${q.tag?'tag':'slb'}" style="fill:${q.lc||q.c}"${q.cls?` class2="${q.cls}"`:''}>${q.lab}</text>`;
+}
+
+/* ---------- question helpers ---------- */
+function intervalOf(f,s){ // student's 3-letter name -> [i,j] or null
+  if(s.length!==3||s[1]!==f.V)return null;
+  const i=f.L.indexOf(s[0]),j=f.L.indexOf(s[2]);
+  if(i<0||j<0||i===j)return null;
+  return [Math.min(i,j),Math.max(i,j)];
+}
+const same=(a,b)=>a&&b&&a[0]===b[0]&&a[1]===b[1];
+const PINK='#c026d3';
+const youWrote=(f,iv)=>S(iv[0],iv[1],PINK,{o:.18,dash:1,sw:3,r:rOf({i:iv[0],j:iv[1]})+12,lab:'כתבת',tag:1,lr:rOf({i:iv[0],j:iv[1]})+26,lc:PINK});
+
+function nameSol(f,i,j,hl){
+  const fin={...hl,secs:[...(hl.secs||[]),S(i,j,GOLD,{o:.55,r:40,cls:'pop'})],rays:[{i,c:GREEN},{i:j,c:GREEN}]};
+  return [
+    {t:`1️⃣ מוצאים את ${cw(RED,'הקודקוד')} ${m(f.V)} – הנקודה שממנה יוצאות הקרניים.`,hl:{...hl,vx:true}},
+    {t:`2️⃣ הזווית יושבת בין הקרן של ${m(f.L[i])} לקרן של ${m(f.L[j])} ${cw(GREEN,'(בירוק)')}.`,hl:{...hl,vx:true,rays:[{i,c:GREEN},{i:j,c:GREEN}]}},
+    {t:`3️⃣ השם: ${A(f,i,j)} או ${A(f,i,j,1)} – ${cw(RED,'הקודקוד באמצע!')}`,hl:fin}];
+}
+function nameQ(f,i,j,text,hl,o={}){
+  const sol=o.sol||nameSol(f,i,j,hl);
+  return {kind:'name',f,ans:[i,j],text,hl,sol,okHl:o.okHl||sol[sol.length-1].hl,
+    hint1:o.hint1||{t:`הקודקוד נכון 👍 עכשיו בדקו את ${cw(GREEN,'הצלעות')}: עקבו אחרי הזווית הצבועה – בין אילו שתי קרניים היא?`,hl:{...hl,secs:(hl.secs||[]).map(s=>({...s,cls:'blink'}))}},
+    diag:o.diag};
+}
+function numQ(f,text,ans,hint1,sol,o={}){return {kind:'num',f,text,ans,hl:o.hl||{},hint1,sol,okHl:sol[sol.length-1].hl,diag:o.diag}}
+const giv=(f,iv)=>m(`∢${nm(f,iv[0],iv[1],iv[2])} = ${val(f,iv[0],iv[1])}°`);
+const eq=(f,t,a,op,b)=>m(`∢${nm(f,t[0],t[1])} = ∢${nm(f,a[0],a[1])} ${op} ∢${nm(f,b[0],b[1])} = ${val(f,a[0],a[1])} ${op} ${val(f,b[0],b[1])} = ${val(f,t[0],t[1])}°`);
+
+/* ---------- stage generators ---------- */
+function genS1(k){
+  if(k<6){
+    const f=makeFan(2,{min:35,max:115});
+    const hl={secs:[S(0,1,BLUE,{r:46})]};
+    return nameQ(f,0,1,'רשמו בשלוש אותיות את שם הזווית הצבועה',hl);
+  }
+  const n=k<13?3:4,f=makeFan(n,{min:26,max:42}),g=Math.random()<.5;
+  const sy=g?['α','β','γ','δ']:['1','2','3','4'],t=rnd(0,n-2);
+  const secs=f.secs.map((_,x)=>S(x,x+1,x===t?BLUE:'#94a3b8',{o:x===t?.42:.1,r:56,lab:sy[x],lr:38,lc:x===t?BLUE:'#475569'}));
+  const label=g?sy[t]:`∢${f.V}<sub>${sy[t]}</sub>`;
+  return nameQ(f,t,t+1,`רשמו בשלוש אותיות את הזווית ${m(label)}`,{secs});
+}
+function genS2(k){
+  const n=k<10?3:4,f=makeFan(n,{min:24,max:42}),all=[];
+  for(let d=1;d<n;d++)for(let i=0;i+d<n;i++)all.push([i,i+d]);
+  const show=(list)=>({secs:list.map((iv,x)=>S(iv[0],iv[1],C[x%6],{o:.2,r:30+18*(iv[1]-iv[0])}))});
+  const small=all.filter(iv=>iv[1]-iv[0]===1),bigs=all.filter(iv=>iv[1]-iv[0]>1);
+  const sol=[
+    {t:`1️⃣ קודם הזוויות ${cw(BLUE,'הקטנות')} – בין שתי קרניים שכנות: ${small.map(iv=>A(f,iv[0],iv[1])).join(' ')}`,hl:show(small)},
+    {t:`2️⃣ אחר כך הזוויות ${cw(RED,'הגדולות')}: ${bigs.map(iv=>A(f,iv[0],iv[1])).join(' ')}`,hl:show(all)},
+    {t:`✅ בסך הכול ${all.length} זוויות. זכרו: ${A(f,0,1)} ו-${A(f,0,1,1)} הן ${cw(RED,'אותה זווית')}!`,hl:show(all)}];
+  return {kind:'multi',f,ans:all,text:`רשמו את השמות של ${cw(BLUE,'כל '+all.length)} הזוויות בשרטוט`,hl:{},sol,okHl:show(all),
+    hint1:{t:`טיפ 💡 התחילו מהזוויות הקטנות שבין שתי קרניים ${cw(BLUE,'שכנות')}, ואחר כך הגדולות שמכילות כמה קטנות.`,hl:show(small)}};
+}
+function splitTerms(a,c,parts){
+  const inner=[];for(let x=a+1;x<c;x++)inner.push(x);
+  const cuts=shuffle(inner).slice(0,Math.min(inner.length,parts-1)).sort((x,y)=>x-y);
+  const pts=[a,...cuts,c],t=[];for(let x=0;x<pts.length-1;x++)t.push([pts[x],pts[x+1]]);return t;
+}
+function genS3(k){
+  const n=k<8?3:(k<15?4:5),f=makeFan(n,{min:22,max:40});
+  const a=rnd(0,n-3),c=rnd(a+2,n-1);
+  let terms=splitTerms(a,c,k>=12&&c-a>=3?3:2);
+  if(Math.random()<.3)terms.reverse();
+  const tn=terms.map(t=>[t[0],t[1],Math.random()<.5]);
+  const expr=tn.map(t=>'∢'+nm(f,t[0],t[1],t[2])).join(' + ');
+  const hl={secs:terms.map((t,x)=>S(t[0],t[1],C[x],{r:46}))};
+  const fin={secs:[...hl.secs,S(a,c,GOLD,{o:.5,r:66,cls:'pop'})],rays:[{i:a,c:GREEN},{i:c,c:GREEN}]};
+  const inner=[];for(let x=a+1;x<c;x++)inner.push(f.L[x]);
+  const sol=[
+    {t:`1️⃣ צובעים כל זווית: ${tn.map((t,x)=>cw(C[x],'∢'+nm(f,t[0],t[1],t[2]))).join(' + ')}`,hl},
+    {t:`2️⃣ הקרן המשותפת (${m(inner.join(', '))}) נבלעת ${cw(BLUE,'בפנים')}. הקרניים ${cw(GREEN,'בקצוות')}: ${m(f.L[a])} ו-${m(f.L[c])}`,hl:{...hl,rays:[{i:a,c:GREEN},{i:c,c:GREEN}]}},
+    {t:`3️⃣ ${m(expr+' = ∢'+nm(f,a,c))} – זווית אחת גדולה ${cw(GOLD,'(בצהוב)')}`,hl:fin}];
+  return nameQ(f,a,c,`רשמו בזווית אחת (שלוש אותיות):<br>${m(expr+' = ?')}`,hl,{sol,okHl:fin,
+    hint1:{t:`כשמחברים זוויות צמודות, הקרן המשותפת ${cw(BLUE,'נבלעת בפנים')}. הזווית החדשה הולכת מהקרן הראשונה עד הקרן ${cw(GREEN,'האחרונה')}.`,hl:{...hl,rays:[{i:a,c:GREEN},{i:c,c:GREEN}]}},
+    diag:iv=>terms.some(t=>same(t,iv))?`הזווית שכתבת היא רק ${cw(RED,'חלק אחד')} מהסכום. צריך את ${cw(GOLD,'כל החלקים יחד')} – מהקרן הראשונה עד האחרונה.`:null});
+}
+function genS4(k){
+  const n=k<6?3:(k<14?4:5),f=makeFan(n,{min:16,max:n===5?34:44});
+  const a=rnd(0,n-3),c=rnd(a+2,n-1),ans=val(f,a,c);
+  const g=shuffle(f.secs.map((_,x)=>[x,x+1,Math.random()<.5]));
+  const parts=[];for(let x=a;x<c;x++)parts.push([x,x+1]);
+  const showVals=k<10;
+  const ph=parts.map((p,x)=>S(p[0],p[1],C[x],{r:50}));
+  const text=`<span class="giv">נתון: ${g.map(v=>giv(f,v)).join(' , ')}</span><br>חשבו: ${m('∢'+nm(f,a,c,Math.random()<.5)+' = ?')}`;
+  const sol=[
+    {t:`1️⃣ מסמנים את ${A(f,a,c)} – מהקרן ${m(f.L[a])} עד הקרן ${m(f.L[c])}`,hl:{vals:true,secs:[S(a,c,GOLD,{o:.3,r:74,cls:'pop'})],rays:[{i:a,c:GREEN},{i:c,c:GREEN}]}},
+    {t:`2️⃣ החלקים שבתוכה: ${parts.map((p,x)=>cw(C[x],'∢'+nm(f,p[0],p[1]))).join(' + ')}`,hl:{vals:true,secs:ph}},
+    {t:`3️⃣ ${m(`∢${nm(f,a,c)} = ${parts.map(p=>val(f,p[0],p[1])).join(' + ')} = ${ans}°`)}`,hl:{vals:true,secs:[...ph,S(a,c,GOLD,{o:.45,r:74,cls:'pop',lab:ans+'°',lr:116,lc:'#a16207'})]}}];
+  const tot=sum(f.secs);
+  return numQ(f,text,ans,{t:`הזווית ${A(f,a,c)} ${cw(GOLD,'צבועה בצהוב')}. היא בנויה מ-${parts.length} חלקים צבעוניים – ${cw(GREEN,'חברו רק אותם')}!`,hl:{vals:true,secs:[S(a,c,GOLD,{o:.25,r:74}),...ph.map(s=>({...s,cls:'blink'}))]}},sol,
+    {hl:showVals?{vals:true}:{},diag:v=>v===tot&&tot!==ans?`חיברת את ${cw(RED,'כל')} הזוויות בשרטוט, אבל רק חלק מהן נמצאות בתוך ${A(f,a,c)}. ${cw(GREEN,'חברו רק את החלקים שבתוכה')}.`:null});
+}
+function genS5(k){
+  const n=k<8?3:(k<15?4:5),f=makeFan(n,{min:22,max:40});
+  const a=rnd(0,n-3),c=rnd(a+2,n-1);let terms,res;
+  if(k>=12&&c-a>=3&&Math.random()<.6){
+    const b=rnd(a+1,c-2),d=rnd(b+1,c-1);
+    if(Math.random()<.5){terms=[[a,b],[b,d]];res=[d,c]}else{terms=[[d,c],[b,d]];res=[a,b]}
+  }else{const b=rnd(a+1,c-1);if(Math.random()<.5){terms=[[a,b]];res=[b,c]}else{terms=[[b,c]];res=[a,b]}}
+  const bigN='∢'+nm(f,a,c,Math.random()<.5);
+  const tn=terms.map(t=>'∢'+nm(f,t[0],t[1],Math.random()<.5));
+  const expr=bigN+' − '+tn.join(' − ');
+  const big=S(a,c,BLUE,{o:.3,r:62});
+  const red=terms.map(t=>S(t[0],t[1],RED,{o:.5,r:42}));
+  const hl={secs:[big,...red]};
+  const fin={secs:[S(a,c,BLUE,{o:.08,r:62}),S(res[0],res[1],GOLD,{o:.55,r:50,cls:'pop'})],rays:[{i:res[0],c:GREEN},{i:res[1],c:GREEN}]};
+  const sol=[
+    {t:`1️⃣ הזווית הגדולה ${cw(BLUE,bigN)} – בכחול`,hl:{secs:[{...big,cls:'pop'}]}},
+    {t:`2️⃣ מורידים את ${tn.map(x=>cw(RED,x)).join(' ו-')} (באדום) – ${cw(RED,'היא נעלמת')}`,hl:{secs:[big,...red.map(s=>({...s,cls:'gone'}))]}},
+    {t:`3️⃣ נשארה: ${m(expr+' = ∢'+nm(f,res[0],res[1]))}`,hl:fin}];
+  return nameQ(f,res[0],res[1],`רשמו בזווית אחת (שלוש אותיות) את ההפרש:<br>${m(expr+' = ?')}`,hl,{sol,okHl:fin,
+    hint1:{t:`הזווית ${cw(RED,'האדומה')} יורדת – היא נעלמת! איזה חלק מהזווית ${cw(BLUE,'הכחולה')} נשאר?`,hl:{secs:[big,...red.map(s=>({...s,cls:'gone'}))]}},
+    diag:iv=>terms.some(t=>same(t,iv))?`את הזווית שכתבת ${cw(RED,'מורידים')} – היא נעלמת! מה ${cw(GOLD,'נשאר')} אחרי שמורידים אותה?`:(same(iv,[a,c])?`זו הזווית ${cw(BLUE,'הגדולה')}, לפני שהורדנו ממנה. מה נשאר אחרי שמורידים את ${tn.map(x=>cw(RED,x)).join(' ו-')}?`:null)});
+}
+function diffHint(f,t){return {t:`הזווית שמחפשים ${cw(GOLD,'צבועה בצהוב')}. חפשו זווית ${cw(BLUE,'גדולה')} שמכילה אותה – ומה צריך ${cw(RED,'להוריד')} ממנה?`,hl:{secs:[S(t[0],t[1],GOLD,{o:.5,r:56,cls:'blink'})]}}}
+function genS6(k){
+  let f,g,t,sol;
+  const Y=(iv)=>S(iv[0],iv[1],GOLD,{o:.55,r:50,cls:'pop',lab:val(f,iv[0],iv[1])+'°',lr:112,lc:'#a16207'});
+  const B=(iv,o={})=>S(iv[0],iv[1],BLUE,Object.assign({o:.22,r:72},o)), Rd=(iv,o={})=>S(iv[0],iv[1],RED,Object.assign({o:.45,r:40},o));
+  if(k<8){
+    f=makeFan(3,{min:15,max:45});const part=Math.random()<.5?[1,2]:[0,1];t=part[0]===1?[0,1]:[1,2];
+    g=[[0,2,Math.random()<.5],[...part,Math.random()<.5]];
+    sol=[{t:`1️⃣ הזווית הגדולה ${cw(BLUE,'∢'+nm(f,0,2))} בנויה משני חלקים`,hl:{secs:[B([0,2],{cls:'pop'})]}},
+         {t:`2️⃣ מורידים ממנה את ${cw(RED,'∢'+nm(f,...part))}`,hl:{secs:[B([0,2]),Rd(part,{cls:'gone'})]}},
+         {t:`3️⃣ ${eq(f,t,[0,2],'−',part)}`,hl:{secs:[B([0,2],{o:.08}),Y(t)]}}];
+  }else if(k<14){
+    f=makeFan(4,{min:18,max:38});g=shuffle([[1,3,Math.random()<.5],[0,2,Math.random()<.5],[0,1,Math.random()<.5]]);
+    t=k%2?[1,2]:[2,3];
+    const s1={t:`1️⃣ ${eq(f,[1,2],[0,2],'−',[0,1])}`,hl:{secs:[B([0,2]),Rd([0,1],{cls:'gone'}),Y([1,2])]}};
+    sol=t[0]===1?[{t:`1️⃣ הזווית ${cw(BLUE,'∢'+nm(f,0,2))} – מורידים ממנה את ${cw(RED,'∢'+nm(f,0,1))}`,hl:{secs:[B([0,2],{cls:'pop'}),Rd([0,1],{cls:'gone'})]}},{...s1,t:s1.t.replace('1️⃣','2️⃣')}]
+      :[s1,{t:`2️⃣ ${eq(f,[2,3],[1,3],'−',[1,2])}`,hl:{secs:[B([1,3]),Rd([1,2],{cls:'gone'}),Y([2,3])]}}];
+  }else{
+    f=makeFan(4,{min:18,max:38});g=shuffle([[0,1,Math.random()<.5],[0,2,Math.random()<.5],[1,3,Math.random()<.5]]);
+    t=pick([[1,2],[2,3],[0,3]]);
+    const s1={t:`1️⃣ ${eq(f,[1,2],[0,2],'−',[0,1])}`,hl:{secs:[B([0,2]),Rd([0,1],{cls:'gone'}),Y([1,2])]}};
+    if(t[0]===1)sol=[{t:`1️⃣ הזווית ${cw(BLUE,'∢'+nm(f,0,2))} – מורידים ממנה את ${cw(RED,'∢'+nm(f,0,1))}`,hl:{secs:[B([0,2],{cls:'pop'}),Rd([0,1],{cls:'gone'})]}},{...s1,t:s1.t.replace('1️⃣','2️⃣')}];
+    else if(t[0]===2)sol=[s1,{t:`2️⃣ ${eq(f,[2,3],[1,3],'−',[1,2])}`,hl:{secs:[B([1,3]),Rd([1,2],{cls:'gone'}),Y([2,3])]}}];
+    else sol=[{t:`1️⃣ ${A(f,0,3)} בנויה מ-${cw(C[2],'∢'+nm(f,0,1))} ומ-${cw(C[4],'∢'+nm(f,1,3))}`,hl:{secs:[S(0,1,C[2],{r:44}),S(1,3,C[4],{r:56})]}},
+              {t:`2️⃣ כאן ${cw(GREEN,'מחברים')}: ${eq(f,[0,3],[0,1],'+',[1,3])}`,hl:{secs:[S(0,1,C[2],{r:44}),S(1,3,C[4],{r:56}),Y([0,3])]}}];
+  }
+  const ans=val(f,t[0],t[1]);
+  const text=`<span class="giv">נתון: ${g.map(v=>giv(f,v)).join(' , ')}</span><br>חשבו: ${m('∢'+nm(f,t[0],t[1],Math.random()<.5)+' = ?')}`;
+  const gsum=sum(g.map(v=>val(f,v[0],v[1])));
+  return numQ(f,text,ans,t[0]===0&&t[1]===3?{t:`הזווית שמחפשים ${cw(GOLD,'צבועה בצהוב')}. מאילו זוויות נתונות היא בנויה? ${cw(GREEN,'חברו אותן')}.`,hl:{secs:[S(0,3,GOLD,{o:.5,r:56,cls:'blink'})]}}:diffHint(f,t),sol,
+    {diag:v=>v===gsum?`חיברת את ${cw(RED,'כל')} המספרים הנתונים. כאן צריך לחשוב: הזווית ${cw(GOLD,'הצהובה')} היא חלק מזווית גדולה – ${cw(RED,'מחסרים')}!`:null});
+}
+function genS7(k){
+  if(k%2===0){
+    const n=k<10?4:5,f=makeFan(n,{min:20,max:34});let r=null;
+    for(let tr=0;tr<600&&!r;tr++){
+      const nt=k<6?2:pick([2,3,3]),terms=[];
+      for(let x=0;x<nt;x++){const i=rnd(0,n-2),j=rnd(i+1,n-1);terms.push({i,j,s:x===0?1:(Math.random()<.55?-1:1),rev:Math.random()<.5})}
+      const co=Array(n-1).fill(0);terms.forEach(t=>{for(let x=t.i;x<t.j;x++)co[x]+=t.s});
+      if(co.some(v=>v<0||v>1))continue;
+      const on=co.map((v,x)=>v?x:-1).filter(x=>x>=0);if(!on.length)continue;
+      const a=on[0],c=on[on.length-1]+1;if(c-a!==on.length)continue;
+      if(terms.some(t=>t.i===a&&t.j===c))continue;
+      if(terms.some((t,x)=>terms.some((u,y)=>y>x&&u.i===t.i&&u.j===t.j)))continue;
+      r={terms,a,c};
+    }
+    const {terms,a,c}=r;
+    const expr=terms.map((t,x)=>(x?(t.s>0?' + ':' − '):'')+'∢'+nm(f,t.i,t.j,t.rev)).join('');
+    const sol=[];let acc=[];
+    terms.forEach((t,x)=>{
+      const tn='∢'+nm(f,t.i,t.j,t.rev);
+      if(t.s>0){acc=[...acc.map(s=>({...s,cls:''})),S(t.i,t.j,C[x===0?0:2],{o:.3,r:40+14*x,cls:'pop'})];sol.push({t:`${x+1}️⃣ ${x?cw(GREEN,'מוסיפים'):'מתחילים מ-'} ${cw(C[x===0?0:2],tn)}`,hl:{secs:acc}})}
+      else{acc=[...acc.map(s=>({...s,cls:''})),S(t.i,t.j,RED,{o:.5,r:30+14*x,cls:'gone'})];sol.push({t:`${x+1}️⃣ ${cw(RED,'מורידים')} את ${cw(RED,tn)} – היא נעלמת`,hl:{secs:acc}})}
+    });
+    const fin={secs:[S(a,c,GOLD,{o:.55,r:52,cls:'pop'})],rays:[{i:a,c:GREEN},{i:c,c:GREEN}]};
+    sol.push({t:`✅ נשאר צבוע: ${m(expr+' = ∢'+nm(f,a,c))}`,hl:fin});
+    return nameQ(f,a,c,`רשמו בזווית אחת (שלוש אותיות):<br>${m(expr+' = ?')}`,{},{sol,okHl:fin,
+      hint1:{t:`עברו איבר אחרי איבר: כל ${cw(GREEN,'+')} צובע חלק, כל ${cw(RED,'−')} מוחק חלק. מה נשאר צבוע בסוף?`,hl:sol[0].hl},
+      diag:iv=>terms.some(t=>same([t.i,t.j],iv))?`כתבת את אחד האיברים של התרגיל. צריך את ${cw(GOLD,'התוצאה')} – מה נשאר אחרי כל ה-+ וה-−?`:null});
+  }
+  let f,text,t,sol;
+  const Y=(iv)=>S(iv[0],iv[1],GOLD,{o:.55,r:50,cls:'pop',lab:val(f,iv[0],iv[1])+'°',lr:112,lc:'#a16207'});
+  if(k%4===1){ // like q19
+    f=makeFan(4,{min:14,max:36});t=pick([[1,2],[1,3],[0,3]]);
+    text=`<span class="giv">נתון: ${shuffle([[0,2,0],[0,1,1],[2,3,0]]).map(v=>giv(f,v)).join(' , ')}</span><br>חשבו: ${m('∢'+nm(f,t[0],t[1],Math.random()<.5)+' = ?')}`;
+    const s1={t:`1️⃣ ${eq(f,[1,2],[0,2],'−',[0,1])}`,hl:{secs:[S(0,2,BLUE,{o:.22,r:72}),S(0,1,RED,{o:.45,r:40,cls:'gone'}),Y([1,2])]}};
+    if(t[1]===2)sol=[{t:`1️⃣ הזווית ${cw(BLUE,'∢'+nm(f,0,2))} – מורידים ממנה את ${cw(RED,'∢'+nm(f,0,1))}`,hl:{secs:[S(0,2,BLUE,{o:.22,r:72,cls:'pop'}),S(0,1,RED,{o:.45,r:40,cls:'gone'})]}},{...s1,t:s1.t.replace('1️⃣','2️⃣')}];
+    else if(t[0]===1)sol=[s1,{t:`2️⃣ ${eq(f,[1,3],[1,2],'+',[2,3])}`,hl:{secs:[S(1,2,C[2],{r:44}),S(2,3,C[4],{r:44}),Y([1,3])]}}];
+    else sol=[{t:`1️⃣ ${A(f,0,3)} בנויה מ-${cw(C[2],'∢'+nm(f,0,2))} ומ-${cw(C[4],'∢'+nm(f,2,3))}`,hl:{secs:[S(0,2,C[2],{r:44}),S(2,3,C[4],{r:56})]}},{t:`2️⃣ ${eq(f,[0,3],[0,2],'+',[2,3])}`,hl:{secs:[S(0,2,C[2],{r:44}),S(2,3,C[4],{r:56}),Y([0,3])]}}];
+  }else{ // like q21
+    const a=rnd(18,40),b=rnd(20,50);
+    f=makeFan(4,{secs:[a,b,a]});t=pick([[1,2],[0,2],[0,3]]);const tt=a+b;
+    text=`<span class="giv">נתון: ${m(`∢${nm(f,0,1)} = ∢${nm(f,2,3,1)} = ${a}°`)} , ${giv(f,[1,3,1])}</span><br>חשבו: ${m('∢'+nm(f,t[0],t[1],Math.random()<.5)+' = ?')}`;
+    const s1={t:`1️⃣ ${eq(f,[1,2],[1,3],'−',[2,3])}`,hl:{secs:[S(1,3,BLUE,{o:.22,r:72}),S(2,3,RED,{o:.45,r:40,cls:'gone'}),Y([1,2])]}};
+    if(t[0]===1)sol=[{t:`1️⃣ הזווית ${cw(BLUE,'∢'+nm(f,1,3))} – מורידים ממנה את ${cw(RED,'∢'+nm(f,2,3))}`,hl:{secs:[S(1,3,BLUE,{o:.22,r:72,cls:'pop'}),S(2,3,RED,{o:.45,r:40,cls:'gone'})]}},{...s1,t:s1.t.replace('1️⃣','2️⃣')}];
+    else if(t[1]===2)sol=[s1,{t:`2️⃣ ${eq(f,[0,2],[0,1],'+',[1,2])}`,hl:{secs:[S(0,1,C[2],{r:44}),S(1,2,C[4],{r:44}),Y([0,2])]}}];
+    else sol=[{t:`1️⃣ ${A(f,0,3)} בנויה מ-${cw(C[2],'∢'+nm(f,0,1))} ומ-${cw(C[4],'∢'+nm(f,1,3))}`,hl:{secs:[S(0,1,C[2],{r:44}),S(1,3,C[4],{r:56})]}},{t:`2️⃣ ${eq(f,[0,3],[0,1],'+',[1,3])}`,hl:{secs:[S(0,1,C[2],{r:44}),S(1,3,C[4],{r:56}),Y([0,3])]}}];
+    void tt;
+  }
+  const ans=val(f,t[0],t[1]);
+  return numQ(f,text,ans,{t:`הזווית שמחפשים ${cw(GOLD,'צבועה בצהוב')}. היא ${cw(GREEN,'חלק')} מזווית נתונה, או ${cw(GREEN,'מורכבת')} מזוויות נתונות? סמנו בעיניים ואז חשבו.`,hl:{secs:[S(t[0],t[1],GOLD,{o:.5,r:56,cls:'blink'})]}},sol);
+}
+
+const STAGES=[
+  {lv:'★',name:'קריאת שם זווית',sub:'הקודקוד באמצע',gen:genS1,from:'שאלות 1–4',
+   rule:`שם של זווית = ${cw(BLUE,'3 אותיות')}: נקודה על צלע · ${cw(RED,'הקודקוד')} · נקודה על הצלע השנייה. ${cw(RED,'הקודקוד תמיד באמצע!')}`},
+  {lv:'★★',name:'כל הזוויות בשרטוט',sub:'בלי לשכוח, בלי לחזור',gen:genS2,from:'שאלות 5–6',
+   rule:`קודם הזוויות ${cw(BLUE,'הקטנות')} (בין קרניים שכנות), אחר כך ${cw(RED,'הגדולות')}. ${m('∢ABC')} ו-${m('∢CBA')} הן ${cw(RED,'אותה זווית')}!`},
+  {lv:'★★',name:'סכום כזווית אחת',sub:'שתי זוויות → זווית אחת',gen:genS3,from:'שאלה 7',
+   rule:`זוויות צמודות מתחברות לזווית אחת: ${cw(GREEN,'מהקרן הראשונה עד הקרן האחרונה')}. הקרן המשותפת נבלעת בפנים.`},
+  {lv:'★★★',name:'חישוב סכום',sub:'מחברים את החלקים',gen:genS4,from:'שאלות 8–11, 19–20',
+   rule:`${cw(GOLD,'זווית גדולה')} = ${cw(BLUE,'חלק')} + ${cw(RED,'חלק')}. מחברים ${cw(GREEN,'רק')} את החלקים שבתוכה.`},
+  {lv:'★★★★',name:'הפרש כזווית אחת',sub:'מה נשאר?',gen:genS5,from:'שאלות 12–13',
+   rule:`${cw(BLUE,'גדולה')} − ${cw(RED,'חלק')} = ${cw(GOLD,'מה שנשאר')}. החלק שמורידים ${cw(RED,'נעלם')}.`},
+  {lv:'★★★★',name:'חישוב הפרש',sub:'החלק שמורידים נעלם',gen:genS6,from:'שאלות 14–16, 21',
+   rule:`${cw(GOLD,'חלק')} = ${cw(BLUE,'הזווית הגדולה')} − ${cw(RED,'החלק השני')}. קודם מוצאים זווית גדולה שמכילה את מה שמחפשים.`},
+  {lv:'★★★★',name:'אתגר: סכום והפרש',sub:'+ צובע, − מוחק',gen:genS7,from:'שאלות 17–21',
+   rule:`עוברים איבר אחרי איבר: ${cw(GREEN,'+ צובע חלק')}, ${cw(RED,'− מוחק חלק')}. מה שנשאר צבוע – זו התשובה.`}
+];
+const NQ=20;
+const PRAISE=['מעולה! 🌟','כל הכבוד! 💪','אלופים! 👑','בדיוק! ✨','נהדר! 🎯','יש! 🔥','מושלם! 🏆'];
+
+/* ---------- storage ---------- */
+const KEY='angleKing7';
+function loadBest(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
+function saveBest(s,score){try{const b=loadBest();if(!(b[s]>=score)){b[s]=score;localStorage.setItem(KEY,JSON.stringify(b))}}catch(e){}}
+const starsOf=sc=>sc>=90?3:sc>=70?2:sc>=50?1:0;
+
+/* ---------- screens ---------- */
+let st={};
+function home(){
+  const b=loadBest();
+  $('#app').innerHTML=`<div class="scr">
+   <div class="hero"><h1>👑 מלך הזוויות</h1><p>כיתה ז׳ · שמות זוויות, סכום והפרש</p>
+    <div class="tools"><button onclick="fullScr()">⛶ מסך מלא</button><button onclick="share()">🟢 שיתוף בוואטסאפ</button></div></div>
+   <div class="grid">${STAGES.map((s,i)=>{const sc=b[i];return `<button class="st${i===6?' wide':''}" onclick="intro(${i})">
+     <span class="lv">${s.lv} · שלב ${i+1}</span><span class="nm">${s.name}</span><span class="sb">${s.sub}</span>
+     <span class="won">${sc===undefined?'▶ התחילו':'⭐'.repeat(starsOf(sc))+'☆'.repeat(3-starsOf(sc))+' '+sc}</span></button>`}).join('')}</div>
+   <div class="credit">ערכה: רוני מודן · שחקים</div></div>`;
+}
+function topBar(title,right){return `<div class="top"><button class="ic" onclick="home()" aria-label="תפריט">✕</button><div class="tt">${title}</div>${right?`<div class="pr">${right}</div>`:''}</div>`}
+
+function intro(s){
+  const q=STAGES[s].gen(9);
+  const steps=[{t:`👀 דוגמה פתורה – הסתכלו איך פותרים:`,hl:q.hl},...q.sol];
+  if(s===0){
+    const f=makeFan(3,{min:30,max:45});
+    steps.unshift({t:`🤔 ${cw(RED,'למה צריך?')} מנקודה ${m(f.V)} יוצאות כמה קרניים – ויש כאן ${cw(BLUE,'3 זוויות')}! אם נגיד "הזווית ליד ${m(f.V)}" – לא נדע על איזו. לכן לכל זווית נותנים ${cw(BLUE,'שם של 3 אותיות')}.`,f,
+      hl:{secs:[S(0,1,C[0],{r:40,cls:'blink'}),S(1,2,C[2],{r:40,cls:'blink'}),S(0,2,C[1],{o:.15,r:66,cls:'blink'})],vx:true}});
+  }
+  st={s,ex:{q,steps,i:0}};drawIntro();
+}
+function drawIntro(){
+  const {s,ex}=st,stp=ex.steps[ex.i],f=stp.f||ex.q.f,last=ex.i===ex.steps.length-1;
+  $('#app').innerHTML=`<div class="scr">${topBar(`${STAGES[s].lv} שלב ${s+1} · ${STAGES[s].name}`,`דוגמה ${ex.i+1}/${ex.steps.length}`)}
+   <div class="card main">
+    <div class="rule">📌 ${STAGES[s].rule}</div>
+    ${stp.f?'':`<div class="qt">${ex.q.text}</div>`}
+    <div class="fig">${svgFan(f,stp.hl)}</div>
+    <div class="fb sol">${stp.t}</div>
+    <div class="row2">${last?`<button class="go" onclick="start(${s})">אני מוכנים! מתחילים 🚀</button>`:`<button class="go blue" onclick="st.ex.i++;drawIntro()">הצעד הבא ▶</button><button class="go ghost" style="flex:.6" onclick="start(${s})">דלגו</button>`}</div>
+   </div></div>`;
+}
+function start(s){st={s,k:0,score:0,retry:false};nextQ()}
+function nextQ(){
+  if(st.k>=NQ)return endScr();
+  st.q=STAGES[st.s].gen(st.k);st.mist=0;st.inp='';st.mode='ans';st.found=[];st.fb={c:'',t:st.retry?`🔁 שאלה דומה – הפעם תצליחו!`:(st.k===0?'בהצלחה! 💪':'')};st.hl=st.q.hl;st.step=0;
+  draw();
+}
+function draw(){
+  const q=st.q,f=q.f;
+  const title=`${STAGES[st.s].lv} שלב ${st.s+1} · ${STAGES[st.s].name}`;
+  let inp='';
+  if(st.mode==='ans'){
+    if(q.kind==='num'){
+      inp=`<div class="numrow"><span style="font-size:22px;font-weight:800">°</span><div class="disp">${st.inp||'?'}</div></div>
+       <div class="pad">${[1,2,3,4,5,6,7,8,9,0].map(d=>`<button onclick="key('${d}')">${d}</button>`).join('')}<button class="del" onclick="key('<')">⌫</button><button class="del" onclick="key('C')">C</button></div>
+       <button class="go" onclick="submit()" ${st.inp?'':'disabled'}>בדיקה ✔</button>`;
+    }else{
+      const lets=[...f.L,f.V].sort();const s=st.inp;
+      inp=`${q.kind==='multi'?`<div class="found">${st.found.length?st.found.map((iv,x)=>`<span style="background:${C[x%6]}">∢${nm(f,iv[0],iv[1])}</span>`).join(''):'<span style="color:#64748b">עוד לא נמצאו זוויות</span>'}<span style="color:#1e3a8a;background:#e0e7ff">${st.found.length}/${q.ans.length}</span></div>`:''}
+       <div class="slots"><span class="an">∢</span>${[0,1,2].map(x=>`<div class="sl${x===1?' v':''}"><b>${s[x]||''}</b><small>${x===1?'קודקוד':''}</small></div>`).join('')}</div>
+       <div class="keys">${lets.map(L=>`<button onclick="key('${L}')">${L}</button>`).join('')}<button class="del" onclick="key('<')">⌫</button></div>
+       <button class="go" onclick="submit()" ${s.length===3?'':'disabled'}>${q.kind==='multi'?'הוספה ✔':'בדיקה ✔'}</button>`;
+    }
+  }else if(st.mode==='sol'){
+    const last=st.step===q.sol.length-1;
+    inp=last?`<button class="go" onclick="st.retry=true;nextQ()">הבנתי! לשאלה דומה ←</button>`:`<button class="go blue" onclick="st.step++;showSol()">הצעד הבא ▶</button>`;
+  }else{
+    inp=`<button class="go" onclick="st.retry=false;st.k++;nextQ()">${st.k+1>=NQ?'לתוצאות 🏆':'לשאלה הבאה ←'}</button>`;
+  }
+  $('#app').innerHTML=`<div class="scr">${topBar(title,`${Math.min(st.k+1,NQ)}/${NQ} · 🏅${st.score}`)}
+   <div class="bar"><i style="width:${st.k/NQ*100}%"></i></div>
+   <div class="card main">
+    <div class="qt">${q.text}</div>
+    <div class="fig" id="fig">${svgFan(f,st.hl)}</div>
+    ${st.fb.t?`<div class="fb ${st.fb.c}" id="fb">${st.fb.t}</div>`:''}
+    <div class="inp">${inp}</div>
+   </div></div>`;
+}
+function key(k){
+  const q=st.q;
+  if(k==='<')st.inp=st.inp.slice(0,-1);
+  else if(k==='C')st.inp='';
+  else if(q.kind==='num'){if(st.inp.length<3&&!(st.inp===''&&k==='0'))st.inp+=k}
+  else if(st.inp.length<3)st.inp+=k;
+  draw();
+}
+const legendBad=`<br><span class="legend"><span><i style="background:${PINK}33;border:2px dashed ${PINK}"></i>מה שכתבת</span></span>`;
+function submit(){
+  const q=st.q,f=q.f,s=st.inp;
+  if(q.kind==='num'){
+    const v=+s;if(v===q.ans)return correct();
+    const d=q.diag&&q.diag(v);
+    const close=Math.abs(v-q.ans)<=2?` (ממש קרוב! בדקו שוב את החישוב)`:'';
+    return wrong(d||q.hint1.t+close,q.hint1.hl);
+  }
+  const iv=intervalOf(f,s);
+  if(q.kind==='multi'){
+    if(s[1]!==f.V)return wrong(vxMsg(f,s),{secs:st.found.map((v,x)=>S(v[0],v[1],C[x%6],{o:.2,r:30+18*(v[1]-v[0])})),vx:true},true);
+    if(!iv)return wrong(`האותיות ${m(s[0]+' '+s[2])} צריכות להיות ${cw(GREEN,'שתי קרניים שונות')}. בחרו שוב 🙂`,st.hl,true);
+    if(st.found.some(v=>same(v,iv))){
+      return wrong(`את הזווית הזו ${cw(RED,'כבר כתבתם')}! ${m('∢'+s)} ו-${m('∢'+s[2]+s[1]+s[0])} הן ${cw(RED,'אותה זווית')} – רק קוראים אותה מהצד השני.`,{...st.hl,secs:[...(st.hl.secs||[]).map(x=>same([x.i,x.j],iv)?{...x,cls:'blink',o:.5}:x)]},true);
+    }
+    st.found.push(iv);st.inp='';
+    st.hl={secs:st.found.map((v,x)=>S(v[0],v[1],C[x%6],{o:.22,r:30+18*(v[1]-v[0]),cls:same(v,iv)?'pop':''}))};
+    if(st.found.length===q.ans.length)return correct();
+    st.fb={c:'ok',t:`${pick(PRAISE)} מצאתם ${m('∢'+nm(f,iv[0],iv[1]))}. נשארו עוד ${q.ans.length-st.found.length}.`};
+    return draw();
+  }
+  if(iv&&same(iv,q.ans))return correct();
+  if(s[1]!==f.V)return wrong(vxMsg(f,s),{...q.hl,vx:true,secs:[...(q.hl.secs||[]),...(iv?[]:[])]});
+  if(!iv)return wrong(`האותיות ${m(s[0])} ו-${m(s[2])} צריכות להיות על ${cw(GREEN,'שתי קרניים שונות')}. נסו שוב 🙂`,q.hl);
+  const d=q.diag&&q.diag(iv);
+  const base=d?q.hl:q.hint1.hl;
+  wrong((d||`הקודקוד נכון 👍 אבל הצלעות לא: הזווית שכתבת מסומנת ${cw(PINK,'בסגול מקווקו')}. ${q.hint1.t.replace('הקודקוד נכון 👍 ','')}`)+legendBad,{...base,secs:[...(base.secs||[]),youWrote(f,iv)]});
+}
+function vxMsg(f,s){
+  const where=s.indexOf(f.V);
+  return where<0?`בשם הזווית חסר ${cw(RED,'הקודקוד')} ${m(f.V)} – הנקודה שממנה יוצאות הקרניים. הוא תמיד ${cw(RED,'באות האמצעית')}!`
+    :`כמעט! ${cw(RED,'הקודקוד')} ${m(f.V)} כתוב בצד. הוא חייב להיות ${cw(RED,'באמצע')} – בתיבה האדומה 🔴`;
+}
+function wrong(t,hl,soft){
+  st.mist++;st.inp='';
+  const lim=st.q.kind==='multi'?3:2;
+  if(st.mist>=lim&&!(soft&&st.mist<lim+1)){st.mode='sol';st.step=0;return showSol(true)}
+  st.fb={c:'bad',t:'🤔 '+t};st.hl=hl||st.q.hl;draw();
+  const fb=$('#fb');if(fb){fb.classList.add('shake')}
+}
+function showSol(first){
+  const q=st.q,sp=q.sol[st.step];
+  st.hl=sp.hl;st.fb={c:'sol',t:(first?`💙 לא נורא – בואו נראה יחד, צעד אחרי צעד:<br>`:'')+sp.t};draw();
+}
+function correct(){
+  const pts=st.retry?2:(st.mist===0?5:3);st.score+=pts;
+  st.mode='ok';st.hl=st.q.okHl;
+  const extra=st.q.kind==='num'?m(st.q.ans+'°'):(st.q.kind==='name'?m('∢'+nm(st.q.f,st.q.ans[0],st.q.ans[1])):'');
+  st.fb={c:'ok',t:`${pick(PRAISE)} ${extra} <span style="float:left;font-weight:800">+${pts}</span>`};
+  draw();confetti();
+}
+function confetti(){
+  for(let i=0;i<14;i++){const e=document.createElement('span');e.className='cf';e.textContent=pick(['⭐','✨','🎉','💛','👑']);
+    e.style.left=(40+Math.random()*20)+'vw';e.style.top='45vh';e.style.setProperty('--x',(Math.random()*300-150)+'px');e.style.setProperty('--y',(Math.random()*-300)+'px');
+    document.body.appendChild(e);setTimeout(()=>e.remove(),1200)}
+}
+function endScr(){
+  const sc=Math.round(st.score),n=starsOf(sc);saveBest(st.s,sc);
+  const msg=sc>=90?'אלופים! שלטתם בשלב הזה 👑':sc>=70?'עבודה טובה! עוד קצת תרגול – ותגיעו ל-3 כוכבים 💪':'כל טעות היא שלב בלמידה 💙 כדאי לראות שוב את הדוגמה ולנסות שוב.';
+  $('#app').innerHTML=`<div class="scr">${topBar(`שלב ${st.s+1} · ${STAGES[st.s].name}`)}
+   <div class="card end"><div class="stars">${'⭐'.repeat(n)}${'☆'.repeat(3-n)}</div><div class="big">${sc}</div><div style="color:#64748b">מתוך 100</div>
+    <div style="font-size:18px;font-weight:700">${msg}</div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-top:6px">
+     ${st.s<6?`<button class="go" onclick="intro(${st.s+1})">לשלב הבא ←</button>`:''}
+     <button class="go blue" onclick="${sc<70?`intro(${st.s})`:`start(${st.s})`}">${sc<70?'לראות דוגמה ולנסות שוב 🔁':'לשחק שוב 🔁'}</button>
+     <button class="go ghost" onclick="home()">לתפריט</button></div>
+    <div style="font-size:12px;color:#94a3b8">ערכה: רוני מודן · שחקים</div></div></div>`;
+  if(n)confetti();
+}
+function fullScr(){const d=document.documentElement;try{(d.requestFullscreen||d.webkitRequestFullscreen).call(d)}catch(e){}}
+function share(){const u=location.href.startsWith('http')?location.href:'';window.open('https://wa.me/?text='+encodeURIComponent('👑 מלך הזוויות – תרגול שמות זוויות, סכום והפרש\n'+u),'_blank')}
+home();
+</script>
+</body>
+</html>
