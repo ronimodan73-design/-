@@ -139,7 +139,7 @@ function svgFan(f,h={}){
   secs.forEach(q=>s+=secPath(f,q));
   f.dirs.forEach((d,i)=>{const p=P(d,R),hr=(h.rays||[]).find(r=>r.i==i);
     s+=`<line x1="0" y1="0" x2="${p[0]}" y2="${p[1]}" stroke="${hr?hr.c:'#1e293b'}" stroke-width="${hr?5.5:3}" stroke-linecap="round"${hr?' class="pop"':''}/>`});
-  if(h.vals)f.secs.forEach((v,k)=>{if(h.vals===true||h.vals.includes(k)){const p=P((f.dirs[k]+f.dirs[k+1])/2,96);s+=`<text x="${p[0]}" y="${p[1]}" class="vl">${v}°</text>`}});
+  if(h.vals)f.secs.forEach((v,k)=>{if(h.vals===true||h.vals.includes(k)){const p=P((f.dirs[k]+f.dirs[k+1])/2,96);s+=`<text x="${p[0]}" y="${p[1]}" class="vl"${h.valc?` style="fill:${C[k%6]}"`:''}>${v}°</text>`}});
   secs.forEach(q=>s+=secLab(f,q));
   f.L.forEach((L,i)=>{const p=lp[i],hr=(h.rays||[]).find(r=>r.i==i);s+=`<text x="${p[0]}" y="${p[1]}" class="lt"${hr?` style="fill:${hr.c}"`:''}>${L}</text>`});
   s+=`<circle cx="0" cy="0" r="4.5" fill="#1e293b"/>`;
@@ -184,6 +184,9 @@ function nameQ(f,i,j,text,hl,o={}){
     diag:o.diag};
 }
 function numQ(f,text,ans,hint1,sol,o={}){return {kind:'num',f,text,ans,hl:o.hl||{},hint1,sol,okHl:sol[sol.length-1].hl,diag:o.diag}}
+const cn=(f,i,j,rev,c)=>`<span style="color:${c}">∢${nm(f,i,j,rev)}</span>`;
+const gc=(f,iv,c)=>`<span class="m" dir="ltr" style="color:${c}">∢${nm(f,iv[0],iv[1],iv[2])} = ${val(f,iv[0],iv[1])}°</span>`;
+const Q=(iv)=>S(iv[0],iv[1],GOLD,{o:.12,dash:1,sw:3,r:90,lab:'?',lr:104,lc:'#a16207'});
 const giv=(f,iv)=>m(`∢${nm(f,iv[0],iv[1],iv[2])} = ${val(f,iv[0],iv[1])}°`);
 const eq=(f,t,a,op,b)=>m(`∢${nm(f,t[0],t[1])} = ∢${nm(f,a[0],a[1])} ${op} ∢${nm(f,b[0],b[1])} = ${val(f,a[0],a[1])} ${op} ${val(f,b[0],b[1])} = ${val(f,t[0],t[1])}°`);
 
@@ -231,7 +234,8 @@ function genS3(k){
     {t:`1️⃣ צובעים כל זווית: ${tn.map((t,x)=>cw(C[x],'∢'+nm(f,t[0],t[1],t[2]))).join(' + ')}`,hl},
     {t:`2️⃣ הקרן המשותפת (${m(inner.join(', '))}) נבלעת ${cw(BLUE,'בפנים')}. הקרניים ${cw(GREEN,'בקצוות')}: ${m(f.L[a])} ו-${m(f.L[c])}`,hl:{...hl,rays:[{i:a,c:GREEN},{i:c,c:GREEN}]}},
     {t:`3️⃣ ${m(expr+' = ∢'+nm(f,a,c))} – זווית אחת גדולה ${cw(GOLD,'(בצהוב)')}`,hl:fin}];
-  return nameQ(f,a,c,`רשמו בזווית אחת (שלוש אותיות):<br>${m(expr+' = ?')}`,hl,{sol,okHl:fin,
+  const cexpr=tn.map((t,x)=>cn(f,t[0],t[1],t[2],C[x])).join(' + ');
+  return nameQ(f,a,c,`רשמו בזווית אחת (שלוש אותיות):<br>${m(cexpr+' = ?')}`,hl,{sol,okHl:fin,
     hint1:{t:`כשמחברים זוויות צמודות, הקרן המשותפת ${cw(BLUE,'נבלעת בפנים')}. הזווית החדשה הולכת מהקרן הראשונה עד הקרן ${cw(GREEN,'האחרונה')}.`,hl:{...hl,rays:[{i:a,c:GREEN},{i:c,c:GREEN}]}},
     diag:iv=>terms.some(t=>same(t,iv))?`הזווית שכתבת היא רק ${cw(RED,'חלק אחד')} מהסכום. צריך את ${cw(GOLD,'כל החלקים יחד')} – מהקרן הראשונה עד האחרונה.`:null});
 }
@@ -241,15 +245,16 @@ function genS4(k){
   const g=shuffle(f.secs.map((_,x)=>[x,x+1,Math.random()<.5]));
   const parts=[];for(let x=a;x<c;x++)parts.push([x,x+1]);
   const showVals=k<10;
-  const ph=parts.map((p,x)=>S(p[0],p[1],C[x],{r:50}));
-  const text=`<span class="giv">נתון: ${g.map(v=>giv(f,v)).join(' , ')}</span><br>חשבו: ${m('∢'+nm(f,a,c,Math.random()<.5)+' = ?')}`;
+  const ph=parts.map(p=>S(p[0],p[1],C[p[0]%6],{r:50}));
+  const init={vals:true,valc:true,secs:[...f.secs.map((_,x)=>S(x,x+1,C[x%6],{o:.22,r:44})),Q([a,c])]};
+  const text=`<span class="giv">נתון: ${g.map(v=>gc(f,v,C[v[0]%6])).join(' , ')}</span><br>חשבו: ${m(`<span style="color:#a16207">∢${nm(f,a,c,Math.random()<.5)}</span> = ?`)}`;
   const sol=[
     {t:`1️⃣ מסמנים את ${A(f,a,c)} – מהקרן ${m(f.L[a])} עד הקרן ${m(f.L[c])}`,hl:{vals:true,secs:[S(a,c,GOLD,{o:.3,r:74,cls:'pop'})],rays:[{i:a,c:GREEN},{i:c,c:GREEN}]}},
-    {t:`2️⃣ החלקים שבתוכה: ${parts.map((p,x)=>cw(C[x],'∢'+nm(f,p[0],p[1]))).join(' + ')}`,hl:{vals:true,secs:ph}},
+    {t:`2️⃣ החלקים שבתוכה: ${parts.map(p=>cw(C[p[0]%6],'∢'+nm(f,p[0],p[1]))).join(' + ')}`,hl:{vals:true,valc:true,secs:ph}},
     {t:`3️⃣ ${m(`∢${nm(f,a,c)} = ${parts.map(p=>val(f,p[0],p[1])).join(' + ')} = ${ans}°`)}`,hl:{vals:true,secs:[...ph,S(a,c,GOLD,{o:.45,r:74,cls:'pop',lab:ans+'°',lr:116,lc:'#a16207'})]}}];
   const tot=sum(f.secs);
   return numQ(f,text,ans,{t:`הזווית ${A(f,a,c)} ${cw(GOLD,'צבועה בצהוב')}. היא בנויה מ-${parts.length} חלקים צבעוניים – ${cw(GREEN,'חברו רק אותם')}!`,hl:{vals:true,secs:[S(a,c,GOLD,{o:.25,r:74}),...ph.map(s=>({...s,cls:'blink'}))]}},sol,
-    {hl:showVals?{vals:true}:{},diag:v=>v===tot&&tot!==ans?`חיברת את ${cw(RED,'כל')} הזוויות בשרטוט, אבל רק חלק מהן נמצאות בתוך ${A(f,a,c)}. ${cw(GREEN,'חברו רק את החלקים שבתוכה')}.`:null});
+    {hl:init,diag:v=>v===tot&&tot!==ans?`חיברת את ${cw(RED,'כל')} הזוויות בשרטוט, אבל רק חלק מהן נמצאות בתוך ${A(f,a,c)}. ${cw(GREEN,'חברו רק את החלקים שבתוכה')}.`:null});
 }
 function genS5(k){
   const n=k<8?3:(k<15?4:5),f=makeFan(n,{min:22,max:40});
@@ -269,29 +274,29 @@ function genS5(k){
     {t:`1️⃣ הזווית הגדולה ${cw(BLUE,bigN)} – בכחול`,hl:{secs:[{...big,cls:'pop'}]}},
     {t:`2️⃣ מורידים את ${tn.map(x=>cw(RED,x)).join(' ו-')} (באדום) – ${cw(RED,'היא נעלמת')}`,hl:{secs:[big,...red.map(s=>({...s,cls:'gone'}))]}},
     {t:`3️⃣ נשארה: ${m(expr+' = ∢'+nm(f,res[0],res[1]))}`,hl:fin}];
-  return nameQ(f,res[0],res[1],`רשמו בזווית אחת (שלוש אותיות) את ההפרש:<br>${m(expr+' = ?')}`,hl,{sol,okHl:fin,
+  return nameQ(f,res[0],res[1],`רשמו בזווית אחת (שלוש אותיות) את ההפרש:<br>${m(`<span style="color:${BLUE}">${bigN}</span> − `+tn.map(x=>`<span style="color:${RED}">${x}</span>`).join(' − ')+' = ?')}`,hl,{sol,okHl:fin,
     hint1:{t:`הזווית ${cw(RED,'האדומה')} יורדת – היא נעלמת! איזה חלק מהזווית ${cw(BLUE,'הכחולה')} נשאר?`,hl:{secs:[big,...red.map(s=>({...s,cls:'gone'}))]}},
     diag:iv=>terms.some(t=>same(t,iv))?`את הזווית שכתבת ${cw(RED,'מורידים')} – היא נעלמת! מה ${cw(GOLD,'נשאר')} אחרי שמורידים אותה?`:(same(iv,[a,c])?`זו הזווית ${cw(BLUE,'הגדולה')}, לפני שהורדנו ממנה. מה נשאר אחרי שמורידים את ${tn.map(x=>cw(RED,x)).join(' ו-')}?`:null)});
 }
 function diffHint(f,t){return {t:`הזווית שמחפשים ${cw(GOLD,'צבועה בצהוב')}. חפשו זווית ${cw(BLUE,'גדולה')} שמכילה אותה – ומה צריך ${cw(RED,'להוריד')} ממנה?`,hl:{secs:[S(t[0],t[1],GOLD,{o:.5,r:56,cls:'blink'})]}}}
 function genS6(k){
-  let f,g,t,sol;
+  let f,g,t,sol,cm;
   const Y=(iv)=>S(iv[0],iv[1],GOLD,{o:.55,r:50,cls:'pop',lab:val(f,iv[0],iv[1])+'°',lr:112,lc:'#a16207'});
   const B=(iv,o={})=>S(iv[0],iv[1],BLUE,Object.assign({o:.22,r:72},o)), Rd=(iv,o={})=>S(iv[0],iv[1],RED,Object.assign({o:.45,r:40},o));
   if(k<8){
     f=makeFan(3,{min:15,max:45});const part=Math.random()<.5?[1,2]:[0,1];t=part[0]===1?[0,1]:[1,2];
-    g=[[0,2,Math.random()<.5],[...part,Math.random()<.5]];
+    g=[[0,2,Math.random()<.5],[...part,Math.random()<.5]];cm={'0,2':BLUE,[part.join()]:RED};
     sol=[{t:`1️⃣ הזווית הגדולה ${cw(BLUE,'∢'+nm(f,0,2))} בנויה משני חלקים`,hl:{secs:[B([0,2],{cls:'pop'})]}},
          {t:`2️⃣ מורידים ממנה את ${cw(RED,'∢'+nm(f,...part))}`,hl:{secs:[B([0,2]),Rd(part,{cls:'gone'})]}},
          {t:`3️⃣ ${eq(f,t,[0,2],'−',part)}`,hl:{secs:[B([0,2],{o:.08}),Y(t)]}}];
   }else if(k<14){
-    f=makeFan(4,{min:18,max:38});g=shuffle([[1,3,Math.random()<.5],[0,2,Math.random()<.5],[0,1,Math.random()<.5]]);
+    f=makeFan(4,{min:18,max:38});g=shuffle([[1,3,Math.random()<.5],[0,2,Math.random()<.5],[0,1,Math.random()<.5]]);cm={'1,3':C[2],'0,2':BLUE,'0,1':RED};
     t=k%2?[1,2]:[2,3];
     const s1={t:`1️⃣ ${eq(f,[1,2],[0,2],'−',[0,1])}`,hl:{secs:[B([0,2]),Rd([0,1],{cls:'gone'}),Y([1,2])]}};
     sol=t[0]===1?[{t:`1️⃣ הזווית ${cw(BLUE,'∢'+nm(f,0,2))} – מורידים ממנה את ${cw(RED,'∢'+nm(f,0,1))}`,hl:{secs:[B([0,2],{cls:'pop'}),Rd([0,1],{cls:'gone'})]}},{...s1,t:s1.t.replace('1️⃣','2️⃣')}]
       :[s1,{t:`2️⃣ ${eq(f,[2,3],[1,3],'−',[1,2])}`,hl:{secs:[B([1,3]),Rd([1,2],{cls:'gone'}),Y([2,3])]}}];
   }else{
-    f=makeFan(4,{min:18,max:38});g=shuffle([[0,1,Math.random()<.5],[0,2,Math.random()<.5],[1,3,Math.random()<.5]]);
+    f=makeFan(4,{min:18,max:38});g=shuffle([[0,1,Math.random()<.5],[0,2,Math.random()<.5],[1,3,Math.random()<.5]]);cm={'0,1':RED,'0,2':BLUE,'1,3':C[2]};
     t=pick([[1,2],[2,3],[0,3]]);
     const s1={t:`1️⃣ ${eq(f,[1,2],[0,2],'−',[0,1])}`,hl:{secs:[B([0,2]),Rd([0,1],{cls:'gone'}),Y([1,2])]}};
     if(t[0]===1)sol=[{t:`1️⃣ הזווית ${cw(BLUE,'∢'+nm(f,0,2))} – מורידים ממנה את ${cw(RED,'∢'+nm(f,0,1))}`,hl:{secs:[B([0,2],{cls:'pop'}),Rd([0,1],{cls:'gone'})]}},{...s1,t:s1.t.replace('1️⃣','2️⃣')}];
@@ -300,10 +305,11 @@ function genS6(k){
               {t:`2️⃣ כאן ${cw(GREEN,'מחברים')}: ${eq(f,[0,3],[0,1],'+',[1,3])}`,hl:{secs:[S(0,1,C[2],{r:44}),S(1,3,C[4],{r:56}),Y([0,3])]}}];
   }
   const ans=val(f,t[0],t[1]);
-  const text=`<span class="giv">נתון: ${g.map(v=>giv(f,v)).join(' , ')}</span><br>חשבו: ${m('∢'+nm(f,t[0],t[1],Math.random()<.5)+' = ?')}`;
+  const text=`<span class="giv">נתון: ${g.map(v=>gc(f,v,cm[v[0]+','+v[1]])).join(' , ')}</span><br>חשבו: ${m(`<span style="color:#a16207">∢${nm(f,t[0],t[1],Math.random()<.5)}</span> = ?`)}`;
+  const init={secs:[...g.map(v=>S(v[0],v[1],cm[v[0]+','+v[1]],{o:.2,r:30+16*(v[1]-v[0])})),Q(t)]};
   const gsum=sum(g.map(v=>val(f,v[0],v[1])));
   return numQ(f,text,ans,t[0]===0&&t[1]===3?{t:`הזווית שמחפשים ${cw(GOLD,'צבועה בצהוב')}. מאילו זוויות נתונות היא בנויה? ${cw(GREEN,'חברו אותן')}.`,hl:{secs:[S(0,3,GOLD,{o:.5,r:56,cls:'blink'})]}}:diffHint(f,t),sol,
-    {diag:v=>v===gsum?`חיברת את ${cw(RED,'כל')} המספרים הנתונים. כאן צריך לחשוב: הזווית ${cw(GOLD,'הצהובה')} היא חלק מזווית גדולה – ${cw(RED,'מחסרים')}!`:null});
+    {hl:init,diag:v=>v===gsum?`חיברת את ${cw(RED,'כל')} המספרים הנתונים. כאן צריך לחשוב: הזווית ${cw(GOLD,'הצהובה')} היא חלק מזווית גדולה – ${cw(RED,'מחסרים')}!`:null});
 }
 function genS7(k){
   if(k%2===0){
@@ -321,6 +327,9 @@ function genS7(k){
     }
     const {terms,a,c}=r;
     const expr=terms.map((t,x)=>(x?(t.s>0?' + ':' − '):'')+'∢'+nm(f,t.i,t.j,t.rev)).join('');
+    const tc=(t,x)=>t.s<0?RED:C[x===0?0:2];
+    const cexpr=terms.map((t,x)=>(x?(t.s>0?' + ':' − '):'')+cn(f,t.i,t.j,t.rev,tc(t,x))).join('');
+    const init={secs:terms.map((t,x)=>S(t.i,t.j,tc(t,x),{o:t.s<0?.4:.22,r:t.s<0?30+12*x:40+14*x,dash:t.s<0?1:0}))};
     const sol=[];let acc=[];
     terms.forEach((t,x)=>{
       const tn='∢'+nm(f,t.i,t.j,t.rev);
@@ -329,15 +338,16 @@ function genS7(k){
     });
     const fin={secs:[S(a,c,GOLD,{o:.55,r:52,cls:'pop'})],rays:[{i:a,c:GREEN},{i:c,c:GREEN}]};
     sol.push({t:`✅ נשאר צבוע: ${m(expr+' = ∢'+nm(f,a,c))}`,hl:fin});
-    return nameQ(f,a,c,`רשמו בזווית אחת (שלוש אותיות):<br>${m(expr+' = ?')}`,{},{sol,okHl:fin,
+    return nameQ(f,a,c,`רשמו בזווית אחת (שלוש אותיות):<br>${m(cexpr+' = ?')}`,init,{sol,okHl:fin,
       hint1:{t:`עברו איבר אחרי איבר: כל ${cw(GREEN,'+')} צובע חלק, כל ${cw(RED,'−')} מוחק חלק. מה נשאר צבוע בסוף?`,hl:sol[0].hl},
       diag:iv=>terms.some(t=>same([t.i,t.j],iv))?`כתבת את אחד האיברים של התרגיל. צריך את ${cw(GOLD,'התוצאה')} – מה נשאר אחרי כל ה-+ וה-−?`:null});
   }
-  let f,text,t,sol;
+  let f,text,t,sol,cm,gs;
   const Y=(iv)=>S(iv[0],iv[1],GOLD,{o:.55,r:50,cls:'pop',lab:val(f,iv[0],iv[1])+'°',lr:112,lc:'#a16207'});
   if(k%4===1){ // like q19
     f=makeFan(4,{min:14,max:36});t=pick([[1,2],[1,3],[0,3]]);
-    text=`<span class="giv">נתון: ${shuffle([[0,2,0],[0,1,1],[2,3,0]]).map(v=>giv(f,v)).join(' , ')}</span><br>חשבו: ${m('∢'+nm(f,t[0],t[1],Math.random()<.5)+' = ?')}`;
+    cm={'0,2':BLUE,'0,1':RED,'2,3':C[2]};gs=[[0,2],[0,1],[2,3]];
+    text=`<span class="giv">נתון: ${shuffle([[0,2,0],[0,1,1],[2,3,0]]).map(v=>gc(f,v,cm[v[0]+','+v[1]])).join(' , ')}</span><br>חשבו: ${m(`<span style="color:#a16207">∢${nm(f,t[0],t[1],Math.random()<.5)}</span> = ?`)}`;
     const s1={t:`1️⃣ ${eq(f,[1,2],[0,2],'−',[0,1])}`,hl:{secs:[S(0,2,BLUE,{o:.22,r:72}),S(0,1,RED,{o:.45,r:40,cls:'gone'}),Y([1,2])]}};
     if(t[1]===2)sol=[{t:`1️⃣ הזווית ${cw(BLUE,'∢'+nm(f,0,2))} – מורידים ממנה את ${cw(RED,'∢'+nm(f,0,1))}`,hl:{secs:[S(0,2,BLUE,{o:.22,r:72,cls:'pop'}),S(0,1,RED,{o:.45,r:40,cls:'gone'})]}},{...s1,t:s1.t.replace('1️⃣','2️⃣')}];
     else if(t[0]===1)sol=[s1,{t:`2️⃣ ${eq(f,[1,3],[1,2],'+',[2,3])}`,hl:{secs:[S(1,2,C[2],{r:44}),S(2,3,C[4],{r:44}),Y([1,3])]}}];
@@ -345,7 +355,8 @@ function genS7(k){
   }else{ // like q21
     const a=rnd(18,40),b=rnd(20,50);
     f=makeFan(4,{secs:[a,b,a]});t=pick([[1,2],[0,2],[0,3]]);const tt=a+b;
-    text=`<span class="giv">נתון: ${m(`∢${nm(f,0,1)} = ∢${nm(f,2,3,1)} = ${a}°`)} , ${giv(f,[1,3,1])}</span><br>חשבו: ${m('∢'+nm(f,t[0],t[1],Math.random()<.5)+' = ?')}`;
+    cm={'0,1':RED,'2,3':RED,'1,3':BLUE};gs=[[0,1],[2,3],[1,3]];
+    text=`<span class="giv">נתון: ${m(`<span style="color:${RED}">∢${nm(f,0,1)} = ∢${nm(f,2,3,1)} = ${a}°</span>`)} , ${gc(f,[1,3,1],BLUE)}</span><br>חשבו: ${m(`<span style="color:#a16207">∢${nm(f,t[0],t[1],Math.random()<.5)}</span> = ?`)}`;
     const s1={t:`1️⃣ ${eq(f,[1,2],[1,3],'−',[2,3])}`,hl:{secs:[S(1,3,BLUE,{o:.22,r:72}),S(2,3,RED,{o:.45,r:40,cls:'gone'}),Y([1,2])]}};
     if(t[0]===1)sol=[{t:`1️⃣ הזווית ${cw(BLUE,'∢'+nm(f,1,3))} – מורידים ממנה את ${cw(RED,'∢'+nm(f,2,3))}`,hl:{secs:[S(1,3,BLUE,{o:.22,r:72,cls:'pop'}),S(2,3,RED,{o:.45,r:40,cls:'gone'})]}},{...s1,t:s1.t.replace('1️⃣','2️⃣')}];
     else if(t[1]===2)sol=[s1,{t:`2️⃣ ${eq(f,[0,2],[0,1],'+',[1,2])}`,hl:{secs:[S(0,1,C[2],{r:44}),S(1,2,C[4],{r:44}),Y([0,2])]}}];
@@ -353,7 +364,7 @@ function genS7(k){
     void tt;
   }
   const ans=val(f,t[0],t[1]);
-  return numQ(f,text,ans,{t:`הזווית שמחפשים ${cw(GOLD,'צבועה בצהוב')}. היא ${cw(GREEN,'חלק')} מזווית נתונה, או ${cw(GREEN,'מורכבת')} מזוויות נתונות? סמנו בעיניים ואז חשבו.`,hl:{secs:[S(t[0],t[1],GOLD,{o:.5,r:56,cls:'blink'})]}},sol);
+  return numQ(f,text,ans,{t:`הזווית שמחפשים ${cw(GOLD,'צבועה בצהוב')}. היא ${cw(GREEN,'חלק')} מזווית נתונה, או ${cw(GREEN,'מורכבת')} מזוויות נתונות? סמנו בעיניים ואז חשבו.`,hl:{secs:[S(t[0],t[1],GOLD,{o:.5,r:56,cls:'blink'})]}},sol,{hl:{secs:[...gs.map(v=>S(v[0],v[1],cm[v.join()],{o:.2,r:30+16*(v[1]-v[0])})),Q(t)]}});
 }
 
 const STAGES=[
