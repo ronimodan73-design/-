@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<title>הרביע הראשון · שטח והיקף · כיתה ז׳</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#1f2937;--mute:#6b7280;--acc:#4f46e5;--acc2:#eef2ff;--ok:#15803d;--okbg:#ecfdf5;--bad:#b91c1c;--badbg:#fef2f2;--hint:#92400e;--hintbg:#fffbeb;--line:#e5e7eb;--rem:#7c3aed;--rembg:#f5f3ff}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:19px;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:10px 14px 50px}
+.m{direction:ltr;unicode-bidi:isolate;display:inline-block;font-weight:600;white-space:nowrap}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-weight:700;line-height:1.15;margin:0 3px;direction:ltr}
+.fr i{font-style:normal;padding:0 4px}.fr i:first-child{border-bottom:2px solid currentColor}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 10px}
+header h1{font-size:21px;margin:0}
+.ib{min-width:48px;min-height:48px;border:0;background:var(--card);border-radius:12px;padding:8px 11px;font-size:18px;box-shadow:0 1px 3px #0001;cursor:pointer}
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 2px 10px #0000000d;margin:12px 0;animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px 16px;font-size:19px;font-family:inherit;cursor:pointer;background:var(--acc);color:#fff;font-weight:600;margin-top:10px}
+.btn.sec{background:var(--acc2);color:var(--acc)}
+.btn.rem{background:var(--rem)}
+.btn:active{transform:scale(.98)}
+.lvl{display:flex;align-items:center;gap:12px;text-align:right;background:var(--card);color:var(--ink);border:2px solid var(--line);font-weight:400}
+.lvl .e{font-size:22px;min-width:78px;text-align:center;white-space:nowrap;letter-spacing:-2px}
+.lvl b{display:block;font-size:19px}
+.lvl small{color:var(--mute);font-size:15px}
+.lvl .sc{margin-inline-start:auto;font-weight:700;color:var(--acc);white-space:nowrap}
+.top{display:flex;justify-content:space-between;color:var(--mute);font-size:16px}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:linear-gradient(270deg,#818cf8,#4f46e5);border-radius:9px;transition:width .4s}
+.qt{font-size:20px;font-weight:600}
+.opts{display:grid;gap:9px;margin-top:12px}
+.op{min-height:52px;border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px;font-size:18px;font-family:inherit;text-align:right;cursor:pointer;color:var(--ink)}
+.op:disabled{opacity:.45}
+.op.good{border-color:var(--ok);background:var(--okbg);opacity:1}
+.op.wrong{border-color:var(--bad);background:var(--badbg);animation:sh .3s}
+@keyframes sh{25%{transform:translateX(6px)}75%{transform:translateX(-6px)}}
+.num{display:flex;gap:8px;margin-top:12px}
+.num input,.rat input{min-height:52px;font-size:22px;padding:10px;border:2px solid var(--line);border-radius:14px;text-align:center;font-family:inherit;direction:ltr;min-width:0}
+.num input{flex:1}
+.num .btn{width:auto;margin:0;padding:0 22px}
+.rat{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-top:12px;direction:ltr}
+.rat label{display:flex;flex-direction:column;align-items:center;font-size:15px;color:var(--mute);width:120px}
+.rat input{width:100%}
+.rat b{font-size:30px;padding-bottom:6px}
+.fb{border-radius:14px;padding:12px 14px;margin-top:12px;animation:up .3s}
+.fb.ok{background:var(--okbg);color:#064e3b}
+.fb.hi{background:var(--hintbg);color:var(--hint)}
+.fb.no{background:var(--badbg);color:#7f1d1d}
+.diag{background:var(--rembg);border-inline-start:4px solid var(--rem);border-radius:10px;padding:8px 12px;margin-top:10px;color:#4c1d95;font-size:17px}
+.remb{background:var(--rembg);color:var(--rem);border-radius:12px;padding:6px 12px;font-size:16px;font-weight:600;margin-bottom:6px}
+.steps div{opacity:0;animation:up .4s forwards;padding:6px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;gap:10px;color:var(--ink)}
+.steps small{color:#15803d;font-size:15px;text-align:left;white-space:nowrap}
+.fig{width:100%;max-width:330px;max-height:230px;display:block;margin:8px auto 0;direction:ltr}
+.fig .pl{fill:#eef2ff;stroke:#334155;stroke-width:2.6;stroke-linejoin:round}
+.fig .ln{stroke:#334155;stroke-width:2.6;stroke-linecap:round;fill:none}
+.fig .wall{stroke:#78716c;stroke-width:7}
+.fig .dash{stroke:#0891b2;stroke-width:2.4;stroke-dasharray:7 5;fill:none}
+.fig .ra{fill:none;stroke:#e11d48;stroke-width:2}
+.fig text{font-family:Arial,sans-serif;text-anchor:middle;dominant-baseline:middle;font-weight:700;font-size:17px;fill:#0f766e}
+.fig text.q{fill:#e11d48;font-size:20px}
+.fig text.w{fill:#57534e;font-size:15px;font-weight:600}
+.fig .pl,.fig .ln{stroke-dasharray:1400;stroke-dashoffset:1400;animation:dr 1s ease forwards}
+.fig text,.fig .ra,.fig .dash,.fig circle{opacity:0;animation:fd .4s .6s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+@keyframes fd{to{opacity:1}}
+.dots{display:flex;justify-content:center;gap:6px;margin:8px 0}
+.dots i{width:9px;height:9px;border-radius:9px;background:var(--line)}
+.dots i.on{background:var(--acc);width:22px}
+.nav{display:flex;gap:8px}.nav .btn{flex:1;padding:13px 6px;font-size:17px}
+.big{font-size:56px;font-weight:800;text-align:center;color:var(--acc);line-height:1.1}
+.stars{text-align:center;font-size:34px;letter-spacing:4px}
+.center{text-align:center}
+.box{background:var(--acc2);border-radius:12px;padding:10px 12px;margin:8px 0}
+.warn{background:var(--badbg);border-radius:12px;padding:10px 12px;margin:8px 0;color:#7f1d1d}
+.rv{opacity:0;animation:up .5s forwards}
+table{width:100%;border-collapse:collapse;font-size:17px}
+td,th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
+.name{width:100%;font-size:19px;padding:10px;border:2px solid var(--line);border-radius:12px;font-family:inherit}
+.burst{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+.burst span{position:absolute;top:-30px;font-size:26px;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(300deg);opacity:.2}}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;border-radius:12px;padding:10px 16px;font-size:16px;z-index:10;animation:up .3s}
+footer{text-align:center;color:var(--mute);font-size:14px;margin-top:20px}
+.c1{color:#dc2626;font-weight:700}.c2{color:#2563eb;font-weight:700}
+.rat label:first-child span{color:#dc2626;font-weight:700}.rat label:last-child span{color:#2563eb;font-weight:700}
+.rat label:first-child input{border-color:#fca5a5}.rat label:last-child input{border-color:#93c5fd}
+.fig g.gp{opacity:0;animation:fd .45s forwards}
+.hb{display:flex;gap:8px;margin-top:10px}.hb .btn{margin:0;padding:10px 6px;font-size:16px}
+.help{background:#fffbeb;border:2px solid #fde68a;border-radius:14px;padding:10px 12px;margin-top:10px}
+.ht{font-weight:700;color:#92400e;margin-bottom:4px}
+.hs{padding:7px 0;border-bottom:1px dashed #fde68a}.hs.new{animation:up .4s}
+.gridfig{max-width:340px;max-height:340px}
+.fig line.gr{stroke:#e2e8f0;stroke-width:1}.fig line.ax{stroke:#334155;stroke-width:2.2}.fig .ah{fill:#334155}
+.fig text.tk{font-size:11px;fill:#64748b;font-weight:600}.fig text.axn{font-size:17px;font-style:italic}
+.fig text.pn{fill:#111827;font-size:16px}.fig text.lb{font-size:16px}
+.fig .pd{fill:none;stroke:#94a3b8;stroke-width:2;stroke-dasharray:6 5}
+.fig .pl{fill:#ccfbf1;fill-opacity:.7}
+.fig line.sg{stroke-width:4;stroke-linecap:round;opacity:0;animation:fd .4s .5s forwards}
+.fig line.wk{stroke-width:4.5;stroke-linecap:round;stroke-dasharray:400;stroke-dashoffset:400;animation:dr .9s .3s forwards}
+#tapsvg{cursor:crosshair;touch-action:manipulation;border:2px dashed #a78bfa;border-radius:12px}
+.pt{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-top:12px;direction:ltr}
+.pt b{font-size:34px;padding-bottom:4px}.pt label{display:flex;flex-direction:column;align-items:center;font-size:17px;font-style:italic;font-weight:700;width:100px}
+.pt input{width:100%;min-height:52px;font-size:22px;padding:10px;border:2px solid var(--line);border-radius:14px;text-align:center;font-family:inherit}
+.pt .px span{color:#dc2626}.pt .py span{color:#2563eb}.pt .px input{border-color:#fca5a5}.pt .py input{border-color:#93c5fd}
+.steps svg.fig{max-width:230px;max-height:230px}
+.code div{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line)}.code .ce{font-size:24px;min-width:32px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div><h1>📍 הרביע הראשון</h1><div style="font-size:15px;color:var(--acc);font-weight:700">ערכה: רוני מודן · שחקים</div></div><div><button class="ib" onclick="home()" title="בית">🏠</button> <button class="ib" onclick="fs()" title="מסך מלא">⛶</button></div></header>
+<main id="app"></main>
+<footer>ערכה: רוני מודן · שחקים · כיתה ז׳</footer>
+</div>
+<div class="burst" id="burst"></div>
+<script>
+// ================= כלים =================
+const $=s=>document.querySelector(s);
+const app=()=>({set innerHTML(h){$('#app').innerHTML=h.replace(/(ניצב|יתר)²/g,'<span class="m">$1²</span>')}});
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const M=s=>`<span class="m">${s}</span>`;
+const RT=(a,b)=>M(a+' : '+b);
+const fr=(a,b)=>`<span class="fr"><i>${a}</i><i>${b}</i></span>`;
+const sq=n=>n+'²';
+function cop(lo,hi,dist=true){let a,b;do{a=ri(lo,hi);b=ri(lo,hi)}while(gcd(a,b)!==1||(dist&&a===b)||(a===1&&b===1));return[a,b]}
+// בחירה מרובה: right = html, wrongs = [[html,msg],...]
+function mc(right,wrongs){const all=[{h:right,r:1}];wrongs.forEach(w=>{if(!all.some(x=>x.h===w[0]))all.push({h:w[0],m:w[1]})});const o=shuffle(all);return{kind:'mc',opts:o.map(x=>x.h),msgs:o.map(x=>x.m||null),ans:o.findIndex(x=>x.r)}}
+function fs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+function burst(){const b=$('#burst');for(let i=0;i<26;i++){const s=document.createElement('span');s.textContent=pick(['⭐','🎉','✨','💜','🏆']);s.style.left=Math.random()*100+'%';s.style.animationDelay=Math.random()*.6+'s';b.appendChild(s);setTimeout(()=>s.remove(),2600)}}
+// ---- שמירת התקדמות (רק במכשיר של התלמיד) ----
+let DB={name:'',best:{}};
+try{const s=localStorage.getItem('rm_quad7_v1');if(s)DB=Object.assign(DB,JSON.parse(s))}catch(e){}
+function save(){try{localStorage.setItem('rm_quad7_v1',JSON.stringify(DB))}catch(e){}}
+function share(){const u=location.href.split('#')[0];if(navigator.share){navigator.share({title:'הרביע הראשון – תרגול',url:u}).catch(()=>{})}else if(navigator.clipboard){navigator.clipboard.writeText(u).then(()=>toast('הקישור הועתק ✔'),()=>prompt('העתיקו את הקישור:',u))}else prompt('העתיקו את הקישור:',u)}
+
+const c1=x=>`<span class="c1">${x}</span>`,c2=x=>`<span class="c2">${x}</span>`;
+const RC=(a,b)=>`<span class="m"><span class="c1">${a}</span> : <span class="c2">${b}</span></span>`;
+// ================= רשת ושרטוטים: רביע ראשון =================
+const U=24,OX=44,OY=286,NG=10;
+const gx=x=>OX+x*U,gy=y=>OY-y*U;
+const RED='#dc2626',BLUE='#2563eb';
+const PT=(x,y)=>`<span class="m">(<span class="c1">${x}</span> , <span class="c2">${y}</span>)</span>`;
+const L=t=>`<b class="m">${t}</b>`;
+const LP=(l,x,y)=>`<span class="m"><b>${l}</b>(<span class="c1">${x}</span> , <span class="c2">${y}</span>)</span>`;
+const LBL='ABCDEKMNPR';
+function grid(o={}){let g='';
+ for(let i=0;i<=NG;i++)g+=`<line class="gr" x1="${gx(i)}" y1="${gy(0)}" x2="${gx(i)}" y2="${gy(NG)}"/><line class="gr" x1="${gx(0)}" y1="${gy(i)}" x2="${gx(NG)}" y2="${gy(i)}"/>`;
+ g+=`<line class="ax" x1="${gx(0)}" y1="${gy(0)}" x2="${gx(NG)+16}" y2="${gy(0)}"/><line class="ax" x1="${gx(0)}" y1="${gy(0)}" x2="${gx(0)}" y2="${gy(NG)-16}"/>`;
+ g+=`<polygon class="ah" points="${gx(NG)+22},${gy(0)} ${gx(NG)+12},${gy(0)-5} ${gx(NG)+12},${gy(0)+5}"/><polygon class="ah" points="${gx(0)},${gy(NG)-22} ${gx(0)-5},${gy(NG)-12} ${gx(0)+5},${gy(NG)-12}"/>`;
+ for(let i=1;i<=NG;i++)g+=`<text class="tk" x="${gx(i)}" y="${gy(0)+15}">${i}</text><text class="tk" x="${gx(0)-13}" y="${gy(i)}">${i}</text>`;
+ g+=`<text class="tk" x="${gx(0)-11}" y="${gy(0)+13}">0</text><text class="axn" x="${gx(NG)+20}" y="${gy(0)+17}" style="fill:${RED}">x</text><text class="axn" x="${gx(0)-16}" y="${gy(NG)-18}" style="fill:${BLUE}">y</text>`;
+ (o.poly||[]).forEach(p=>g+=`<polygon class="${p.dash?'pd':'pl'}" points="${p.map(v=>gx(v[0])+','+gy(v[1])).join(' ')}"/>`);
+ if(o.walk){const[x,y]=o.walk;g+=`<line class="wk" style="stroke:${RED}" x1="${gx(0)}" y1="${gy(0)}" x2="${gx(x)}" y2="${gy(0)}"/><line class="wk" style="stroke:${BLUE};animation-delay:.9s" x1="${gx(x)}" y1="${gy(0)}" x2="${gx(x)}" y2="${gy(y)}"/>`}
+ (o.seg||[]).forEach(s=>g+=`<line class="sg" style="stroke:${s[4]||'#334155'}" x1="${gx(s[0])}" y1="${gy(s[1])}" x2="${gx(s[2])}" y2="${gy(s[3])}"/>`);
+ (o.lab||[]).forEach(s=>g+=`<text class="lb" x="${gx(s[0])}" y="${gy(s[1])}" style="fill:${s[3]||'#0f766e'}">${s[2]}</text>`);
+ (o.pts||[]).forEach(p=>{const dx=p.dx!=null?p.dx:12,dy=p.dy!=null?p.dy:-12;g+=`<circle cx="${gx(p.x)}" cy="${gy(p.y)}" r="5.5" fill="${p.c||'#111827'}"/>`+(p.l?`<text class="pn" x="${gx(p.x)+dx}" y="${gy(p.y)+dy}">${p.l}</text>`:'')});
+ return `<svg class="fig gridfig" viewBox="0 0 320 320"${o.tap?' id="tapsvg" onclick="tapGrid(event)"':''}>${g}<g id="tapm"></g></svg>`}
+let TAP=null;
+function tapGrid(e){const s=$('#tapsvg');if(!s||done)return;const p=s.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(s.getScreenCTM().inverse());
+ const x=Math.round((q.x-OX)/U),y=Math.round((OY-q.y)/U);if(x<0||y<0||x>NG||y>NG)return;TAP=[x,y];
+ $('#tapm').innerHTML=`<circle cx="${gx(x)}" cy="${gy(y)}" r="9" fill="#7c3aed" style="opacity:.85;animation:none"/>`;const t=$('#tapv');if(t)t.innerHTML='בחרתם: '+PT(x,y)}
+function tapShow(a){const m=$('#tapm');if(m)m.innerHTML+=`<circle cx="${gx(a[0])}" cy="${gy(a[1])}" r="11" fill="none" stroke="#15803d" stroke-width="4" style="opacity:1;animation:none"/>`}
+const walkFig=(x,y,l)=>grid({pts:[{x,y,l}],walk:[x,y]});
+const SWAP=`הפכתם את הסדר! קודם ${c1('x')} – כמה הולכים ${c1('ימינה')}, ואחר כך ${c2('y')} – כמה עולים ${c2('למעלה')}.`;
+const QDEC=['🔍 מוצאים את הנקודה ברשת',`🚶 קודם הולכים ${c1('ימינה')} לאורך ציר ${c1('x')}: כמה צעדים?`,`🧗 אחר כך עולים ${c2('למעלה')}: כמה צעדים? זה ${c2('y')}`,`✍️ כותבים ${PT('x','y')} – ${c1('x')} ראשון, משמאל`];
+const ADEC=[`📏 צלע אופקית: מחסירים את ה־${c1('x')} (הגדול פחות הקטן)`,`📏 צלע אנכית: מחסירים את ה־${c2('y')}`,'🧮 היקף = מחברים את כל הצלעות · שטח = אורך · רוחב','✔ בודקים יחידות: היקף ביחידות, שטח ביחידות ריבועיות'];
+function two(lo=1,hi=9){let x=ri(lo,hi),y=ri(lo,hi);while(x===y)y=ri(lo,hi);return[x,y]}
+function rectXY(minW=2,minH=2,maxX=9,maxY=9){let x1,x2,y1,y2;do{x1=ri(0,maxX-minW);x2=ri(x1+minW,maxX);y1=ri(0,maxY-minH);y2=ri(y1+minH,maxY)}while(x2-x1>7||y2-y1>7);return[x1,y1,x2,y2]}
+const rpoly=(x1,y1,x2,y2)=>[[x1,y1],[x2,y1],[x2,y2],[x1,y2]];
+
+// ================= נושא 1: הרביע הראשון =================
+const QUAD={
+q_read(){const[x,y]=two(),l=pick(LBL);
+ return{kind:'pt',ans:[x,y],txt:`מה שיעורי הנקודה ${L(l)}?`,fig:grid({pts:[{x,y,l}]}),dec:QDEC,
+ hint:`מהראשית: כמה צעדים ${c1('ימינה')} עד מתחת לנקודה? ואז כמה ${c2('למעלה')}?`,
+ sol:[[walkFig(x,y,l),''],[`הולכים ${c1('ימינה')}: ${c1(x)}`,'זה ה־x'],[`עולים ${c2('למעלה')}: ${c2(y)}`,'זה ה־y'],[`${LP(l,x,y)}`,'קודם x, אחר כך y']],
+ diag:'סדר השיעורים: קודם x (הולכים ימינה), אחר כך y (עולים למעלה).'}},
+q_mark(){const[x,y]=two();
+ return{kind:'tap',ans:[x,y],txt:`לחצו ברשת על המקום של הנקודה ${PT(x,y)}`,tapFig:grid({tap:true}),fig:grid({}),dec:QDEC,
+ hint:`מתחילים בראשית ${PT(0,0)}. הולכים ${c1(x+' ימינה')}, ואחר כך עולים ${c2(y+' למעלה')}.`,
+ sol:[[walkFig(x,y,''),''],[`${c1(x)} צעדים ימינה`,'ה־x'],[`${c2(y)} צעדים למעלה`,'ה־y']],
+ diag:'לסמן נקודה: קודם הולכים ימינה (x), אחר כך עולים (y).'}},
+q_axis(){const v=ri(0,2),a=ri(1,9),P=v===0?[a,0]:v===1?[0,a]:[0,0];
+ const R=['על ציר x','על ציר y','בראשית הצירים'][v];
+ const W={'על ציר x':`על ציר x לא עולים בכלל – ה־${c2('y')} שווה 0. כאן ה־y הוא ${c2(P[1])}.`,'על ציר y':`על ציר y לא הולכים ימינה בכלל – ה־${c1('x')} שווה 0. כאן ה־x הוא ${c1(P[0])}.`,'בראשית הצירים':`הראשית היא ${PT(0,0)} – שני המספרים 0.`,'לא על אף ציר':'אחד המספרים הוא 0 – לכן הנקודה על ציר.'};
+ return Object.assign(mc(R,['על ציר x','על ציר y','בראשית הצירים','לא על אף ציר'].filter(o=>o!==R).map(o=>[o,W[o]])),{
+ txt:`איפה נמצאת הנקודה ${PT(P[0],P[1])}?`,fig:'',dec:['🔍 בודקים: האם אחד המספרים הוא 0?',`🚶 ${c1('x')} = 0 ← לא זזים ימינה ← על ציר y`,`🧗 ${c2('y')} = 0 ← לא עולים ← על ציר x`],
+ hint:'אם x = 0 לא הולכים ימינה. אם y = 0 לא עולים למעלה.',
+ sol:[[grid({pts:[{x:P[0],y:P[1],l:'',c:'#7c3aed'}]}),''],[`${PT(P[0],P[1])} → ${R}`,v===0?'y = 0':v===1?'x = 0':'שניהם 0']],
+ diag:'נקודה עם y = 0 נמצאת על ציר x; עם x = 0 – על ציר y.'})},
+q_which(){let x,y;[x,y]=two();const used=[[x,y],[y,x]];while(used.length<4){const p=[ri(1,9),ri(1,9)];if(!used.some(u=>u[0]===p[0]&&u[1]===p[1]))used.push(p)}
+ const labs=shuffle(['A','B','C','D']),pts=used.map((p,i)=>({x:p[0],y:p[1],l:labs[i]}));
+ return Object.assign(mc(L(labs[0]),[[L(labs[1]),`${L(labs[1])} היא ${PT(y,x)} – הסדר הפוך. קודם ${c1('x')} (ימינה), אחר כך ${c2('y')} (למעלה).`],[L(labs[2]),`${L(labs[2])} היא ${PT(used[2][0],used[2][1])}. בדקו: ${c1(x+' ימינה')}, ואז ${c2(y+' למעלה')}.`],[L(labs[3]),`${L(labs[3])} היא ${PT(used[3][0],used[3][1])}. בדקו שוב.`]]),{
+ txt:`איזו נקודה היא ${PT(x,y)}?`,fig:grid({pts}),dec:QDEC,hint:`הולכים ${c1(x+' ימינה')} ועולים ${c2(y+' למעלה')}. לאיזו נקודה הגעתם?`,
+ sol:[[walkFig(x,y,labs[0]),''],[`${LP(labs[0],x,y)}`,'קודם x, אחר כך y']],diag:'קריאת נקודה מהרשת לפי הסדר: x ואז y.'})},
+q_dist(){const h=Math.random()<.5;let a,b;[a,b]=two(0,9);if(a>b)[a,b]=[b,a];const k=ri(1,9),d=b-a;
+ const A=h?[a,k]:[k,a],B=h?[b,k]:[k,b],col=h?RED:BLUE,c=h?c1:c2,ax=h?'x':'y';
+ return{kind:'num',ans:d,txt:`מה המרחק בין ${LP('A',A[0],A[1])} לבין ${LP('B',B[0],B[1])}?`,
+ fig:grid({pts:[{x:A[0],y:A[1],l:'A'},{x:B[0],y:B[1],l:'B'}],seg:[[A[0],A[1],B[0],B[1],col]]}),
+ dec:['🔍 משרטטים את שתי הנקודות',`📏 הן באותו ${h?'גובה – קו אופקי':'טור – קו אנכי'}`,`➖ מרחק = מחסירים את ה־${c(ax)}: הגדול פחות הקטן`],
+ hint:`הנקודות על קו ${h?'אופקי':'אנכי'}. מחסירים את ה־${c(ax)}: ${c(b)} פחות ${c(a)}.`,
+ err:x=>x===a+b?'חיברתם. מרחק מוצאים בחיסור: הגדול פחות הקטן.':x===k?`${M(k)} הוא ${h?'הגובה':'המקום'} של הקו – לא המרחק.`:null,
+ sol:[[`שתי הנקודות עם אותו ${h?c2('y'):c1('x')} = ${M(k)}`,`קו ${h?'אופקי':'אנכי'}`],[`המרחק: ${M(b+' − '+a+' = '+d)}`,`מחסירים את ה־${ax}`]],
+ diag:'מרחק על קו אופקי או אנכי: מחסירים את השיעור שמשתנה.'}},
+q_move(){const x=ri(0,6),y=ri(0,6),dx=ri(1,4),dy=ri(1,4);
+ return{kind:'pt',ans:[x+dx,y+dy],txt:`מתחילים בנקודה ${PT(x,y)}. זזים ${c1(dx+' ימינה')} ו־${c2(dy+' למעלה')}. לאיזו נקודה מגיעים?`,
+ fig:grid({pts:[{x,y,l:'S'}]}),dec:['🔍 מסמנים את נקודת ההתחלה',`🚶 ימינה משנה רק את ה־${c1('x')}: מוסיפים ${c1(dx)}`,`🧗 למעלה משנה רק את ה־${c2('y')}: מוסיפים ${c2(dy)}`],
+ hint:`ימינה ← מוסיפים ל־${c1('x')}. למעלה ← מוסיפים ל־${c2('y')}.`,
+ err:(a,b)=>a===x+dy&&b===y+dx&&dx!==dy?`ימינה משנה את ${c1('x')} ולמעלה את ${c2('y')} – החלפתם.`:a===dx&&b===dy?'כתבתם רק את התזוזה. מוסיפים אותה לנקודת ההתחלה.':null,
+ sol:[[grid({pts:[{x,y,l:'S'},{x:x+dx,y:y+dy,l:'',c:'#7c3aed'}],seg:[[x,y,x+dx,y,RED],[x+dx,y,x+dx,y+dy,BLUE]]}),''],[`${c1('x')}: ${M(x+' + '+dx+' = '+(x+dx))}`,'ימינה'],[`${c2('y')}: ${M(y+' + '+dy+' = '+(y+dy))}`,'למעלה'],[`מגיעים ל־${PT(x+dx,y+dy)}`,'']],
+ diag:'תזוזה ימינה משנה את x, תזוזה למעלה משנה את y.'}},
+q_rect4(){const[x1,y1,x2,y2]=rectXY(),V=rpoly(x1,y1,x2,y2),N=['A','B','C','D'],m=ri(0,3),miss=V[m];
+ const known=V.map((v,i)=>i===m?'':`${LP(N[i],v[0],v[1])}`).filter(Boolean).join(' , ');
+ const sx=V[(m+3)%4][0]===miss[0]?V[(m+3)%4]:V[(m+1)%4],sy=V[(m+3)%4][1]===miss[1]?V[(m+3)%4]:V[(m+1)%4];
+ const ix=V.indexOf(sx),iy=V.indexOf(sy);
+ return{kind:'pt',ans:miss,txt:`${L('ABCD')} הוא מלבן. ${known}. מה שיעורי הקודקוד ${L(N[m])}?`,
+ fig:grid({pts:V.map((v,i)=>i===m?null:{x:v[0],y:v[1],l:N[i]}).filter(Boolean)}),
+ dec:['🔍 מסמנים את שלושת הקודקודים',`📐 במלבן הצלעות אופקיות ואנכיות`,`🚶 ${L(N[m])} באותו טור (קו אנכי) עם ${L(N[ix])} ← אותו ${c1('x')}`,`🧗 ${L(N[m])} באותה שורה (קו אופקי) עם ${L(N[iy])} ← אותו ${c2('y')}`],
+ hint:`${L(N[m])} מתחת או מעל ${L(N[ix])} (אותו x), ומימין או משמאל ל־${L(N[iy])} (אותו y).`,
+ sol:[[grid({poly:[V],pts:V.map((v,i)=>({x:v[0],y:v[1],l:N[i],c:i===m?'#7c3aed':'#111827'}))}),''],[`${c1('x')} כמו ${L(N[ix])}: ${c1(miss[0])}`,'אותו קו אנכי'],[`${c2('y')} כמו ${L(N[iy])}: ${c2(miss[1])}`,'אותו קו אופקי'],[`${LP(N[m],miss[0],miss[1])}`,'']],
+ diag:'השלמת מלבן: הקודקוד החסר לוקח x מהשכן האנכי ו־y מהשכן האופקי.'}},
+q_square(){const s=ri(2,4),x=ri(0,9-s),y=ri(0,9-s),up=Math.random()<.5,ans=up?[x+s,y+s]:[x,y+s],nm=up?'C':'D';
+ return{kind:'pt',ans,txt:`${LP('A',x,y)} ו־${LP('B',x+s,y)} הם שני קודקודים סמוכים של הריבוע ${L('ABCD')}. הריבוע נמצא מעל הצלע ${L('AB')}. מה שיעורי ${L(nm)}?`,
+ fig:grid({pts:[{x,y,l:'A'},{x:x+s,y,l:'B'}],seg:[[x,y,x+s,y,RED]]}),
+ dec:['🔍 מסמנים את A ואת B',`📏 אורך הצלע AB: מחסירים את ה־${c1('x')}`,'📐 בריבוע כל הצלעות שוות ← עולים למעלה באותו אורך',`🧗 ${L(nm)} מעל ${up?L('B'):L('A')}`],
+ hint:`אורך הצלע: ${M((x+s)+' − '+x)}. בריבוע עולים למעלה בדיוק אותו מספר.`,
+ err:(a,b)=>a===ans[0]&&b===s?`עליתם ${M(s)} – אבל צריך להוסיף ל־${c2('y')} של הנקודה: ${M(y+' + '+s)}.`:null,
+ sol:[[grid({poly:[rpoly(x,y,x+s,y+s)],pts:[{x,y,l:'A'},{x:x+s,y,l:'B'},{x:x+s,y:y+s,l:'C'},{x,y:y+s,l:'D'}]}),''],[`צלע: ${M((x+s)+' − '+x+' = '+s)}`,'אורך AB'],[`${c2('y')}: ${M(y+' + '+s+' = '+(y+s))}`,'עולים צלע אחת'],[`${LP(nm,ans[0],ans[1])}`,'']],
+ diag:'בריבוע כל הצלעות שוות – עולים למעלה באורך הצלע.'}},
+q_mid(){const h=Math.random()<.5,d=2*ri(1,4),a=ri(0,9-d),k=ri(1,9),m=a+d/2;
+ const A=h?[a,k]:[k,a],B=h?[a+d,k]:[k,a+d],ans=h?[m,k]:[k,m];
+ return{kind:'pt',ans,txt:`מה שיעורי נקודת האמצע של הקטע שבין ${LP('A',A[0],A[1])} לבין ${LP('B',B[0],B[1])}?`,
+ fig:grid({pts:[{x:A[0],y:A[1],l:'A'},{x:B[0],y:B[1],l:'B'}],seg:[[A[0],A[1],B[0],B[1],h?RED:BLUE]]}),
+ dec:[`📏 הקטע ${h?'אופקי':'אנכי'} – ${h?c2('y'):c1('x')} לא משתנה`,`➖ אורך הקטע: ${M(d)}`,`➗ חצי הדרך: ${M(d/2)} מ־${L('A')}`],
+ hint:`אורך הקטע ${M(d)}. נקודת האמצע במרחק ${M(d+' : 2')} מ־${L('A')}.`,
+ err:(x,y)=>(h?x===d/2:y===d/2)?'מצאתם את חצי האורך – עכשיו הוסיפו אותו לנקודה A.':null,
+ sol:[[`אורך: ${M((a+d)+' − '+a+' = '+d)}`,'חיסור'],[`חצי: ${M(d+' : 2 = '+d/2)}`,'אמצע'],[`${M(a+' + '+d/2+' = '+m)}`,'מוסיפים ל־A'],[`האמצע: ${PT(ans[0],ans[1])}`,'']],
+ diag:'נקודת אמצע: חצי מאורך הקטע, מוסיפים לנקודת ההתחלה.'}},
+q_map(){const h=Math.random()<.5;let a,b;[a,b]=two(0,9);if(a>b)[a,b]=[b,a];const k=ri(1,9),sc=pick([50,100,200]),d=b-a;
+ const A=h?[a,k]:[k,a],B=h?[b,k]:[k,b],pl=pick([['הבית של נועה','בית הספר'],['תחנת האוטובוס','הספרייה'],['הגן','הקניון']]);
+ return{kind:'num',ans:d*sc,txt:`במפה של השכונה כל משבצת היא ${M(sc)} מטר. ${pl[0]} בנקודה ${PT(A[0],A[1])} ו${pl[1]} בנקודה ${PT(B[0],B[1])}. מה המרחק ביניהם במטרים?`,
+ fig:grid({pts:[{x:A[0],y:A[1],l:'1'},{x:B[0],y:B[1],l:'2'}],seg:[[A[0],A[1],B[0],B[1],h?RED:BLUE]]}),
+ dec:['🔍 מסמנים את שני המקומות',`📏 כמה משבצות ביניהם? (קו ${h?'אופקי':'אנכי'})`,`✖️ כל משבצת = ${M(sc)} מטר ← כופלים`],
+ hint:`קודם כמה משבצות: ${M(b+' − '+a)}. אחר כך כפול ${M(sc)}.`,
+ err:x=>x===d?`זה מספר המשבצות. כל משבצת היא ${M(sc)} מטר.`:x===(a+b)*sc?'חיברתם את השיעורים. מחסירים: הגדול פחות הקטן.':null,
+ sol:[[`משבצות: ${M(b+' − '+a+' = '+d)}`,'חיסור'],[`מטרים: ${M(d+' · '+sc+' = '+d*sc)}`,'כפל בקנה המידה']],diag:'מרחק במשבצות, ואז כפל בגודל של משבצת אחת.'}},
+q_cross(){let x1,y1,x2,y2;do{[x1,y1]=[ri(1,9),ri(1,9)];[x2,y2]=[ri(1,9),ri(1,9)]}while(x1===x2||y1===y2);
+ return{kind:'pt',ans:[x1,y2],txt:`הנקודה ${L('P')} נמצאת על אותו <b>קו אנכי</b> כמו ${LP('A',x1,y1)}, ועל אותו <b>קו אופקי</b> כמו ${LP('B',x2,y2)}. מה שיעורי ${L('P')}?`,
+ fig:grid({pts:[{x:x1,y:y1,l:'A'},{x:x2,y:y2,l:'B'}]}),
+ dec:[`📐 קו אנכי ← אותו ${c1('x')}`,`📐 קו אופקי ← אותו ${c2('y')}`,`✍️ ${c1('x')} מ־A, ${c2('y')} מ־B`],
+ hint:`על קו אנכי ה־${c1('x')} לא משתנה. על קו אופקי ה־${c2('y')} לא משתנה.`,
+ err:(a,b)=>a===x2&&b===y1?'הפוך: קו אנכי שומר על x, וקו אופקי שומר על y.':null,
+ sol:[[grid({pts:[{x:x1,y:y1,l:'A'},{x:x2,y:y2,l:'B'},{x:x1,y:y2,l:'P',c:'#7c3aed'}],seg:[[x1,y1,x1,y2,BLUE],[x2,y2,x1,y2,RED]]}),''],[`${c1('x')} כמו A: ${c1(x1)}`,'קו אנכי'],[`${c2('y')} כמו B: ${c2(y2)}`,'קו אופקי'],[`${LP('P',x1,y2)}`,'']],
+ diag:'קו אנכי – אותו x; קו אופקי – אותו y.'}},
+q_err(){const[x,y]=two(),l=pick(LBL);
+ return Object.assign(mc(`הוא החליף בין x ל־y. הנכון: ${PT(x,y)}`,[['הוא צודק',`הולכים ${c1(x+' ימינה')} ועולים ${c2(y+' למעלה')} – לכן ה־x הוא ${c1(x)}.`],[`הוא טעה רק ב־y. הנכון: ${PT(y,y)}`,`ה־x של ${L(l)} הוא ${c1(x)} – לא ${M(y)}.`],[`הוא צודק – הסדר לא משנה`,`הסדר משנה! ${PT(y,x)} היא נקודה אחרת לגמרי.`]]),{
+ txt:`יואב כתב שהנקודה ${L(l)} היא ${PT(y,x)}. מה דעתכם?`,fig:grid({pts:[{x,y,l}]}),dec:['🔍 קוראים בעצמנו את הנקודה',...QDEC.slice(1,3),'⚖️ משווים לתשובה של יואב'],
+ hint:`קראו את הנקודה בעצמכם: כמה ${c1('ימינה')}? כמה ${c2('למעלה')}?`,
+ sol:[[walkFig(x,y,l),''],[`${LP(l,x,y)}`,'נכון'],[`יואב כתב ${PT(y,x)}`,'החליף את הסדר']],diag:'הסדר בזוג סדור קובע: (x , y) ≠ (y , x).'})},
+q_two(){const d=ri(2,4),p=ri(d,9-d);
+ return Object.assign(mc(`${PT(p-d,0)} או ${PT(p+d,0)}`,[[`${PT(p+d,0)} בלבד`,'יש עוד אפשרות – אפשר ללכת גם שמאלה!'],[PT(p,d),`נקודה על ציר x – ה־${c2('y')} שלה 0.`],[PT(d,0),`${M(d)} הוא המרחק – לא המקום. מתחילים מ־${PT(p,0)}.`]]),{
+ txt:`הנקודה ${L('C')} נמצאת על ציר ${c1('x')}, במרחק ${M(d)} מהנקודה ${PT(p,0)}. איפה יכולה להיות ${L('C')}?`,fig:grid({pts:[{x:p,y:0,l:'',c:'#111827'}]}),
+ dec:['🔍 על ציר x – לכן y = 0','↔️ מרחק אפשר למדוד ימינה וגם שמאלה','✍️ בודקים את שני הכיוונים'],hint:'כמה נקודות על ציר x נמצאות במרחק הזה? חשבו על ימינה וגם על שמאלה.',
+ sol:[[grid({pts:[{x:p,y:0,l:''},{x:p-d,y:0,l:'C',c:'#7c3aed'},{x:p+d,y:0,l:'C',c:'#7c3aed'}],seg:[[p-d,0,p+d,0,RED]]}),''],[`ימינה: ${M(p+' + '+d+' = '+(p+d))}`,''],[`שמאלה: ${M(p+' − '+d+' = '+(p-d))}`,''],['שתי תשובות!','מוקש']],diag:'מרחק יכול להיות לשני הכיוונים – לבדוק את כל האפשרויות.'})},
+q_line(){const v=Math.random()<.5,k=ri(1,9);let a=shuffle([1,2,3,4,5,6,7,8,9]).slice(0,3).sort((p,q)=>p-q);const P=a.map(t=>v?[k,t]:[t,k]);
+ const R=v?'כולן על קו אנכי אחד':'כולן על קו אופקי אחד';
+ return Object.assign(mc(R,[[v?'כולן על קו אופקי אחד':'כולן על קו אנכי אחד',v?`ה־${c1('x')} שווה בכולן – לכן הן באותו טור (אנכי).`:`ה־${c2('y')} שווה בכולן – לכן הן באותה שורה (אופקי).`],[v?'כולן על ציר y':'כולן על ציר x',v?`על ציר y ה־x הוא 0. כאן ה־x הוא ${M(k)}.`:`על ציר x ה־y הוא 0. כאן ה־y הוא ${M(k)}.`],['אין להן שום דבר משותף','הסתכלו: איזה מספר חוזר בכל הנקודות?']]),{
+ txt:`הנקודות ${P.map(p=>PT(p[0],p[1])).join(' , ')}. מה נכון?`,fig:'',dec:['🔍 משווים את ה־'+c1('x')+' של כל הנקודות','🔍 משווים את ה־'+c2('y')+' של כל הנקודות','📐 אותו x ← קו אנכי · אותו y ← קו אופקי'],
+ hint:`איזה שיעור שווה בכל הנקודות – ה־${c1('x')} או ה־${c2('y')}?`,
+ sol:[[grid({pts:P.map(p=>({x:p[0],y:p[1],l:''})),seg:[v?[k,0,k,NG,'#7c3aed']:[0,k,NG,k,'#7c3aed']]}),''],[v?`ה־${c1('x')} תמיד ${M(k)}`:`ה־${c2('y')} תמיד ${M(k)}`,v?'קו אנכי':'קו אופקי']],diag:'נקודות עם אותו x על קו אנכי; עם אותו y על קו אופקי.'})},
+q_same(){const[a,b]=two();
+ return Object.assign(mc(`לא. ${PT(a,b)} ו־${PT(b,a)} הן שתי נקודות שונות`,[['כן, יש בהן אותם מספרים',`המספרים זהים, אבל הסדר קובע: ${PT(a,b)} – ${c1(a+' ימינה')}, ו־${PT(b,a)} – ${c1(b+' ימינה')}.`],[`כן, כי ${M(a+' + '+b+' = '+b+' + '+a)}`,'בזוג סדור לא מחברים – כל מספר אומר משהו אחר.']]),{
+ txt:`מיכל אמרה: "${PT(a,b)} ו־${PT(b,a)} הן אותה נקודה, כי יש בהן אותם מספרים." האם היא צודקת?`,fig:'',dec:QDEC,hint:'סמנו את שתי הנקודות ברשת. האם הגעתם לאותו מקום?',
+ sol:[[grid({pts:[{x:a,y:b,l:'1'},{x:b,y:a,l:'2',c:'#7c3aed'}]}),''],['שני מקומות שונים ברשת','הסדר קובע']],diag:'זוג סדור: הסדר חשוב – (a , b) ≠ (b , a).'})}
+};
+
+// ================= נושא 2: שטח והיקף ברשת =================
+const unitsS='יחידות ריבועיות';
+function rectFig(x1,y1,x2,y2,opt={}){const V=rpoly(x1,y1,x2,y2),N=['A','B','C','D'];
+ const pts=opt.noPts?[]:V.map((v,i)=>({x:v[0],y:v[1],l:N[i],dx:i===0||i===3?-12:12,dy:i<2?14:-12}));
+ const lab=opt.dims?[[(x1+x2)/2,y1-.55,opt.dims[0],RED],[x1-.6,(y1+y2)/2,opt.dims[1],BLUE]]:[];
+ const seg=opt.dims?[[x1,y1,x2,y1,RED],[x1,y1,x1,y2,BLUE]]:[];return grid({poly:[V],pts,lab,seg})}
+const vtxt=(x1,y1,x2,y2)=>`${LP('A',x1,y1)} , ${LP('B',x2,y1)} , ${LP('C',x2,y2)} , ${LP('D',x1,y2)}`;
+const AREA={
+a_len(){const[x1,y1,x2,y2]=rectXY(),h=Math.random()<.5,w=x2-x1,t=y2-y1;
+ return{kind:'num',ans:h?w:t,txt:`במלבן ${L('ABCD')} הקודקודים: ${vtxt(x1,y1,x2,y2)}. מה אורך הצלע ${L(h?'AB':'AD')}?`,fig:rectFig(x1,y1,x2,y2),dec:ADEC.slice(0,2),
+ hint:h?`הצלע AB אופקית. מחסירים את ה־${c1('x')}: ${M(x2+' − '+x1)}.`:`הצלע AD אנכית. מחסירים את ה־${c2('y')}: ${M(y2+' − '+y1)}.`,
+ err:x=>x===(h?x2:y2)&&(h?x1:y1)>0?'זה השיעור של נקודה – לא אורך. מחסירים את שני השיעורים.':x===(h?x1+x2:y1+y2)?'חיברתם. אורך מוצאים בחיסור.':null,
+ sol:[[rectFig(x1,y1,x2,y2,{dims:[h?w:'',h?'':t]}),''],[h?`${c1('AB')} אופקית: ${M(x2+' − '+x1+' = '+w)}`:`${c2('AD')} אנכית: ${M(y2+' − '+y1+' = '+t)}`,'הגדול פחות הקטן']],diag:'אורך צלע ברשת: מחסירים את השיעור שמשתנה.'}},
+a_count(){const[x1,y1,x2,y2]=rectXY(2,2,9,8),w=x2-x1,t=y2-y1;
+ return{kind:'num',ans:w*t,txt:`כמה משבצות יש בתוך המלבן? (זה השטח שלו ב${unitsS})`,fig:rectFig(x1,y1,x2,y2,{noPts:1}),
+ dec:['🔍 סופרים כמה משבצות בשורה אחת (האורך)','🔍 סופרים כמה שורות (הרוחב)','✖️ שורות · משבצות בשורה = שטח'],
+ hint:`בכל שורה ${c1(w)} משבצות. כמה שורות?`,err:x=>x===2*(w+t)?'ספרתם את הקווים מסביב – זה ההיקף. השטח הוא המשבצות שבפנים.':x===w+t?'חיברתם. מספר המשבצות = כפל.':null,
+ sol:[[rectFig(x1,y1,x2,y2,{noPts:1,dims:[w,t]}),''],[`${c1(w)} משבצות בשורה · ${c2(t)} שורות`,''],[`${M(w+' · '+t+' = '+w*t)} ${unitsS}`,'שטח']],diag:'שטח = מספר המשבצות = אורך · רוחב.'}},
+a_units(){const v=Math.random()<.5,n=ri(8,40);
+ const R=v?unitsS:'יחידות';
+ return Object.assign(mc(R,[[v?'יחידות':unitsS,v?'שטח מודדים במשבצות – יחידות ריבועיות.':'היקף הוא אורך של קו מסביב – יחידות (לא ריבועיות).'],['מעלות','מעלות מודדות זוויות.']]),{
+ txt:`ה${v?'שטח':'היקף'} של מלבן הוא ${M(n)}. באילו יחידות?`,fig:'',dec:['📏 היקף = אורך הקו מסביב ← יחידות','🟦 שטח = כמה משבצות בפנים ← יחידות ריבועיות'],hint:v?'שטח = כמה משבצות מכסות את המלבן.':'היקף = כמה ארוך הקו שמקיף את המלבן.',
+ sol:[[v?'שטח ← משבצות ← '+unitsS:'היקף ← אורך ← יחידות','']],diag:'היקף נמדד ביחידות אורך; שטח ביחידות ריבועיות.'})},
+a_P(){const[x1,y1,x2,y2]=rectXY(),w=x2-x1,t=y2-y1;
+ return{kind:'num',ans:2*(w+t),txt:`מה ההיקף של המלבן ${L('ABCD')}? ${vtxt(x1,y1,x2,y2)}`,fig:rectFig(x1,y1,x2,y2),dec:ADEC,
+ hint:`אורך: ${M(x2+' − '+x1)}, רוחב: ${M(y2+' − '+y1)}. היקף = כל 4 הצלעות.`,
+ err:x=>x===w*t?'זה השטח. היקף = מחברים את כל הצלעות.':x===w+t?'זה רק חצי היקף – למלבן 4 צלעות.':null,
+ sol:[[rectFig(x1,y1,x2,y2,{dims:[w,t]}),''],[`אורך: ${M(x2+' − '+x1+' = '+w)} · רוחב: ${M(y2+' − '+y1+' = '+t)}`,'חיסור'],[`היקף: ${M(w+' + '+t+' + '+w+' + '+t+' = '+2*(w+t))}`,'יחידות']],diag:'היקף מלבן: אורך + רוחב + אורך + רוחב.'}},
+a_S(){const[x1,y1,x2,y2]=rectXY(),w=x2-x1,t=y2-y1;
+ return{kind:'num',ans:w*t,txt:`מה השטח של המלבן ${L('ABCD')}? ${vtxt(x1,y1,x2,y2)}`,fig:rectFig(x1,y1,x2,y2),dec:ADEC,
+ hint:`אורך: ${M(x2+' − '+x1)}, רוחב: ${M(y2+' − '+y1)}. שטח = אורך · רוחב.`,
+ err:x=>x===2*(w+t)?'זה ההיקף. שטח = אורך · רוחב.':x===x2*y2&&(x1||y1)?'כפלתם שיעורים של נקודה. קודם מוצאים את אורכי הצלעות בחיסור.':null,
+ sol:[[rectFig(x1,y1,x2,y2,{dims:[w,t]}),''],[`אורך: ${M(w)} · רוחב: ${M(t)}`,'חיסור'],[`שטח: ${M(w+' · '+t+' = '+w*t)}`,unitsS]],diag:'שטח מלבן: אורך · רוחב (אחרי שמוצאים אותם בחיסור).'}},
+a_sq(){const s=ri(2,6),x=ri(0,9-s),y=ri(0,9-s),askS=Math.random()<.5;
+ return{kind:'num',ans:askS?s*s:4*s,txt:`${L('ABCD')} הוא ריבוע: ${vtxt(x,y,x+s,y+s)}. מה ${askS?'השטח':'ההיקף'} שלו?`,fig:rectFig(x,y,x+s,y+s),dec:['📏 צלע: מחסירים את ה־'+c1('x'),'📐 בריבוע 4 צלעות שוות',askS?'🧮 שטח = צלע · צלע':'🧮 היקף = 4 · צלע'],
+ hint:`צלע: ${M((x+s)+' − '+x)}. ${askS?'שטח = צלע · צלע':'היקף = 4 צלעות'}.`,err:v=>v===(askS?4*s:s*s)?(askS?'זה ההיקף.':'זה השטח.'):v===2*s?'זה רק 2 צלעות.':null,
+ sol:[[`צלע: ${M((x+s)+' − '+x+' = '+s)}`,'חיסור'],[askS?`שטח: ${M(s+' · '+s+' = '+s*s)}`:`היקף: ${M('4 · '+s+' = '+4*s)}`,askS?unitsS:'יחידות']],diag:'ריבוע: מוצאים צלע, ואז היקף = 4 · צלע, שטח = צלע · צלע.'}},
+a_tri(){let x1,y1,x2,y2;do{[x1,y1,x2,y2]=rectXY(2,2)}while(((x2-x1)*(y2-y1))%2);const w=x2-x1,t=y2-y1,P=[[x1,y1],[x2,y1],[x1,y2]];
+ return{kind:'num',ans:w*t/2,txt:`מה השטח של המשולש ישר הזווית ${L('ABC')}? ${LP('A',x1,y1)} , ${LP('B',x2,y1)} , ${LP('C',x1,y2)}`,
+ fig:grid({poly:[P],pts:[{x:x1,y:y1,l:'A',dx:-12,dy:14},{x:x2,y:y1,l:'B',dy:14},{x:x1,y:y2,l:'C',dx:-12}]}),
+ dec:['🔍 הזווית הישרה ב־A – הניצבים אופקי ואנכי',ADEC[0],ADEC[1],'📐 משולש ישר זווית = חצי מלבן ← אורך · רוחב : 2'],
+ hint:`השלימו למלבן: ${M(w+' · '+t)}. המשולש הוא חצי ממנו.`,err:x=>x===w*t?'זה שטח המלבן כולו – המשולש הוא חצי ממנו.':x===w+t?'חיברתם. שטח מוצאים בכפל.':null,
+ sol:[[grid({poly:[rpoly(x1,y1,x2,y2).map(v=>v)].map(p=>Object.assign(p,{dash:1})).concat([P]),pts:[{x:x1,y:y1,l:'A',dx:-12,dy:14},{x:x2,y:y1,l:'B',dy:14},{x:x1,y:y2,l:'C',dx:-12}],seg:[[x1,y1,x2,y1,RED],[x1,y1,x1,y2,BLUE]]}),''],[`ניצבים: ${c1(w)} ו־${c2(t)}`,'חיסור'],[`מלבן: ${M(w+' · '+t+' = '+w*t)}`,''],[`משולש: ${M(w*t+' : 2 = '+w*t/2)}`,unitsS]],diag:'שטח משולש ישר זווית = חצי משטח המלבן שסביבו.'}},
+a_garden(){const[x1,y1,x2,y2]=rectXY(),w=x2-x1,t=y2-y1,m=pick([2,3,5]);
+ return{kind:'num',ans:2*(w+t)*m,txt:`גינה בצורת מלבן מסומנת במפה: ${vtxt(x1,y1,x2,y2)}. כל משבצת במפה היא ${M(m)} מטר. כמה מטר גדר צריך כדי להקיף את כל הגינה?`,fig:rectFig(x1,y1,x2,y2),
+ dec:['🔍 גדר מסביב ← מחפשים היקף',ADEC[0],ADEC[1],`✖️ בסוף כופלים ב־${M(m)} מטר`],hint:`היקף במשבצות: ${M('2 · ('+w+' + '+t+')')}. אחר כך כפול ${M(m)}.`,
+ err:x=>x===2*(w+t)?`זה ההיקף במשבצות. כל משבצת ${M(m)} מטר.`:x===w*t*m||x===w*t?'גדר הולכת מסביב – זה היקף, לא שטח.':null,
+ sol:[[`צלעות: ${M(w)} ו־${M(t)}`,'במשבצות'],[`היקף: ${M('2 · ('+w+' + '+t+') = '+2*(w+t))}`,'משבצות'],[`במטרים: ${M(2*(w+t)+' · '+m+' = '+2*(w+t)*m)}`,'מטר']],diag:'לזהות שגדר = היקף, ואז לכפול בקנה המידה.'}},
+a_L(){let W,H,cw,ch;do{W=ri(4,8);H=ri(4,8);cw=ri(1,W-2);ch=ri(1,H-2)}while(W*H>56);const x0=ri(0,9-W),y0=ri(0,9-H);
+ const P=[[x0,y0],[x0+W,y0],[x0+W,y0+H-ch],[x0+W-cw,y0+H-ch],[x0+W-cw,y0+H],[x0,y0+H]],S=W*H-cw*ch;
+ return{kind:'num',ans:S,txt:'מה השטח של הצורה? (כל משבצת היא יחידה ריבועית אחת)',fig:grid({poly:[P]}),
+ dec:['🔍 הצורה מורכבת – מחלקים אותה לשני מלבנים','🧮 מחשבים שטח של כל מלבן','➕ מחברים (או: מלבן גדול פחות הפינה החסרה)'],
+ hint:`מלבן גדול ${M(W+' · '+H)} פחות הפינה שחסרה ${M(cw+' · '+ch)}.`,err:x=>x===W*H?'זה המלבן הגדול כולו – צריך להוריד את הפינה שחסרה.':x===cw*ch?'זו רק הפינה שחסרה.':null,
+ sol:[[grid({poly:[rpoly(x0,y0,x0+W,y0+H)].map(p=>Object.assign(p,{dash:1})).concat([P]),lab:[[x0+W-cw/2,y0+H-ch/2,'−',RED]]}),''],[`מלבן גדול: ${M(W+' · '+H+' = '+W*H)}`,''],[`פינה חסרה: ${M(cw+' · '+ch+' = '+cw*ch)}`,''],[`שטח: ${M(W*H+' − '+cw*ch+' = '+S)}`,unitsS]],diag:'שטח צורה מורכבת: מפרקים למלבנים (או משלימים ומחסירים).'}},
+a_findY(){let x1,x2,w,h,y1;do{x1=ri(0,6);w=ri(2,9-x1);x2=x1+w;h=ri(2,6);y1=ri(0,9-h)}while(w*h>40);const S=w*h;
+ return{kind:'num',ans:y1+h,txt:`במלבן ${L('ABCD')}: ${LP('A',x1,y1)} , ${LP('B',x2,y1)}, והקודקודים ${L('C')} ו־${L('D')} נמצאים מעל ${L('AB')}. שטח המלבן ${M(S)} ${unitsS}. מה ה־${c2('y')} של ${L('C')}?`,
+ fig:grid({pts:[{x:x1,y:y1,l:'A',dx:-12,dy:14},{x:x2,y:y1,l:'B',dy:14}],seg:[[x1,y1,x2,y1,RED]]}),
+ dec:[`📏 אורך AB: מחסירים את ה־${c1('x')}`,'➗ רוחב = שטח : אורך','🧗 C מעל B ← מוסיפים את הרוחב ל־'+c2('y')+' של B'],
+ hint:`אורך AB = ${M(x2+' − '+x1)}. איזה מספר כפול האורך נותן ${M(S)}?`,err:x=>x===h&&y1?`${M(h)} הוא הגובה של המלבן. C מתחיל מ־${c2('y = '+y1)} – מוסיפים.`:x===S?'זה השטח, לא שיעור של נקודה.':null,
+ sol:[[`אורך: ${M(x2+' − '+x1+' = '+w)}`,'חיסור'],[`רוחב: ${M(S+' : '+w+' = '+h)}`,'שטח : אורך'],[`${c2('y')} של C: ${M(y1+' + '+h+' = '+(y1+h))}`,'עולים מ־B'],[grid({poly:[rpoly(x1,y1,x2,y1+h)],pts:[{x:x1,y:y1,l:'A',dx:-12,dy:14},{x:x2,y:y1,l:'B',dy:14},{x:x2,y:y1+h,l:'C'},{x:x1,y:y1+h,l:'D',dx:-12}]}),'']],diag:'הפוך: משטח ואורך מוצאים רוחב (חילוק), ואז שיעור.'}},
+a_same(){const p=pick([[2,6,4,4],[1,7,3,5],[2,8,5,5],[1,5,3,3],[2,10,6,6]]);
+ return Object.assign(mc('אותו היקף, אבל שטח שונה',[['אותו היקף ואותו שטח',`השטחים: ${M(p[0]+' · '+p[1]+' = '+p[0]*p[1])} ו־${M(p[2]+' · '+p[3]+' = '+p[2]*p[3])} – שונים!`],['אותו שטח, אבל היקף שונה',`ההיקפים: ${M('2 · ('+p[0]+' + '+p[1]+') = '+2*(p[0]+p[1]))} ושווים.`],['גם ההיקף וגם השטח שונים','חשבו שוב את שני ההיקפים.']]),{
+ txt:`למלבן א׳ צלעות ${M(p[0])} ו־${M(p[1])}. למלבן ב׳ צלעות ${M(p[2])} ו־${M(p[3])}. מה נכון?`,fig:'',dec:['🧮 מחשבים היקף לכל מלבן','🧮 מחשבים שטח לכל מלבן','⚖️ משווים – לא מנחשים!'],hint:'חשבו לכל מלבן גם היקף וגם שטח.',
+ sol:[[`היקפים: ${M(2*(p[0]+p[1]))} ו־${M(2*(p[2]+p[3]))}`,'שווים'],[`שטחים: ${M(p[0]*p[1])} ו־${M(p[2]*p[3])}`,'שונים']],diag:'אותו היקף לא אומר אותו שטח – צריך לחשב כל אחד.'})},
+a_errTri(){let w,t;do{w=ri(2,8);t=ri(2,8)}while((w*t)%2);
+ return Object.assign(mc('היא שכחה לחלק ב־2 – המשולש הוא חצי מלבן',[['היא צודקת',`${M(w+' · '+t)} הוא שטח המלבן כולו. המשולש תופס רק חצי.`],['היא הייתה צריכה לחבר את הניצבים','שטח לא מוצאים בחיבור.'],['היא הייתה צריכה לכפול ב־2','המשולש קטן מהמלבן – מחלקים, לא כופלים.']]),{
+ txt:`במשולש ישר זווית אורכי הניצבים ${M(w)} ו־${M(t)}. מיכל כתבה: שטח המשולש ${M(w+' · '+t+' = '+w*t)}. מה דעתכם?`,fig:'',dec:['📐 משולש ישר זווית = חצי מלבן','🔍 בודקים: האם מיכל חילקה ב־2?'],hint:'השלימו את המשולש למלבן. איזה חלק מהמלבן הוא המשולש?',
+ sol:[[`נכון: ${M(w+' · '+t+' : 2 = '+w*t/2)}`,unitsS]],diag:'שטח משולש ישר זווית = אורך · רוחב : 2.'})},
+a_sqO(){const s=ri(2,9),S=s*s;
+ return{kind:'pt',ans:[s,s],txt:`לריבוע ${L('OABC')} יש קודקוד בראשית ${LP('O',0,0)}, והוא כולו ברביע הראשון וצלעותיו על הצירים. שטח הריבוע ${M(S)} ${unitsS}. מה שיעורי הקודקוד ${L('B')} שמול הראשית?`,
+ fig:grid({pts:[{x:0,y:0,l:'O',dx:-12,dy:14}]}),dec:['🔍 שטח ריבוע = צלע · צלע','❓ איזה מספר כפול עצמו נותן '+M(S)+'?','🚶🧗 B: הולכים צלע ימינה ועולים צלע למעלה'],
+ hint:`איזה מספר כפול עצמו נותן ${M(S)}?`,err:(a,b)=>a===S&&b===S?'זה השטח – לא הצלע. מחפשים מספר שכפול עצמו נותן את השטח.':(a===s&&b===0)||(a===0&&b===s)?'זה קודקוד על ציר. B נמצא מול הראשית – גם ימינה וגם למעלה.':null,
+ sol:[[`צלע: ${M(s+' · '+s+' = '+S)} ← צלע ${M(s)}`,''],[grid({poly:[rpoly(0,0,s,s)],pts:[{x:0,y:0,l:'O',dx:-12,dy:14},{x:s,y:s,l:'B'}]}),''],[`${LP('B',s,s)}`,'צלע ימינה, צלע למעלה']],diag:'משטח ריבוע לצלע: איזה מספר כפול עצמו נותן את השטח.'}}
+};
+
+// ================= קודי פענוח =================
+const mk=a=>`<div class="code">${a.map((s,i)=>`<div class="rv" style="animation-delay:${i*.45}s"><span class="ce">${s[0]}</span><span>${s[1]}</span></div>`).join('')}</div>`;
+const QCODE=mk([['🔍','מוצאים את הנקודה ברשת'],['🚶',`קודם <b>הולכים</b> ${c1('ימינה')} לאורך ציר ${c1('x')} – כמה צעדים?`],['🧗',`אחר כך <b>עולים</b> ${c2('למעלה')} – כמה צעדים? זה ${c2('y')}`],['✍️',`כותבים ${PT('x','y')}<br><small>ה־${c1('x')} נכתב <b>ראשון, משמאל</b> – כמו שכותבים מספרים</small>`],['✔','בודקים: חוזרים מהראשית – הולכים, ואז עולים. הגענו?']]);
+const ACODE=mk([['🔍','מסמנים את הקודקודים ברשת'],['📏',`צלע אופקית = מחסירים את ה־${c1('x')}`],['📏',`צלע אנכית = מחסירים את ה־${c2('y')}`],['🧮','היקף = מחברים את כל הצלעות · שטח = אורך · רוחב'],['📐','משולש ישר זווית = חצי מלבן'],['✔','יחידות: היקף ביחידות · שטח ביחידות ריבועיות']]);
+
+// ---------- מודל הקבוצות ----------
+function groups(a,b,k){const s=11,g=2,cols=Math.min(k,5),gw=Math.max(a,b)*(s+g)+12,gh=2*(s+g)+28,rows=Math.ceil(k/cols);let o='';
+ for(let i=0;i<k;i++){const x=6+(i%cols)*(gw+8),y=6+Math.floor(i/cols)*(gh+8);let r=`<rect x="${x}" y="${y}" width="${gw}" height="${gh}" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>`;
+  for(let j=0;j<a;j++)r+=`<rect x="${x+6+j*(s+g)}" y="${y+6}" width="${s}" height="${s}" rx="2" fill="#dc2626"/>`;
+  for(let j=0;j<b;j++)r+=`<rect x="${x+6+j*(s+g)}" y="${y+8+s+g}" width="${s}" height="${s}" rx="2" fill="#2563eb"/>`;
+  r+=`<text x="${x+gw/2}" y="${y+gh-8}" style="font-size:11px;fill:#475569;opacity:1;animation:none">${i+1}</text>`;
+  o+=`<g class="gp" style="animation-delay:${i*.35}s">${r}</g>`}
+ const W=6+cols*(gw+8),H=6+rows*(gh+8);return `<svg class="fig" viewBox="0 0 ${W} ${H}" style="max-height:${Math.min(240,H*2)}px">${o}</svg>`}
+function grpBlock(q){if(!q.grp)return'';const[a,b,k]=q.grp;
+ if(k===1)return`${groups(a,b,1)}<div class="box">📦 קבוצה אחת: ${c1(a)} ו־${c2(b)} – ביחד ${M(a+b)}.<br>${c1(a)} מתוך ${M(a+b)} = ${fr(a,a+b)}</div>`;
+ return`${groups(a,b,k)}<div class="box">📦 ${M(k)} קבוצות. בכל קבוצה ${RC(a,b)}.<br>ביחד: ${RC(a*k,b*k)}<br><b>גורם ההרחבה = מספר הקבוצות = ${M(k)}</b></div>`}
+function decSteps(q){if(q.dec)return q.dec;if(!q.A)return['💡 '+q.hint];
+ const st=[`🔍 מה משווים? ${c1(q.A)} ו${c2(q.B)}`,`🥇 מי נאמר קודם? ${c1(q.A)} – לכן הוא <b>ראשון</b> ביחס`,`✍️ כותבים לפי הסדר: <span class="m">${c1(q.A)} : ${c2(q.B)}</span>`,`📌 מה ידוע? ${q.known}`,`❓ מה שואלים? ${q.ask}`];
+ if(q.grpQ)st.push(`📦 נחשוב: כמה קבוצות של ${RC(q.grpQ[0],q.grpQ[1])} יש כאן?`);return st.concat(q.extra||[])}
+const CODES={q:QCODE,a:ACODE};
+// ---------- עזרה: פענוח / דוגמה פתורה – צעד אחר צעד ----------
+let HP=null;
+function helpSteps(q,ex){const st=[];if(ex)st.push(`<div style="font-weight:600">📖 דוגמה עם מספרים אחרים:</div><div>${q.txt}</div>${q.fig||''}`);
+ decSteps(q).forEach(x=>st.push(x));
+ if(ex){if(q.grp)st.push(grpBlock(q));q.sol.forEach(x=>st.push(x[1]?`${x[0]} <small style="color:#15803d">(${x[1]})</small>`:x[0]));st.push(`✔ התשובה: ${ansText(q)}`);st.push('💪 עכשיו פתרו את השאלה שלכם באותה דרך')}
+ else st.push('💪 עכשיו נסו לפתור לבד');return st}
+function openHelp(m,box='help'){const q=m==='dec'?Q:gen(Q.t,Q.id,Q.lv,Q.txt);HP={st:helpSteps(q,m==='ex'),i:m==='ex'?1:1,box,title:m==='ex'?'📖 דוגמה פתורה':'🔍 פענוח השאלה'};drawHelp()}
+function drawHelp(){const b=$('#'+HP.box);if(!b)return;const last=HP.i>=HP.st.length;
+ b.innerHTML=`<div class="help"><div class="ht">${HP.title}</div>${HP.st.slice(0,HP.i).map((x,j)=>`<div class="hs ${j===HP.i-1?'new':''}">${x}</div>`).join('')}
+ ${last?(HP.box==='help'?`<button class="btn sec" onclick="$('#help').innerHTML=''">סגירה ✕</button>`:''):`<button class="btn sec" onclick="HP.i++;drawHelp()">הצעד הבא ←</button>`}</div>`;
+ const n=b.querySelector('.hs.new');if(n&&HP.i>1)n.scrollIntoView({behavior:'smooth',block:'nearest'})}
+// ================= רמות =================
+const TOP={q:{name:'הרביע הראשון',ic:'📍',G:QUAD,L:[['q_read','q_mark','q_axis'],['q_which','q_dist','q_move','q_rect4'],['q_square','q_mid','q_map','q_cross'],['q_err','q_two','q_line','q_same']]},
+ a:{name:'שטח והיקף ברשת',ic:'📐',G:AREA,L:[['a_len','a_count','a_units'],['a_P','a_S','a_sq'],['a_tri','a_garden','a_L'],['a_findY','a_same','a_errTri','a_sqO']]}};
+const LV=[['★','ידע וזיהוי','קוראים ומסמנים נקודות'],['★★','יישום','משתמשים בכלל'],['★★★','חשיבה תהליכית','כמה צעדים ובעיות מילוליות'],['★★★★','חשיבה מסדר גבוה','שאלות מפמ״ר, מוקשים והסבר']];
+const PER=30;const G=n=>Math.round(n/PER*100);
+function gen(t,id,lv,avoid){let q;for(let i=0;i<25;i++){q=TOP[t].G[id](lv);if(!avoid||q.txt!==avoid)break}q.id=id;q.t=t;q.lv=lv;return q}
+
+// ================= מסכים =================
+function hi(){return DB.name?` ${DB.name}`:''}
+function home(){clearInterval(TT);window.scrollTo(0,0);
+ app().innerHTML=`<div class="card"><div class="qt">שלום${hi()}! 👋 מה מתרגלים היום?</div>
+ <div style="color:var(--mute);font-size:17px">טעיתם? לא נורא – תקבלו רמז ושאלות דומות עד שזה יושב טוב.</div>
+ <input class="name" id="nm" placeholder="השם שלי (לא חובה)" value="${DB.name||''}" onchange="DB.name=this.value.trim();save()" style="margin-top:10px"></div>
+ ${['q','a'].map(t=>`<button class="btn lvl" onclick="topic('${t}')"><span class="e">${TOP[t].ic}</span><span><b>${TOP[t].name}</b><small>תזכורת + 4 רמות חשיבה</small></span><span class="sc">${doneCount(t)}/4 ⭐</span></button>`).join('')}
+ <button class="btn lvl" onclick="testMenu()"><span class="e">📝</span><span><b>בחן את עצמך</b><small>מבחן קצר בלי רמזים – בסוף רואים מה לחזק</small></span></button>
+ <button class="btn sec" onclick="share()">📲 שיתוף הקישור</button><div class="center" style="margin-top:14px;font-weight:700;color:var(--acc);font-size:18px">ערכה: רוני מודן · שחקים</div>`}
+function doneCount(t){return[0,1,2,3].filter(l=>(DB.best[t+l]||0)>=70).length}
+function topic(t){window.scrollTo(0,0);
+ app().innerHTML=`<div class="card"><div class="qt">${TOP[t].ic} ${TOP[t].name}</div><div style="color:var(--mute);font-size:17px">מומלץ להתחיל בתזכורת קצרה, ואז לטפס רמה אחרי רמה.</div>
+ <button class="btn sec" onclick="recap('${t}',0)">🎬 תזכורת קצרה – מה צריך לזכור</button></div>
+ ${LV.map((v,l)=>{const b=DB.best[t+l];return`<button class="btn lvl" onclick="startLevel('${t}',${l})"><span class="e">${v[0]}</span><span><b>${v[1]}</b><small>${v[2]} · ${PER} שאלות</small></span><span class="sc">${b!=null?'ציון '+b+' '+stars(b):''}</span></button>`}).join('')}
+ <button class="btn sec" onclick="startTest('${t}')">📝 בחן את עצמך ב${TOP[t].name}</button>`}
+function stars(s){return s>=90?'⭐⭐⭐':s>=70?'⭐⭐':s>=50?'⭐':''}
+
+// ---------- תזכורת מונפשת ----------
+const RECAP={q:[
+ ['למה צריך מערכת צירים? 🗺️',`איך מסבירים למישהו <b>בדיוק</b> איפה משהו נמצא? במפה, ב־GPS ובמשחק "צוללות" משתמשים ב<b>שני מספרים</b>: כמה ללכת, וכמה לעלות.`],
+ ['הצירים והראשית',`${grid({pts:[{x:0,y:0,l:'O',dx:-14,dy:14}]})}<div class="box rv">ציר ${c1('x')} – אופקי, הולכים ${c1('ימינה')}</div><div class="box rv" style="animation-delay:.6s">ציר ${c2('y')} – אנכי, עולים ${c2('למעלה')}</div><div class="box rv" style="animation-delay:1.2s">הראשית ${PT(0,0)} – משם תמיד מתחילים</div>`],
+ ['🔑 קוד הפענוח',QCODE],
+ ['קודם הולכים, אחר כך עולים',`${walkFig(4,3,'A')}<div class="box rv" style="animation-delay:1.6s">${LP('A',4,3)}: ${c1('4 ימינה')}, ואז ${c2('3 למעלה')}</div><div class="warn rv" style="animation-delay:2.2s">⚠️ הסדר חשוב! ${PT(4,3)} זו לא ${PT(3,4)}</div>`],
+ ['נקודות על הצירים',`${grid({pts:[{x:5,y:0,l:'',c:RED},{x:0,y:6,l:'',c:BLUE}]})}<div class="box rv">${PT(5,0)} – על ציר ${c1('x')} (לא עולים: y = 0)</div><div class="box rv" style="animation-delay:.6s">${PT(0,6)} – על ציר ${c2('y')} (לא הולכים: x = 0)</div>`]],
+a:[
+ ['למה צריך שטח והיקף? 🏡',`רוצים לגדר גינה? צריך לדעת כמה מטר גדר – זה <b>ההיקף</b>. רוצים לשתול בה דשא? צריך לדעת כמה מקום יש בפנים – זה <b>השטח</b>.`],
+ ['אורך צלע ברשת',`${rectFig(2,1,7,5,{dims:[5,4]})}<div class="box rv">צלע אופקית: ${M('7 − 2 = 5')} – מחסירים את ה־${c1('x')}</div><div class="box rv" style="animation-delay:.6s">צלע אנכית: ${M('5 − 1 = 4')} – מחסירים את ה־${c2('y')}</div>`],
+ ['🔑 קוד הפענוח',ACODE],
+ ['היקף ושטח של מלבן',`<div class="box rv">היקף = כל הקו מסביב: ${M('5 + 4 + 5 + 4 = 18')} יחידות</div><div class="box rv" style="animation-delay:.6s">שטח = המשבצות בפנים: ${M('5 · 4 = 20')} יחידות ריבועיות</div><div class="warn rv" style="animation-delay:1.2s">⚠️ לא לבלבל: היקף = חיבור הצלעות · שטח = כפל</div>`],
+ ['משולש ישר זווית = חצי מלבן',`${grid({poly:[Object.assign(rpoly(2,1,7,5),{dash:1}),[[2,1],[7,1],[2,5]]]})}<div class="box rv" style="animation-delay:1s">שטח המשולש: ${M('5 · 4 : 2 = 10')}</div>`]]};
+function recap(t,i){window.scrollTo(0,0);const R=RECAP[t],s=R[i];
+ app().innerHTML=`<div class="card"><div class="dots">${R.map((_,j)=>`<i class="${j===i?'on':''}"></i>`).join('')}</div><div class="qt">${s[0]}</div><div style="margin-top:8px">${s[1]}</div>
+ <div class="nav">${i>0?`<button class="btn sec" onclick="recap('${t}',${i-1})">→ הקודם</button>`:''}${i<R.length-1?`<button class="btn" onclick="recap('${t}',${i+1})">הבא ←</button>`:`<button class="btn" onclick="startLevel('${t}',0)">מתחילים ברמה ★ ←</button>`}</div></div>`}
+
+// ---------- שיעור קצר לפני רמה (יחס) ----------
+function lesson(t,l,st){window.scrollTo(0,0);const top=`<div class="top"><span>${TOP[t].ic} ${TOP[t].name} · ${LV[l][0]} · שיעור קצר</span><span>${st+1}/2</span></div>`;
+ if(st===0){app().innerHTML=`${top}<div class="card"><div class="qt">🔑 קוד הפענוח – ככה קוראים שאלה ב${TOP[t].name}</div>${CODES[t]}<button class="btn" onclick="lesson('${t}',${l},1)">לדוגמה פתורה ←</button><button class="btn sec" onclick="startLevel('${t}',${l},1)">אני כבר יודע/ת – לתרגול</button></div>`;return}
+ Q=gen(t,pick(TOP[t].L[l]),l);HP={st:helpSteps(Q,true),i:1,box:'lh',title:'📖 דוגמה פתורה – צעד אחר צעד'};
+ app().innerHTML=`${top}<div class="card"><div id="lh"></div><button class="btn" onclick="startLevel('${t}',${l},1)">עכשיו אני! לתרגול ←</button></div>`;drawHelp()}
+// ---------- רמה ----------
+let S=null;
+function startLevel(t,l,go){if(!go)return lesson(t,l,0);const ids=TOP[t].L[l];let seq=[];while(seq.length<PER)seq=seq.concat(shuffle(ids));seq=seq.slice(0,PER);
+ S={t,l,n:0,score:0,seq,rem:null};nextQ()}
+function nextQ(){if(S.rem&&S.rem.need>0){if(S.rem.count>=5&&!S.rem.asked)return stuck();S.rem.count++;show(gen(S.t,S.rem.id,S.l,Q&&Q.txt));return}
+ if(S.rem&&S.rem.need<=0){S.rem=null;toast('💪 הבנת! ממשיכים במסלול');burst()}
+ if(S.n>=PER)return levelEnd();show(gen(S.t,S.seq[S.n],S.l,Q&&Q.txt))}
+function stuck(){S.rem.asked=true;app().innerHTML=`<div class="card"><div class="qt">🤝 הנושא הזה עוד קצת קשה – וזה בסדר!</div><div class="diag">🔎 מה כדאי לחזק: ${S.lastDiag||''}</div>
+ <div style="margin-top:8px">אפשר לחזור לתזכורת, לבקש עזרה מהמורה, או לנסות עוד שאלה דומה.</div>
+ <button class="btn rem" onclick="nextQ()">עוד שאלה דומה 💪</button><button class="btn sec" onclick="recap('${S.t}',0)">🎬 לתזכורת</button><button class="btn sec" onclick="S.rem=null;nextQ()">להמשיך הלאה</button></div>`}
+let Q=null,tries=0,done=false;
+function inputHTML(q,dis=''){if(q.kind==='mc')return`<div class="opts">${q.opts.map((o,i)=>`<button class="op" id="o${i}" onclick="answer(${i})">${o}</button>`).join('')}</div>`;
+ if(q.kind==='pt')return`<div class="pt"><b>(</b><label class="px"><span>x</span><input id="a1" inputmode="numeric"></label><b>,</b><label class="py"><span>y</span><input id="a2" inputmode="numeric"></label><b>)</b></div><button class="btn" id="go" onclick="answer()">בדיקה</button>`;
+ if(q.kind==='tap')return`<div id="tapv" class="center" style="margin-top:8px;color:var(--mute)">👆 לחצו על המקום הנכון ברשת</div><button class="btn" id="go" onclick="answer()">בדיקה</button>`;
+ if(q.kind==='ratio')return`<div class="rat"><label><span>${q.labels[0]||'&nbsp;'}</span><input id="a1" inputmode="numeric"></label><b>:</b><label><span>${q.labels[1]||'&nbsp;'}</span><input id="a2" inputmode="numeric"></label></div><button class="btn" id="go" onclick="answer()">בדיקה</button>`;
+ return`<div class="num"><input id="a1" inputmode="decimal" placeholder="תשובה"><button class="btn" id="go" onclick="answer()">בדיקה</button></div>`}
+function show(q){Q=q;tries=0;done=false;TAP=null;window.scrollTo(0,0);
+ const rem=S.rem?`<div class="remb">🔁 תרגול חיזוק – שאלה דומה (צריך עוד ${S.rem.need} ${S.rem.need>1?'הצלחות':'הצלחה'})</div>`:'';
+ app().innerHTML=`<div class="top"><span>${TOP[S.t].ic} ${TOP[S.t].name} · ${LV[S.l][0]}</span><span>${Math.min(S.n+1,PER)}/${PER} · ✔ ${S.score}</span></div><div class="bar"><i style="width:${S.n/PER*100}%"></i></div>
+ <div class="card">${rem}<div class="qt">${q.txt}</div>${q.tapFig||q.fig||''}<div class="hb"><button class="btn sec" onclick="openHelp('dec')">🔍 פענוח השאלה</button><button class="btn sec" onclick="openHelp('ex')">📖 דוגמה פתורה</button></div><div id="help"></div>${inputHTML(q)}<div id="fb"></div></div>`;
+ document.querySelectorAll('.rat input,.num input').forEach((el,i,all)=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){if(i<all.length-1)all[i+1].focus();else answer()}}));}
+function readVal(){const f=id=>{const v=($('#'+id)||{}).value;return v==null||v.trim()===''?NaN:parseFloat(v.replace(',','.'))};if(Q.kind==='tap')return TAP?TAP.slice():[NaN,NaN];return Q.kind==='ratio'||Q.kind==='pt'?[f('a1'),f('a2')]:f('a1')}
+function judge(q,v){// מחזיר {ok, msg}
+ if(q.kind==='mc')return{ok:v===q.ans,msg:q.msgs[v]};
+ if(q.kind==='pt'||q.kind==='tap'){const[x,y]=v;if(isNaN(x)||isNaN(y))return{empty:1};const[a,b]=q.ans,ok=x===a&&y===b;if(ok)return{ok};const m=(q.err&&q.err(x,y))||(x===b&&y===a?SWAP:x===a?`${c1('x')} נכון 👍 עכשיו בדקו את ${c2('y')} – כמה עולים למעלה?`:y===b?`${c2('y')} נכון 👍 עכשיו בדקו את ${c1('x')} – כמה הולכים ימינה?`:null);return{ok,msg:m}}
+ if(q.kind==='num'){if(isNaN(v))return{empty:1};const ok=Math.abs(v-q.ans)<1e-9;return{ok,msg:ok?null:(q.err&&q.err(v))}}
+ const[x,y]=v;if(isNaN(x)||isNaN(y))return{empty:1};const[a,b]=q.ans;const eq=x>0&&y>0&&x*b===y*a;
+ if(eq&&q.exact&&!(x===a&&y===b))return{ok:false,msg:'נכון – אבל אפשר לצמצם עוד! חפשו מספר נוסף שמחלק את שני האיברים.'};
+ return{ok:eq,msg:eq?null:(q.err&&q.err(x,y))}}
+const solHTML=q=>`<div class="steps">${q.sol.map((s,i)=>`<div style="animation-delay:${i*.35}s"><span>${s[0]}</span><small>${s[1]}</small></div>`).join('')}</div>`;
+function ansText(q){return q.kind==='pt'||q.kind==='tap'?PT(q.ans[0],q.ans[1]):q.kind==='mc'?q.opts[q.ans]:q.kind==='ratio'?RT(q.ans[0],q.ans[1]):M(q.ans)}
+function answer(i){if(done)return;const v=Q.kind==='mc'?i:readVal(),r=judge(Q,v),fb=$('#fb');
+ if(r.empty){fb.innerHTML='<div class="fb hi">כתבו תשובה ואז לחצו "בדיקה" 🙂</div>';return}
+ if(r.ok){done=true;if(Q.kind==='mc')$('#o'+i).classList.add('good');lock();if(Q.kind==='tap')tapShow(Q.ans);
+  const first=tries===0;
+  if(!S.rem){S.n++;if(first)S.score++;else S.rem={id:Q.id,need:1,count:0}}
+  else{if(first)S.rem.need--;else S.rem.need=Math.max(S.rem.need,1)}
+  const nextLbl=S.rem&&S.rem.need>0?'לשאלה דומה 💪':'הבא ←';
+  fb.innerHTML=`<div class="fb ok"><b>${pick(['✔ נכון! כל הכבוד','✔ מצוין!','✔ בדיוק!','✔ יפה מאוד!'])}${hi()}</b>${!first?'<div>תיקנתם לבד – זה הכי חשוב! נעשה עוד שאלה דומה כדי לוודא.</div>':''}<div style="margin-top:6px;font-weight:600">מה עשינו?</div>${solHTML(Q)}</div><button class="btn ${S.rem&&S.rem.need>0?'rem':''}" onclick="nextQ()">${nextLbl}</button>`;
+  return}
+ tries++;if(Q.kind==='mc'){const b=$('#o'+i);b.classList.add('wrong');b.disabled=true}
+ if(tries===1){fb.innerHTML=`<div class="fb hi">🤔 ${r.msg||'לא בדיוק.'}<div style="margin-top:4px">💡 רמז: ${Q.hint}</div><div style="margin-top:4px;font-weight:600">נסו שוב!</div></div>`;return}
+ done=true;lock();S.lastDiag=Q.diag;if(Q.kind==='tap')tapShow(Q.ans);
+ if(!S.rem)S.n++;
+ S.rem={id:Q.id,need:2,count:S.rem?S.rem.count:0,asked:S.rem?S.rem.asked:false};
+ if(Q.kind==='mc')$('#o'+Q.ans).classList.add('good');
+ fb.innerHTML=`<div class="fb no">${r.msg?r.msg+'<br>':''}התשובה הנכונה: ${ansText(Q)}<div style="margin-top:6px;font-weight:600">ככה פותרים:</div>${solHTML(Q)}${grpBlock(Q)}</div>
+ <div class="diag">🔎 מה כנראה חסר לך: ${Q.diag}</div><div style="margin-top:6px;font-size:17px">עכשיו תקבלו שאלה דומה עם מספרים אחרים – תנסו לבד לפי הדרך שראיתם.</div>
+ <button class="btn rem" onclick="nextQ()">לשאלה דומה 💪</button>`}
+function lock(){document.querySelectorAll('#app input,#app .op,#go').forEach(e=>e.disabled=true)}
+function levelEnd(){const{t,l}=S,score=G(S.score);if(DB.best[t+l]==null||score>DB.best[t+l])DB.best[t+l]=score;save();if(score>=70)burst();window.scrollTo(0,0);
+ app().innerHTML=`<div class="card center"><div class="qt">סיימתם את רמה ${LV[l][0]}${hi()}! 🎉</div><div style="color:var(--mute)">הציון שלך</div><div class="big">${score}</div><div style="color:var(--mute)">${S.score} מתוך ${PER} נכונות בפעם הראשונה</div><div class="stars">${score===100?'🏆 ':''}${stars(score)||'💪'}</div>
+ <div style="color:var(--mute)">${score===100?'מושלם! 100!':score>=70?'מוכנים לרמה הבאה!':'כדאי לתרגל את הרמה הזאת עוד פעם – כל פעם יש שאלות חדשות.'}</div>
+ ${l<3?`<button class="btn" onclick="startLevel('${t}',${l+1})">לרמה ${LV[l+1][0]} ←</button>`:`<button class="btn" onclick="startTest('${t}')">📝 בחן את עצמך</button>`}
+ <button class="btn sec" onclick="startLevel('${t}',${l})">שוב את אותה רמה</button><button class="btn sec" onclick="topic('${t}')">לתפריט ${TOP[t].name}</button></div>`}
+
+// ---------- בחן את עצמך ----------
+let TS=null;
+function testMenu(){window.scrollTo(0,0);app().innerHTML=`<div class="card"><div class="qt">📝 בחן את עצמך</div><div style="color:var(--mute);font-size:17px">12 שאלות מכל רמות החשיבה, ⏱ בזמן שאתם בוחרים. אין רמזים ואין משוב בזמן המבחן – הכול מתגלה בסוף, עם הסבר לכל טעות.</div></div>
+ <button class="btn lvl" onclick="startTest('q')"><span class="e">📍</span><span><b>הרביע הראשון</b></span></button><button class="btn lvl" onclick="startTest('a')"><span class="e">📐</span><span><b>שטח והיקף ברשת</b></span></button><button class="btn lvl" onclick="startTest('qa')"><span class="e">📍📐</span><span><b>שני הנושאים יחד</b></span></button>`}
+function testTime(w){window.scrollTo(0,0);const nm=w==='qa'?'הרביע הראשון + שטח והיקף':TOP[w].name;
+ app().innerHTML=`<div class="card"><div class="qt">⏱ כמה זמן אתם רוצים למבחן?</div><div style="color:var(--mute);font-size:17px">${nm} · 12 שאלות. בחרו זמן שמתאים לכם – אפשר לסיים גם לפני.</div></div>
+ ${[[15,'⚡','מהיר','דקה ורבע לשאלה'],[24,'👍','רגיל (מומלץ)','2 דקות לשאלה'],[36,'🐢','רגוע','3 דקות לשאלה'],[0,'∞','בלי הגבלת זמן','רק סופרים כמה זמן לקח']].map(o=>`<button class="btn lvl" onclick="startTest('${w}',${o[0]})"><span class="e">${o[1]}</span><span><b>${o[0]?o[0]+' דקות – '+o[2]:o[2]}</b><small>${o[3]}</small></span></button>`).join('')}
+ <button class="btn sec" onclick="testMenu()">→ חזרה</button>`}
+function startTest(w,min){if(min===undefined)return testTime(w);const plan=[];const add=(t,l,n)=>{const ids=shuffle(TOP[t].L[l]);for(let i=0;i<n;i++)plan.push([t,l,ids[i%ids.length]])};
+ if(w==='qa'){['q','a'].forEach(t=>{add(t,0,1);add(t,1,2);add(t,2,2);add(t,3,1)})}else{[0,1,2,3].forEach(l=>add(w,l,3))}
+ plan.sort((x,y)=>x[1]-y[1]);TS={w,qs:plan.map(p=>gen(p[0],p[2],p[1])),i:0,ans:[],t0:Date.now()};TS.lim=min?min*60000:0;TS.warn=false;clearInterval(TT);TT=setInterval(tick,1000);tq()}
+let TT=null;const mmss=ms=>{const t=Math.max(0,Math.ceil(ms/1000));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+function tick(){if(!TS||!TS.lim){const c=$('#clock');if(c&&TS)c.textContent='⏱ '+mmss(Date.now()-TS.t0);return}const rem=TS.lim-(Date.now()-TS.t0),c=$('#clock');if(c){c.textContent='⏱ '+mmss(rem);c.style.color=rem<300000?'#b91c1c':''}
+ if(rem<300000&&!TS.warn){TS.warn=true;toast('⏱ נשארו 5 דקות')}
+ if(rem<=0){clearInterval(TT);while(TS.ans.length<TS.qs.length)TS.ans.push({ok:false,v:null,none:1});toast('⏱ הזמן נגמר');tEnd()}}
+function tq(){const q=TS.qs[TS.i];Q=q;done=false;TAP=null;window.scrollTo(0,0);
+ app().innerHTML=`<div class="top"><span>📝 בחן את עצמך · ${TOP[q.t].ic} ${LV[q.lv][0]}</span><span><b id="clock" class="m">⏱ ${mmss(TS.lim?TS.lim-(Date.now()-TS.t0):Date.now()-TS.t0)}</b> · ${TS.i+1}/${TS.qs.length}</span></div><div class="bar"><i style="width:${TS.i/TS.qs.length*100}%"></i></div>
+ <div class="card"><div class="qt">${q.txt}</div>${q.tapFig||q.fig||''}${inputHTML(q).replace(/onclick="answer\(/g,'onclick="tAnswer(').replace('>בדיקה<','>שמירה והמשך ←<')}<div id="fb"></div></div>`;
+ document.querySelectorAll('.rat input,.num input').forEach((el,i,all)=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){if(i<all.length-1)all[i+1].focus();else tAnswer()}}))}
+function tAnswer(i){const q=TS.qs[TS.i],v=q.kind==='mc'?i:readVal(),r=judge(q,v);if(r.empty){$('#fb').innerHTML='<div class="fb hi">כתבו תשובה 🙂</div>';return}
+ TS.ans.push({ok:!!r.ok,v});TS.i++;if(TS.i<TS.qs.length)tq();else tEnd()}
+function tEnd(){clearInterval(TT);const n=TS.qs.length,sc=TS.ans.filter(a=>a.ok).length,min=Math.round((Date.now()-TS.t0)/60000),pct=Math.round(sc/n*100);
+ const tl={};TS.qs.forEach((q,i)=>{const k=q.t+q.lv;tl[k]=tl[k]||{t:q.t,l:q.lv,ok:0,all:0};tl[k].all++;if(TS.ans[i].ok)tl[k].ok++});
+ const rows=Object.values(tl).sort((a,b)=>a.t<b.t?-1:a.t>b.t?1:a.l-b.l);const weak=rows.find(x=>x.ok<x.all);if(pct>=80)burst();window.scrollTo(0,0);
+ const shown=(v,q)=>v==null?'':Array.isArray(v)?(q&&q.kind!=='ratio'?PT(v[0],v[1]):RT(v[0],v[1])):typeof v==='number'&&!isNaN(v)?M(v):'';
+ app().innerHTML=`<div class="card center"><div class="qt">תוצאות המבחן${hi()}</div><div class="big">${pct}</div><div style="color:var(--mute)">${sc} מתוך ${n} נכונות · ⏱ ${M(Math.max(1,min))} דקות${TS.lim?' מתוך '+M(TS.lim/60000):''}</div>
+ <table style="margin-top:10px"><tr><th>נושא</th><th>רמה</th><th>נכון</th></tr>${rows.map(x=>`<tr><td>${TOP[x.t].name}</td><td>${LV[x.l][0]}</td><td>${x.ok}/${x.all} ${x.ok===x.all?'✔':''}</td></tr>`).join('')}</table>
+ ${weak?`<div class="diag" style="text-align:right">🎯 מומלץ לתרגל: <b>${TOP[weak.t].name} – רמה ${LV[weak.l][0]}</b></div><button class="btn" onclick="startLevel('${weak.t}',${weak.l})">לתרגל עכשיו ←</button>`:'<div class="fb ok">כל הכבוד! הכול נכון 🏆</div>'}</div>
+ ${TS.qs.map((q,i)=>TS.ans[i].ok?'':`<div class="card"><div style="color:var(--bad);font-weight:600">✗ שאלה ${i+1} · ${LV[q.lv][0]}</div><div>${q.txt}</div>${q.fig||''}
+ <div style="margin-top:6px">התשובה שלך: ${TS.ans[i].none?'לא הספקתם לענות':q.kind!=='mc'?shown(TS.ans[i].v,q):q.opts[TS.ans[i].v]}</div><div class="fb ok">התשובה הנכונה: ${ansText(q)}${solHTML(q)}</div><div class="diag">🔎 מה לחזק: ${q.diag}</div></div>`).join('')}
+ <button class="btn sec" onclick="home()">🏠 לדף הבית</button>`}
+home();
+</script>
+</body>
+</html>
